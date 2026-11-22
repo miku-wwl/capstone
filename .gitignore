@@ -1,0 +1,25 @@
+# Local IDE and OS clutter
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Build outputs and temporary environments
+bin/
+obj/
+[Bb]uild/
+[Dd]ist/
+node_modules/
+.venv/
+__pycache__/
+
+# Local credentials and private configuration
+.env
+.env.*
+!.env.example
+*.pfx
+*.pem
+*.key
