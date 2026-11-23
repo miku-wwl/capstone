@@ -1,0 +1,67 @@
+MSE907 Capstone Week 2 — Day 7
+Assessment 1 v1.0 验收报告
+日期：2026-11-23（Pacific/Auckland）
+
+## 验收结论
+
+**Assessment 1 v1.0 — Ready for Student and Supervisor Review**
+
+Day 1–6 研究证据、英文/中文研究计划书、15 页英文演示稿和中文讲解提纲已完成内部一致性与格式核查。未发现阻止导师审阅的重大内容或版式缺陷；文献综述深度和方案批准状态仍有待学生/导师处理。该状态表示“可供学生和导师审阅”，不表示“可正式提交”。
+
+本报告的 PASS / PARTIAL / FAIL 是内部证据状态，不是学校分数或成绩预测。Assessment 1 官方说明课程权重为 20%，Task 1 / LO1 占 Assessment 1 的 55%，Task 2 / LO2 占 45%；学校要求每个任务条目达到 PASS 且总分不少于 50% 才通过。当前内部验收不替代学校评分，也不声称已经通过。
+
+## 评审范围与权限区分
+
+- Assessment 1 官方 PDF 用于核对学生作业、格式、时间和评分标准。Assessment 2、Assessment 3 仅作为后续评估背景，本次没有制作 WIP 报告、最终研究报告或录制演示。
+- 用户提供的 Day 5–7 续做说明用于确定本轮交付、版本提交、Drive 归档和“不联系学校、不提交学校”的执行边界。官方文件中对学生的要求不会被理解为允许本助手联系导师、教师或学校，也不构成替学生提交的授权。
+- 当前研究题目从先前 EchoCase 项目背景转为合成金融转账 API，仍须导师确认。官方 Assessment 1 PDF 写明 Week 15 完成；Week 6 PPT 是此前转述的课堂安排，未在该 PDF 中核实，需由学生向课程负责人确认其是否为额外展示或旧安排。
+
+## Assessment 1 六项 rubric 对照
+
+| Task / LO | 官方标准 | 权重 | 内部状态 | 证据与保留事项 |
+|---|---|---:|---|---|
+| Task 1 / LO1 | Depth and Clarity of Literature Review | 20% | PARTIAL | 19 篇候选材料中 8 篇全文深读、其余 11 篇结构化筛查；综述比较研究问题、系统边界、方法、结果和局限。范围明确且有批判性，但不是系统综述，完整性须由学生/导师结合课程期待判断。 |
+| Task 1 / LO1 | Identification and Justification of the Chosen Gap | 20% | PASS | 在明确的 19 篇候选范围、8 篇深读及针对性搜索内提出窄范围 gap；明示不是全球新颖性证明、不称“首篇研究”。 |
+| Task 1 / LO1 | Clarity and Detail of the Research Question(s)/Problem Statement | 15% | PASS | 问题陈述聚焦关系型转账 API；三个 RQ 分别涉及正确性、性能成本和不同故障类型下的机制交互。 |
+| Task 2 / LO2 | Suitability and Justification of the Chosen Research Methodology | 15% | PASS | 2×2 OCC × 持久请求幂等因子设计，固定数据库原子性/隔离与其他变量；包含随机化完整区组、试运行、精度目标和运行级分析。 |
+| Task 2 / LO2 | Feasibility and Potential Effectiveness of the Proposed Solution | 15% | PARTIAL | 合成单 API/关系数据库、版本比较、事务内唯一请求键/指纹/可重放结果的方案清楚且可审阅；题目变更、技术栈、隔离级别和 API 契约尚未获导师确认，也没有实现或运行证据。 |
+| Task 2 / LO2 | Clarity and Appropriateness of the Evaluation Plan | 15% | PASS | 评价覆盖账本/余额不变量、重复效果、唯一逻辑 TPS、请求尝试吞吐、延迟分位数、冲突/重试、资源和运行级不确定性；不把 HTTP 超时当作事务回滚证据。 |
+
+## 跨阶段一致性核查
+
+1. **主题与范围：** Day 1–6 文档均围绕“并发与重试密集负载下金融交易系统的数据一致性与性能权衡”；proposal、PPT、讲解提纲中的研究问题和设计相符。
+2. **机制边界：** OCC ON/OFF 只切换额外的应用版本校验与 OCC 重试；数据库事务、原子性和隔离始终保留。请求幂等性 ON/OFF 作为独立因素，四组 A–D 定义一致。
+3. **故障模型：** W3 是事务开始前的超时，必须由日志证明事务未开始；W4 是数据库已确认 COMMIT 后丢失 HTTP 响应；二者未合并。数据库 COMMIT 确认丢失明确排除。W5 只用于确定性正确性轨迹，不作为性能估计。
+4. **结果边界：** 尚未执行试运行或确认性实验；所有结果图表均未模拟。性能方向、胜出组和错误率均未声称。
+5. **文献边界：** DOI/出版记录、候选筛查和八篇全文阅读记录与 proposal 的引用方向一致。IETF Idempotency-Key 文档标为进行中的 Internet-Draft，不称 RFC；Adyen/Square/PostgreSQL 文档是工程背景，Apache Fineract issue 是问题记录，均未冒充受控同行评审结果。Day 4 文件中“当时未取得官方 Assessment PDF”的说明保留为历史时间点记录；Day 5–7 已按后来取得的官方文件补充核对。
+
+## 文件与格式核查
+
+- 英文研究计划书：DOCX 22 页；中文审阅版：DOCX 19 页。Day 5 QA 脚本重新通过；两个 DOCX 包完整，均包含姓名/学号占位符、AI 辅助披露、Pending Supervisor 状态、尚未运行实验说明和参考文献。
+- 两份 DOCX 的正文段落与三个表格单元均为双倍行距；封面标题和身份/状态信息使用较紧凑间距。参考文献标题、缩进和斜体样式已按一致引用体例处理。
+- 英文 PPTX：15 页；3 张原生可编辑表格位于第 8、9、14 页，机制图由可编辑形状和连接线构成。引用在相关页可见，完整 APA 格式及 DOI/URL 在配套 proposal 第 13 节。
+- PPTX 包结构检查通过：15 页、0 个包结构发现；版式/几何检查 0 项发现；字体政策检查通过（导出文件实际字体 Arial）；Artifact Tool 重新导入通过。最终导出件 15 页均已渲染并逐页审阅。
+- 未能在隐藏模式启动本机 PowerPoint COM，因此没有宣称通过 PowerPoint 应用内播放测试；导出文件已由 Artifact Tool 重新导入、渲染并检查。
+- 中文讲解提纲包含与 15 页一一对应的讲解要点。临时 PDF、渲染图片、官方 Assessment PDF 和缓存均不在 Day 6 ZIP 中。
+
+## Day 1–6 版本与云端记录
+
+以下 Git commit 均是当前 `origin/main` 的祖先；Day 1–6 的 ZIP 在本地 `_delivery` 中存在，且 Drive 元数据核对的文件名和字节数相符，父文件夹均为本项目归档文件夹。
+
+| Day | Git commit | Drive ZIP | Drive 字节数 | 核验 |
+|---|---|---|---:|---|
+| 1 | `db9054272b3c2f338839dbe32e8ae11c56822cef` | `Capstone_Week02_Day01_文献核验.zip` | 11,863 | 已核验 |
+| 2 | `333cb7507186825a879da058714af0f86d6432c3` | `Capstone_Week02_Day02_文献综述.zip` | 15,550 | 已核验 |
+| 3 | `8d4dea3fb29cbeddfd91ed33abb732fe14389bfe` | `Capstone_Week02_Day03_研究问题.zip` | 9,748 | 已核验 |
+| 4 | `ac1c6fb9b78fcee15ea256c1de9982b7b9830b8c` | `Capstone_Week02_Day04_实验方案.zip` | 14,187 | 已核验 |
+| 5 | `59a77ecb34da8a5ca1e364df8070f7ef4ac640d1` | `Capstone_Week02_Day05_正式Proposal.zip` | 106,738 | 已核验 |
+| 6 | `e2095dd6913379ad10ec98e61aa6008530ac6d5f` | `Capstone_Week02_Day06_演示PPT.zip` | 61,410 | 已核验 |
+| 7 | 本报告与清单纳入唯一 Day 7 commit；提交信息和 SHA 见随包交付说明。 | `Capstone_Week02_Day07_Assessment1_v1.0.zip` | 见随包交付说明 | commit、ZIP 和 Drive 核验记录见随包交付说明及最终交付消息 |
+
+Day 1–4 的文件和提交在本轮没有重做或改写。Day 7 的实际 commit SHA、ZIP 字节数/校验值和 Drive 文件记录由随包交付说明及最终交付消息据实记录。
+
+## 结论状态
+
+**Assessment 1 v1.0 — Ready for Student and Supervisor Review**
+
+学生完成提交前清单并处理两项 PARTIAL 后，再按确认的课程日期和形式准备正式材料。当前未获得导师批准、未取得学校成绩，也未向学校提交任何文件。
