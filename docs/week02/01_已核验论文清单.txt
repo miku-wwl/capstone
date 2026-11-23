@@ -1,0 +1,115 @@
+MSE907 Capstone Week 2
+Day 1 已核验论文清单
+
+核验日期：2026-11-23（Pacific/Auckland）
+判定规则：以下 18 个 DOI 均已通过 Crossref DOI 元数据请求；题名和作者与已核对的出版记录相符。所有 DOI 身份状态均为 VERIFIED。同行评审、全文访问及主题相关度分别标注，不能由 DOI 有效状态推导。
+
+01. VERIFIED | Huang, Y., Qian, W., Kohler, E., Liskov, B., & Shrira, L. (2022). Opportunities for optimism in contended main-memory multicore transactions. The VLDB Journal, 31(6), 1239–1261. Springer. DOI: https://doi.org/10.1007/s00778-021-00719-9
+类型/评审：期刊特刊论文；出版社页面标为 Special Issue Paper。来源为同行评审期刊，但本次没有审阅评审记录。
+全文：Springer 页为订阅内容；Harvard DASH 有公开存档副本，使用其仓储政策条款阅读，不视为 CC 许可。
+相关度：高。比较 OCC、MVCC、TicToc 的性能与竞争度；研究对象为主存 OLTP 引擎，不是应用层幂等 API。
+来源：https://link.springer.com/article/10.1007/s00778-021-00719-9 | https://dash.harvard.edu/entities/publication/31b4134f-fbe3-436e-b2c7-9213da4943c0
+
+02. VERIFIED | Chen, Y., Yu, X., Koutris, P., Arpaci-Dusseau, A. C., Arpaci-Dusseau, R. H., & Shu, J. (2022). Plor: General transactions with predictable, low tail latency. Proceedings of the 2022 International Conference on Management of Data, 19–33. ACM. DOI: https://doi.org/10.1145/3514221.3517879
+类型/评审：SIGMOD 2022 会议论文；本次确认出版记录，未单独取得评审流程说明。
+全文：作者网页提供 PDF；本次未确认该副本的具体版权/再分发许可，仅记录为可访问副本。
+相关度：高。事务并发控制、冲突及尾延迟；不是 OCC 与幂等键组合研究。
+来源：https://dl.acm.org/doi/10.1145/3514221.3517879 | https://chenyoumin1993.github.io/papers/sigmod22plor.pdf
+
+03. VERIFIED | de Heus, M., Psarakis, K., Fragkoulis, M., & Katsifodimos, A. (2022). Transactions across serverless functions leveraging stateful dataflows. Information Systems, 108, Article 102015. Elsevier. DOI: https://doi.org/10.1016/j.is.2022.102015
+类型/评审：期刊研究论文；期刊页标示 Research article。
+全文：TU Delft 仓储提供最终发表版本，许可标为 CC BY；ScienceDirect 页面说明开放许可。
+相关度：中高。事务保证、恰好一次处理和检查点开销；系统架构为 serverless dataflow。
+来源：https://www.sciencedirect.com/science/article/pii/S0306437922000229 | https://repository.tudelft.nl/record/uuid%3Abe25362c-0cff-4573-bc04-e7fe182b5c5c
+
+04. VERIFIED | Wang, X., & Huang, H. (2022). SGPM: A coroutine framework for transaction processing. Parallel Computing, 114, Article 102980. Elsevier. DOI: https://doi.org/10.1016/j.parco.2022.102980
+类型/评审：期刊研究论文；ScienceDirect 标示 Research article。
+全文：出版社当前展示摘要，卷期列表将该文标为 Abstract only；本次未找到可确认授权的开放全文。
+相关度：中。事务执行和并发协议的调度开销；与 HTTP 重试及幂等请求关系间接。
+来源：https://www.sciencedirect.com/science/article/abs/pii/S0167819122000709
+
+05. VERIFIED | Zhang, C., Li, Y., Zhang, R., Qian, W., & Zhou, A. (2023). Scalable and quantitative contention generation for performance evaluation on OLTP databases. Frontiers of Computer Science, 17(2), Article 172202. DOI: https://doi.org/10.1007/s11704-022-1056-2
+类型/评审：出版社页面标示 Research Article。
+全文：期刊页面列出 PDF；需在下载时确认页面授权与文件是否可读取，当前不宣称已读全文。
+相关度：高。可为可控竞争负载和负载生成方法提供依据。
+来源：https://journal.hep.com.cn/fcs/EN/10.1007/s11704-022-1056-2
+
+06. VERIFIED | Ye, C., Hwang, W.-C., Chen, K., & Yu, X. (2023). Polaris: Enabling transaction priority in optimistic concurrency control. Proceedings of the ACM on Management of Data, 1(1), Article 44. ACM. DOI: https://doi.org/10.1145/3588724
+类型/评审：ACM 期刊研究论文，同行评审期刊；出版信息及全文引用格式与出版社记录一致。
+全文：Wisconsin 作者页面提供论文 PDF；本次未单独确认副本许可，勿再分发。
+相关度：高。直接研究 OCC、事务冲突与尾延迟；未研究幂等 API。
+来源：https://dl.acm.org/doi/10.1145/3588724 | https://pages.cs.wisc.edu/~chenhaoy/publication/polaris/polaris.pdf
+
+07. VERIFIED | Fragkoulis, M., Carbone, P., Kalavri, V., & Katsifodimos, A. (2024). A survey on the evolution of stream processing systems. The VLDB Journal, 33(2), 507–541. Springer. DOI: https://doi.org/10.1007/s00778-023-00819-8
+类型/评审：期刊综述，出版社标为 Regular Paper；非原始实证研究。
+全文：TU Delft 提供最终发表版本，标示 CC BY。
+相关度：中低。适合作为流处理、状态管理和容错的背景资料。
+来源：https://link.springer.com/article/10.1007/s00778-023-00819-8 | https://research.tudelft.nl/en/publications/a-survey-on-the-evolution-of-stream-processing-systems/
+
+08. VERIFIED | Zhang, S., Soto, J., & Markl, V. (2024). A survey on transactional stream processing. The VLDB Journal, 33(2), 451–479. Springer. DOI: https://doi.org/10.1007/s00778-023-00814-z
+类型/评审：期刊综述，出版社标为 Regular Paper；非原始实证研究。
+全文：Springer 页面标示 Open Access 和 CC BY 4.0。
+相关度：中高。可比较 transactional stream processing 的一致性与处理保证；不等同于持久化 HTTP 幂等键。
+来源：https://link.springer.com/article/10.1007/s00778-023-00814-z
+
+09. VERIFIED | Wang, X., Peng, Y., Huang, H., & Li, X. (2024). Dodo: A scalable optimistic deterministic concurrency control protocol. Future Generation Computer Systems, 159, 15–26. Elsevier. DOI: https://doi.org/10.1016/j.future.2024.05.004
+类型/评审：期刊研究论文；出版社页面标示 Research article。
+全文：出版社页面可见摘要及部分正文；本次没有确认完整全文的开放许可或当前用户订阅权限。
+相关度：中。关注确定性并发控制和重试中止，但不是应用层 OCC 的直接实现比较。
+来源：https://doi.org/10.1016/j.future.2024.05.004
+
+10. VERIFIED | Liu, S., Multazzu, L., Wei, H., & Basin, D. A. (2024). NOC-NOC: Towards performance-optimal distributed transactions. Proceedings of the ACM on Management of Data, 2(1), Article 9. ACM. DOI: https://doi.org/10.1145/3639264
+类型/评审：ACM 期刊研究论文。
+全文：ACM 页面标示 Free access；页面也提供经过评估的研究 artifact。
+相关度：中。分布式事务及读写性能优化；系统模型不同于单服务关系型金融 API。
+来源：https://dl.acm.org/doi/10.1145/3639264 | https://www.research-collection.ethz.ch/entities/publication/ef4dd72d-0634-4db0-ab35-98e4a7642162
+
+11. VERIFIED | Ramalhete, P., & Correia, A. (2024). Scaling up transactions with slower clocks. In Proceedings of the 29th ACM SIGPLAN Annual Symposium on Principles and Practice of Parallel Programming (pp. 2–16). ACM. DOI: https://doi.org/10.1145/3627535.3638472
+类型/评审：PPoPP 2024 会议论文。
+全文：ACM 会议页面标示 Free access。
+相关度：中低。讨论事务锁与时钟扩展；不研究请求幂等或网络超时。
+来源：https://dl.acm.org/doi/10.1145/3627535.3638472 | https://ppopp24.sigplan.org/details/PPoPP-2024-papers/6/Scaling-Up-Transactions-with-Slower-Clocks
+
+12. VERIFIED | Yu, M., Cao, T., Wang, W., & Chen, R. (2025). Pheromone: Restructuring serverless computing with data-centric function orchestration. IEEE Transactions on Networking, 33(1), 226–240. IEEE. DOI: https://doi.org/10.1109/TNET.2024.3480031
+类型/评审：IEEE 期刊研究论文。
+全文：作者/高校网页有 PDF，但其中标明 IEEE Xplore 授权使用仅限香港科技大学；不视为一般开放获取。当前用户的读取授权未确认。
+相关度：低。主要研究 serverless 函数编排与数据交换，非金融事务正确性。
+来源：https://ieeexplore.ieee.org/document/10770575/ | https://cse.hkust.edu.hk/~weiwa/papers/pheromone-tnet25.pdf
+
+13. VERIFIED | Wu, H., Zhang, M., Chen, K., Liao, X., Shan, Y., & Wu, Y. (2025). OOCC: One-round optimistic concurrency control for read-only disaggregated transactions. In 2025 IEEE 41st International Conference on Data Engineering (ICDE) (pp. 238–250). IEEE. DOI: https://doi.org/10.1109/ICDE65448.2025.00025
+类型/评审：IEEE ICDE 会议论文；官方页面确认会议信息、作者和页码。
+全文：IEEE 页面提供摘要及 PDF 入口；本次未确认当前用户的完整全文权限或开放许可。
+相关度：中。与 OCC 有关，但聚焦 disaggregated、read-only 事务。
+来源：https://ieeexplore.ieee.org/abstract/document/11113095
+
+14. VERIFIED | Psarakis, K., Christodoulou, G., Siachamis, G., Fragkoulis, M., & Katsifodimos, A. (2025). Styx: Transactional stateful functions on streaming dataflows. Proceedings of the ACM on Management of Data, 3(3), Article 226. ACM. DOI: https://doi.org/10.1145/3725363
+类型/评审：ACM 期刊研究论文。
+全文：TU Delft 仓储提供最终发表版 PDF；已确认可下载，具体复用许可需按仓储记录核实后再引用图表。
+相关度：高。覆盖事务、恰好一次和云工作流；与关系型 API 的稳定幂等键不同。
+来源：https://dl.acm.org/doi/10.1145/3725363 | https://repository.tudelft.nl/record/uuid%3A95effdbe-0978-4eb9-8909-82f0c3c99623
+
+15. VERIFIED | Psarakis, K., Mráz, O., Christodoulou, G., Siachamis, G., Fragkoulis, M., & Katsifodimos, A. (2025). Styx in action: Transactional cloud applications made easy. Proceedings of the VLDB Endowment, 18(12), 5275–5278. VLDB Endowment. DOI: https://doi.org/10.14778/3750601.3750650
+类型/评审：PVLDB 短篇系统演示论文；可用于系统背景，不能代替完整方法与实验研究。
+全文：TU Delft 提供最终发表版，许可标为 CC BY。
+相关度：中。展示可构建具事务/恰好一次保证的云应用。
+来源：https://www.vldb.org/pvldb/vol18/p5275-psarakis.pdf | https://research.tudelft.nl/en/publications/styx-in-action-transactional-cloud-applications-made-easy/
+
+16. VERIFIED | Laigner, R. N., Christodoulou, G., Psarakis, K., Katsifodimos, A., & Zhou, Y. (2025). Transactional cloud applications: Status quo, challenges, and opportunities. In Companion of the 2025 International Conference on Management of Data (SIGMOD-Companion ’25), 829–836. ACM. DOI: https://doi.org/10.1145/3722212.3725635
+类型/评审：SIGMOD Companion tutorial/overview，不是原始实证研究；同行评审属性未单独确认。
+全文：TU Delft 仓储和作者网页均有最终版；仓储记录标示 CC BY。
+相关度：中，适合作为范围和问题背景，不计入核心实证证据数量。
+来源：https://research.tudelft.nl/en/publications/transactional-cloud-applications-status-quo-challenges-and-opport/ | https://giorgoschristodoulou.github.io/transactions_tutorial_sigmod25.pdf
+
+17. VERIFIED | Hwang, D., Conway, A., Garcia Alvarado, C., Yuan, J., Ben-David, N., Johnson, R., & Szekeres, A. (2025). Focus! Fast on-disk concurrency-control using sketches. Proceedings of the ACM on Management of Data, 3(6), Article 328. ACM. DOI: https://doi.org/10.1145/3769793
+类型/评审：ACM 标示 Open access research article。
+全文：ACM 页面提供全文；再利用须遵守论文页面具体许可。
+相关度：中。关注磁盘数据库并发控制的性能成本，不涉及幂等 API。
+来源：https://dl.acm.org/doi/10.1145/3769793
+
+18. VERIFIED | Kanimozhi, R., Mary, M. A. S., & Johnson, S. (2026). Stabilizing distributed OLTP under high contention via measurement-driven adaptive concurrency control. Scientific Reports, 16, Article 31471. Springer Nature. DOI: https://doi.org/10.1038/s41598-026-60165-x
+类型/评审：Scientific Reports 期刊研究论文；已接受并于 2026 年正式发布。
+全文：Nature 页面标示 Open Access, CC BY 4.0。
+相关度：高。与高竞争 OLTP、OCC、重试放大及延迟/吞吐指标相关；算法范围与本项目提议的应用层 OCC 对照不同。
+来源：https://www.nature.com/articles/s41598-026-60165-x
+
+筛选建议：优先进入 Day 2 全文深读的候选包括 01、03、05、06、08、10、14、18；根据全文访问实际情况，可用 15 替换非完整研究论文，或从新增检索补足更直接讨论幂等/重试语义的研究。第 16 篇仅作背景阅读。不得将候选排序解释为研究结论。

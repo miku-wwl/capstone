@@ -23,3 +23,7 @@ __pycache__/
 *.pfx
 *.pem
 *.key
+
+# Capstone research cache and delivery ZIPs
+_local_sources/
+_delivery/
