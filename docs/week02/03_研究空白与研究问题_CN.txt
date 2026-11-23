@@ -1,0 +1,117 @@
+# MSE907 Capstone Week 2
+
+## Day 3：研究空白与研究问题
+
+研究主题：Evaluating Data Consistency and Performance Trade-offs in Financial Transaction Systems under Concurrent and Retry-Prone Workloads
+
+编制日期：2026-11-23（Pacific/Auckland）
+
+### 1. 本阶段要检验的候选问题
+
+本阶段检验的不是“幂等键是否已被研究”。Day 2 已确认，数据库 OCC、分布式事务、exactly-once 流处理和并发 Serverless 幂等性均有相邻研究；Day 3 又查到正在更新的 HTTP Idempotency-Key Internet-Draft、支付服务商文档、AWS 的 OCC 技术指导，以及 Apache Fineract 的公开实现/缺陷记录。
+
+因此，候选问题缩窄为：**在关系型数据库支持的简化金融转账 API 中，当不同逻辑转账发生并发冲突，同时客户端因重试或提交后未收到 HTTP 响应而重发同一逻辑转账时，OCC 与持久化请求级幂等处理分别及组合对正确性和性能有什么影响？**
+
+这是一个特定系统模型内的评估问题，不声称首次提出幂等性、OCC 或二者结合。
+
+### 2. 扩展检索与反证
+
+#### 2.1 本轮扩展检索范围
+
+2026-11-23 以精确题名/关键词检索 IETF Datatracker、ACM/USENIX 论文索引、官方支付开发文档、AWS 数据库工程指导和 Apache Fineract 项目记录。查询词覆盖 Idempotency-Key、OCC/optimistic concurrency、payment/API、lost response/commit acknowledgement、retry、duplicate processing。检索用于寻找直接反例和系统边界差异；不是多数据库系统综述，也没有执行 PRISMA 筛选流程。
+
+学术证据仍以 Day 2 深读的论文为基础：de Heus 等（2022）讨论账户转账、消息确认丢失和应用专用幂等键；Flux（Ding 等，OSDI 2023）形式化并发重试幂等性；Styx（Psarakis 等，2025）要求外部服务支持幂等键。前两篇已在 [Day 2 综述](02_文献批判性综述_CN.txt) 分析全文与局限。
+
+#### 2.2 新发现的协议与工程证据
+
+1. **IETF 当前 Internet-Draft（规范工作，非 RFC）**：[draft-ietf-httpapi-idempotency-key-header-09](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header) 于 2026-11-21 发布，Datatracker 标为 active Internet-Draft，拟议 Standards Track，但当前无 RFC 状态。该稿明确要求 key 唯一且不可用于不同 payload；服务端可选择保存 request fingerprint、定义 expiry；同 key 同 fingerprint 的已完成重试应返回与已完成请求一致的响应，原请求仍在处理时应报告冲突。草案自身要求仅作为 work in progress 引用，不可写成已生效 RFC。
+2. **支付服务商实践**：[Adyen API idempotency 文档](https://docs.adyen.com/development-resources/api-idempotency)说明支付请求 timeout 后可用同一 key 重试；重复的已处理请求返回首次响应；key 按公司账户作用域、有效期 7–14 天；并发重复请求可能返回 409/422 或可重试的 transient error；跨区域同时请求并不跨区域去重。[Square 官方说明](https://developer.squareup.com/docs/build-basics/common-api-patterns/idempotency)以 CreatePayment 为例描述提交成功但连接在确认前断开的歧义，说明同 key 重试会返回首次成功结果；同 key 改金额会报错。两者是产品协议/工程证据，不是独立同行评审实验，且产品行为不能直接互相外推。
+3. **数据库厂商工程指导**：[AWS Database Blog：Aurora DSQL 应用设计](https://aws.amazon.com/blogs/database/building-scalable-applications-on-amazon-aurora-dsql/)说明该数据库用 OCC，冲突事务在 commit 被拒并需要应用以新鲜数据重试；同时展示把 client-generated idempotency key 与 UNIQUE 约束放在数据库事务内、只在首次插入时执行副作用的模式。文中还提醒连接/timeout 错误可能是未知事务结果，只有当操作可安全重放时才重试。它直接覆盖 OCC retry 与幂等账本的工程组合，但这是针对 Aurora DSQL 的产品博客，未报告本研究所需的四组对照实验或系统化金融负载测量。
+4. **Apache Fineract 公开项目记录**：[FINERACT-2485](https://issues.apache.org/jira/browse/FINERACT-2485) 是仍在进行中的 idempotency hardening 工作，讨论在金融 Savings/Loans 命令中统一幂等键处理；相关附件/评论属于项目提案与开发讨论，不能当作已发布学术结果或已完整上线能力。[FINERACT-3230](https://issues.apache.org/jira/browse/FINERACT-3230) 是 2026-11-13 创建且显示未解决的缺陷报告。报告者称其用 PostgreSQL TCP proxy 丢弃 COMMIT acknowledgement 后，在 Fineract 1.16.1 复现：数据库已提交存款，但命令被记为 ERROR；同 key 重试重放 HTTP 500。报告者还称一次 90 秒负载试验中 3,940 笔存入数据库而只有 3,931 笔被确认。此为公开 bug 报告者的复现陈述，本研究未独立复现；它提示“HTTP 响应丢失”和“数据库 COMMIT acknowledgement 丢失”是不同故障位置，持久化 key 并不自动解决提交结果不确定时的状态协调。
+
+#### 2.3 对原候选 gap 的修正
+
+- **被反证的宽泛表述：**“幂等键或请求重试在金融 API 中基本没人研究。”支付 API 实践、IETF 草案、AWS 工程指南、Apache Fineract 工作和 Flux 等都足以否定这一说法。
+- **目前仍可检验的窄问题：**在本轮 19 篇候选论文、8 篇全文深读及上述针对性扩展检索中，尚未找到一项独立同行评审的控制实验，在一个关系型数据库转账 API 中同时把 OCC 与持久化请求键作为两个因子，比较四个组合，并系统改变竞争强度、同 key 并发重试及提交后 HTTP 响应丢失，报告金额不变量与性能交互结果。
+- **证据强度边界：**这是“截至本轮检索尚未找到”的缺口，不是“全球不存在”的证明。AWS 文档已给出 OCC 与 key 的工程组合；Fineract 有现行实现/缺陷讨论。研究价值应表述为对明示模型的可复现实证比较，而非发明通用幂等技术。
+
+### 3. Problem Statement 与范围
+
+客户端向转账 API 发出请求后可能收不到响应；仅凭 timeout，客户端无法判断请求是否到达、事务是否提交或只是响应在网络中丢失。若客户端在同一逻辑操作上重试，服务端需要既避免重复扣款/入账，又正确处理与其他逻辑转账之间的并发冲突。OCC 主要发现并处理竞争读写冲突；幂等键主要识别同一逻辑请求的重复交付。两种机制保护的对象不同，实际效果取决于 key、请求内容、处理状态、账户效果和已存响应如何协调。
+
+本项目暂定在一个可重复的关系型数据库原型中研究借方/贷方账户转账，比较 OCC × 请求级幂等性四组。所有组应保留相同的数据库事务原子性、隔离级别、业务校验和硬件环境；“OCC off/on”必须明确定义为是否采用应用/版本级乐观读集验证与冲突重试，不能把数据库隔离级别或事务原子性也同时改变。Key-enabled 处理应以稳定 key 标识逻辑操作，定义 key 作用域、payload 冲突策略和同 key 并发行为，并将幂等记录与财务效果置于一致事务边界；否则处理组不可重复或不可比。
+
+核心故障位置暂定为客户端的 HTTP 层：数据库成功提交后丢弃服务端响应，再以同一逻辑请求重试。**数据库 COMMIT acknowledgement 丢失是另一种未知提交结果故障**；FINERACT-3230 说明其现实意义，但是否纳入主实验留待 Day 4 按原型可行性和项目时间单独决定，不能与 HTTP response loss 合并成同一个变量或结果标签。
+
+范围排除：真实资金/支付网络、生产账户或个人资料、多区域一致性、完整银行业务、流处理平台、Saga 和第三方外部副作用。实验不声称模拟生产吞吐，也不将模型结果推广到所有金融机构。
+
+### 4. Research Questions、目标与验证映射
+
+#### RQ1 — 正确性
+
+**在受控的并发账户转账负载及同一逻辑请求重复交付（包括数据库提交后 HTTP 响应丢失）下，四种 OCC/幂等配置会怎样影响金融不变量和重复业务效果？**
+
+- 对应 gap：相邻系统研究讨论 OCC 或 retry/idempotency，但本轮未找到同一关系型转账 API 上的四组控制比较。
+- 自变量：OCC on/off；持久化请求幂等 on/off；竞争度；重复请求比例；响应丢失位置/比例。
+- 可观测结果：重复转账效果数、余额守恒失败、借方负余额（仅当业务约束要求）、丢失更新、事务状态与客户端最终观察的一致性。
+- 验证方法：固定初始余额与转账流水；逐笔核对账户合计和逻辑请求 key 的财务效果次数；把重试前后的 HTTP 响应与数据库已提交状态关联。发生异常时先记录故障位置和已提交证据，不仅凭 HTTP 状态推断是否成功。
+
+#### RQ2 — 性能与成本
+
+**在上述配置和故障条件下，OCC 与请求幂等分别及组合会怎样改变逻辑转账吞吐、延迟分布和重试/冲突成本？**
+
+- 对应 gap：工程文档给出做法，却没有为本研究的四组/故障矩阵提供可转移的独立性能估计。
+- 自变量：相同四个功能配置及 concurrency/retry/response-loss 水平。
+- 可观测结果：已完成逻辑转账 TPS、请求 attempts/s、P50/P95/P99 延迟、OCC 冲突/中止次数、客户端及服务端 retry 数、最终成功率。明确区分“请求数”与“唯一逻辑转账数”。
+- 验证方法：同一硬件、数据库、数据集和事务逻辑下运行四组；报告每组有效吞吐和延迟分位数，并给出重复运行的差异区间。具体重复次数、预热、随机顺序和统计检验在 Day 4 预先确定。
+
+#### RQ3 — 交互效应与故障类型
+
+**OCC 与幂等处理的交互效应，是否会随冲突驱动的数据库内部事务重试、同 key 并发重复请求，以及提交后 HTTP 响应丢失而变化？**
+
+- 对应 gap：OCC retry、客户端重试和提交后未知响应是不同事件；将其混为一个 retry rate 会误读结果。
+- 自变量：2×2 因子交互项；故障类型；每种故障的注入比例；并发/热点强度。
+- 可观测结果：RQ1 的 correctness outcomes 与 RQ2 的 performance outcomes，并按故障类型分层。
+- 验证方法：报告 OCC 主效应、幂等主效应和交互项；对不同故障场景分别比较，不只汇总平均值。若样本或原型能力不足以稳定执行三类场景，优先保留同 key 重复和 post-commit HTTP response loss，把 commit acknowledgement 丢失列为范围外/后续研究。
+
+#### 研究目标
+
+1. 定义请求级重试、OCC 冲突重试、提交后响应丢失和未知数据库提交结果的操作化边界。
+2. 设计保持业务逻辑、数据库原子性、隔离级别和硬件不变的 2×2 实验组。
+3. 在可控负载中同时验证财务正确性与性能，区分逻辑转账数、物理请求数和数据库事务 attempts。
+4. 量化两机制主效应与交互效应，报告不支持外推的限制和复现所需参数。
+
+#### 假设处理
+
+当前不提出性能方向性假设：现有证据来自不同数据库、隔离等级和运行时，不能支撑哪组必然更快。Key-enabled 处理的“相同 key/相同请求不重复应用财务效果”作为实现契约和待验证正确性条件，而非预报实验必定成功。若实施后无法满足该条件，应如实报告并先修正实现/实验模型，不把失败数据包装为协议结论。
+
+### 5. 工作模型、导师待确认与风险
+
+- 四组保持 Week 1 设计：A OCC OFF / Idempotency OFF；B OCC ON / Idempotency OFF；C OCC OFF / Idempotency ON；D 两者 ON。
+- Day 4 必须把 OCC “ON”的实施层次定清；建议固定数据库事务隔离级别，只切换额外的版本/读集验证逻辑，避免将数据库默认并发控制误称为 OCC OFF。
+- 同 key/不同 payload、key scope、key retention/expiry、并发请求是返回 409、等待还是 replay 响应，都属于具体 API 契约。可先根据 active IETF draft 和一个公开支付 API 选定可重复策略，但不得声称这就是所有支付平台的标准行为。
+- 官方 IETF draft 是 work in progress；Adyen/Square/AWS 文档是厂商行为与工程建议；Fineract Jira 是尚未独立复现的 issue 报告。这些来源可支撑问题实际性，不能代替同行评审文献或评分标准。
+- Day 2 的 2026 MD-ACC 论文有 measurement window 的内部差异；若选其参数作为背景，应先查其公开 artifacts。Day 3 不引入其阈值。
+- 官方 MSE907 Assessment 1、2、3 PDF 仍未取得；这不妨碍本阶段 RQ 草拟，但最终 proposal 的完整 rubric、格式与提交要求仍不能宣称已核验。导师批准和学生最终选题/伦理要求均待确认。
+- 学生需在提交前亲自审阅、核实引用并按学校要求披露 AI 辅助。本文件不是导师认可或正式作业提交。
+
+### 6. 来源清单与证据类别
+
+#### 同行评审研究（已深读）
+
+- de Heus, M., Psarakis, K., Fragkoulis, M., & Katsifodimos, A. (2022). *Transactions across serverless functions leveraging stateful dataflows*. Information Systems, 108, 102015. [DOI](https://doi.org/10.1016/j.is.2022.102015)
+- Ding, H., Wang, Z., Shen, Z., Chen, R., & Chen, H. (2023). *Automated Verification of Idempotence for Stateful Serverless Applications*. OSDI 2023, 887–910. [USENIX official paper](https://www.usenix.org/conference/osdi23/presentation/ding)
+- Psarakis, K., Christodoulou, G., Siachamis, G., Fragkoulis, M., & Katsifodimos, A. (2025). *Styx: Transactional Stateful Functions on Streaming Dataflows*. Proceedings of the ACM on Management of Data, 3(3), Article 226. [DOI](https://doi.org/10.1145/3725363)
+
+#### 协议草案与官方工程证据（不计入同行评审论文数）
+
+- Jena, J., Dalal, S., & Tishkin, D. (2026). *The Idempotency-Key HTTP Header Field*, draft-ietf-httpapi-idempotency-key-header-09, Internet-Draft/work in progress, published 21 Nov 2026. [IETF Datatracker](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header)
+- Adyen. *API idempotency*. 官方开发文档，访问日期 2026-11-23. [文档](https://docs.adyen.com/development-resources/api-idempotency)
+- Square. *Idempotency*. 官方开发文档，访问日期 2026-11-23. [文档](https://developer.squareup.com/docs/build-basics/common-api-patterns/idempotency)
+- Dubey, T., Chikwama, E., & Kantamani, R. (2026-07-28; updated 2026-08). *Building scalable applications on Amazon Aurora DSQL*. AWS Database Blog. [文章](https://aws.amazon.com/blogs/database/building-scalable-applications-on-amazon-aurora-dsql/)
+- Apache Fineract. FINERACT-2485, *New command processing - standardize and harden idempotency*. Jira 状态显示 In Progress，访问日期 2026-11-23. [Issue](https://issues.apache.org/jira/browse/FINERACT-2485)
+- Apache Fineract. FINERACT-3230, *A command whose COMMIT acknowledgement is lost is stored as failed although its transaction committed*. Jira bug，未解决；描述/复现为报告者陈述，访问日期 2026-11-23. [Issue](https://issues.apache.org/jira/browse/FINERACT-3230)
+
+### 7. 下一阶段
+
+Day 4 将把以上 RQs 转成可执行的受控实验协议，精确定义四组实现差异、转账数据模型、并发/重复/超时/响应丢失负载、测量点和统计分析；另外决定是否将数据库 COMMIT acknowledgement 丢失纳入扩展故障组，或把它列为明确的范围限制。正式实验结果尚不存在。
