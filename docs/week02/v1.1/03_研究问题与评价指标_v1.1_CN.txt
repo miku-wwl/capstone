@@ -1,0 +1,42 @@
+MSE907 Capstone — Research Questions、Metrics 与可追溯矩阵 v1.1
+状态：方案草案；没有已执行实验或结果。
+
+1. 定稿建议的研究问题
+
+RQ1 — 正确性：在共同的 PostgreSQL READ COMMITTED 数据库事务与业务约束下，A–D 四组在不同请求并发、重复交付及预定义故障轨迹中，分别产生哪些金融不变量违例、重复业务效果或客户端状态与账本结果不一致？
+
+RQ2 — 性能：在预定义低/高竞争及重试故障工作负载下，应用版本验证与持久请求幂等机制分别及组合如何影响正确确认逻辑吞吐、逻辑端到端 P95 延迟和事务成本（OCC 重试、幂等等待/回放与数据库锁等待）？
+
+RQ3 — 场景交互：在背景负载、热点分布、预分配重复率、seed、retry budget 和观察窗相同的配对区组中，W2 并发同 key 重复与 W4 提交后 HTTP 响应丢失两种完整场景下，OCC×幂等交互估计相差多少？该差异不能单独归因于网络失败位置。
+
+2. RQ-to-Experiment Traceability Matrix
+
+RQ | IV | DV | Controlled variables | Workloads/trajectory | Primary outcome | Secondary outcomes | Estimand / analysis unit | Evaluation criterion | Limitation
+RQ1 | OCC ON/OFF；Idempotency ON/OFF；竞争度；重复类型 | duplicate financial effects；money conservation；ledger/balance reconciliation；negative balance；atomicity；client-ledger consistency | 引擎/READ COMMITTED/schema/金额规则/硬件/seed/事务范围 | T1–T10；W1/W2/W4；W3 gate 和 W5 诊断 | 每逻辑 key 已提交财务效果计数及所有 invariant violations | 失败类型、HTTP/commit trace、unknown、OCC conflict | 每条轨迹与曝光的逻辑请求；次数和分母，不用请求级独立性推断 | 所有预定义不变量逐项审计；报告违例数与失败分类，不能推断所有生产行为 | synthetic local prototype；轨迹覆盖有限；只有实现后才可验证
+RQ2 | 两个机制因子；W1 low/high；固定并发/热点等级 | 正确确认逻辑吞吐；成功逻辑请求 E2E P95；锁等待、OCC retry、key replay/wait | 主机/DB/API版本/连接池/数据初态/随机种子/预热/窗口/日志配置 | W1-low、W1-high；每条件 A–D 完整区组 | Correctly-confirmed logical TPS | P50/P95/P99；attempt TPS；请求耗时；retry/conflict/lock wait；CPU/RAM/connection；unknown | A–D factorial contrasts per complete randomized block；运行是单位 | effect size + 95% CI；P95 按 run 计算后配对；precision target 在 pilot 后正式数据前冻结 | 单机/单DB和合成工作负载；结果不代表生产吞吐
+RQ3 | OCC×Idempotency 交互 × 场景 W2/W4 | Δ interaction in correctly-confirmed logical TPS | 相同背景load、concurrency、hot-set、duplicate assignment、seed、retry budget、time/drain、dataset | 区组中同时执行W2/W4 A–D，场景顺序随机 | ΔI = I_W4−I_W2，加性 transfers/s | latency、replay/wait/conflict、assigned/eligible/triggered、unknown | 每完整 paired block 一个 ΔI；区组均值及双侧 Student-t 95% CI，展示全部区组点 | pilot 的 5 个配对区组估计 s_ΔI；10–14 区组中选精度所需最小共同 n，δ=参考 TPS 的10%；超14或不达标则 exploratory | W2 与 W4 时序/执行路径不同，只比较整体场景，不解释单一网络位置的因果效应
+
+工作负载编号沿革：v1.0 的 W0 无故障低竞争参考并入 v1.1 W1-low；旧 W1 扩展为 W1-low/high；W2–W4 的触发边界保留；旧 W5 强制 OCC 冲突轨迹现在是 T8，当前 W5 仅指不安全旧值覆盖诊断，不进入正式性能矩阵。
+
+3. 指标操作定义
+
+金融正确性独立于性能。对每笔成功 transfer 检查 debit/credit 两笔 ledger entry 与账户余额变化相符；账户余额非负；汇总金额守恒；事务要么全成要么无效果；每逻辑请求的已提交效果数为 0、1 或 >1。HTTP 2xx 不足以证明效果正确。将 client attempt、logical request、transaction attempt、transfer_id、ledger entries、最终余额通过合成 trace ID 关联。
+
+主要 performance DV：正确确认逻辑吞吐。Logical request 首次发送在固定 60 秒 measure window 内归属于 run；追加 30 秒固定 drain。分子要求在 drain 截止前有有效 client success confirmation、数据库审计确认恰好一次 committed financial effect、且最终 reconciliation 通过。分母固定为 60 秒。重复效果请求不进入分子并作为 correctness failure 单独报告。超时/未知提交/晚于 drain 均不计有效确认成功，须单独列数量。测后审计程序与时间固定，不能按结果改动。
+
+Logical E2E latency 从首次发出到最终有效终态，包含同 key 重试/回放时间。P50/P95/P99 对有效成功 logical requests 报告，并并列失败/unknown 率。Attempt throughput 统计所有 HTTP 尝试，不能替代逻辑吞吐。PostgreSQL lock wait、OCC 冲突/事务尝试、key 首次插入/等待/回放、死锁、CPU/RAM/连接数均是机制解释或资源指标。
+
+4. 因素定义与解释
+
+OCC = 是否启用应用层账户版本比较、expected version predicate 和冲突后整笔 transaction retry；OFF 仍有数据库 READ COMMITTED 与原子相对更新。
+Idempotency = 是否启用 key scope + fingerprint + 与转账效果同一数据库事务的持久记录及响应回放。
+故障类型、竞争、热集合和同 key 比例是 workload/context，不是 OCC/Idempotency 因子本身。
+因此 factorial effect 是现有技术栈中的整体策略差异，而不是某个 SQL 操作单项的机械成本。
+
+5. RQ3 精确定义
+
+以 correctly-confirmed TPS 的加性尺度：
+I_W2,b = (D_W2,b − C_W2,b) − (B_W2,b − A_W2,b)
+I_W4,b = (D_W4,b − C_W4,b) − (B_W4,b − A_W4,b)
+ΔI_b = I_W4,b − I_W2,b
+主估计报告区组级 ΔI 均值和双侧 Student-t 95% CI；展示每个 block 点和场景基础量。加性尺度可以包含 zero throughput；不加伪常数、不在正式结果后改成 log。W2 与 W4 完整场景存在时序差异，结果称为场景策略交互差。RQ3 精度门槛由五个配对 pilot block 的 ΔI 标准差估计，统一区组数上限为14（受24机器小时预算约束）；若所需超过14或实际精度未达标，RQ3 为 exploratory，不声称显著或因果。RQ2 因子估计附区组级 CI，但不由 RQ3 门槛单独保证功效。

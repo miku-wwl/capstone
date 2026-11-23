@@ -1,0 +1,77 @@
+MSE907 Capstone — Assessment 1 v1.1 最终验收报告
+审查角色：Luna Internal Red-Team Review（同一执行代理的内部复核，不是独立跨模型评审）
+日期：2026-11-24（Pacific/Auckland）
+审查基线：main @ 0326914d713f5332b2619a9aebda1dea7fc2dc77
+结论：Assessment 1 v1.1 — Ready for Student and Supervisor Review；不是 Ready for Final Academic Submission。
+
+1. 审查依据及边界
+
+本次直接读取三份官方 MSE907 Assessment PDF，而非仅依据历史验收报告：
+- MSE907-Assessment 1.pdf — SHA-256 17E83C3E51C3034645CE8C85C2D97EC8DFDEB661C86615B0F65B1C8C6C75E6F4
+- MSE907-Assessment2.pdf — SHA-256 36F9B75894746AEC0D4FFB69FD8EA7E06F37BDB70E41DF42DDDBCF184C51D468
+- MSE907-Assessment3.pdf — SHA-256 8A9D4799FADB35664540539CE9D0F24A8A0E2B764DC96E2FFDDA372F414A28F0
+
+Assessment 1 六项官方权重为 Literature Review 深度与清晰度 20%、Research Gap 识别与合理性 20%、Research Questions / Problem Statement 15%、Research Methodology 15%、Proposed Solution Feasibility 15%、Evaluation Plan 15%。官方文件要求按课程节点 by Week 15 完成，并要求姓名/学号、双倍行距及一致引用；Week 6 PPT 仍是待核实的课堂节点，未被当作已确认的 A1 官方提交要求。官方 rubric 用于内部证据映射，不代表成绩或导师批准。
+
+本审查只判断 proposal 是否适合学生与导师进一步评议。原型、正确性轨迹、pilot、正式运行和性能测量均未实施；文中的 T1–T10 是计划轨迹，不是测试结果。技术栈、课题范围、伦理安排和课程 Level 9 标准仍待学生/导师确认。
+
+2. 三项 P0 闸门
+
+| 问题 | 原状态 | 最终状态 | 证据与结论 |
+|---|---|---|---|
+| P0-1 基线公平性 | FAIL：OFF 使用旧余额覆盖可能人为制造 lost update | PASS | `02_实验协议_v1.1_CN.txt` §1–3、§5–6；英/中文 Proposal §4–5；PPT 6–7、9。OFF 对当前行使用余额相对算术和相同业务谓词，保留 PostgreSQL READ COMMITTED、ACID、数据库行锁及余额约束；ON 只增加应用 expected-version 谓词、冲突分类和整笔重试。两组稳定按 account ID 顺序更新，任一步不恰好一行即整笔回滚。旧覆盖只作 W5 诊断，不进入 A–D。v1.0 编号映射明确：旧 W0 并入 W1-low；旧 W1 拆成 W1-low/high；旧强制冲突 W5 对应 T8。 |
+| P0-2 文献与研究空白 | FAIL：19 项候选中仅 8 项正式引用，最近的直接先例讨论不足 | PASS（限界主张） | `01_新增文献与证据核查_CN.txt` §1–6、`01_研究空白修订说明_CN.txt` §1–6、Proposal §2.1–2.3。v1.0 计入 7/18 原始候选加 Flux；v1.1 加入 Plor 与定量竞争度论文后为 9/18 加 Flux，即 10/19 候选纳入正式学术论证。Histrio、DBOS、RIFL 被作为反例/相邻先例定位，研究空白限定为已检查范围内“尚未识别到”，不声称全球不存在或首次发明。筛查不是 PRISMA 系统综述。 |
+| P0-3 RQ3 可追溯性 | FAIL：场景、矩阵、尺度及分析式不成对 | PASS | `03_研究问题与评价指标_v1.1_CN.txt` §1–5、`02_实验协议_v1.1_CN.txt` §6–9、Proposal §3、§5–6、PPT 5、9–12。W2/W4 有匹配变量和分配/触发分母；每完整区组计算 I_W2、I_W4 和 ΔI=I_W4−I_W2；主尺度为加性正确确认 TPS，不用零值伪计数。区组级 Student-t 95% CI、pilot 精度公式、14 区组预算上限及不足时 exploratory 降级均已写明。W2 与 W4 被视作完整场景策略差，不作单一网络位置的因果归因。 |
+
+P0-1 技术核对依据包括 PostgreSQL 18 官方说明：READ COMMITTED 下，等待并发写入的 UPDATE 会尝试在更新后的行上应用操作并重检 WHERE。因而当前行相对更新是合理的数据库安全 OFF 基线，不等于关闭数据库并发控制。见 PostgreSQL 官方 [Transaction Isolation](https://www.postgresql.org/docs/18/transaction-iso.html) 与 [Explicit Locking](https://www.postgresql.org/docs/18/explicit-locking.html)。
+
+3. P1 / P2 核查
+
+P1 — 已修复并重新核对：
+- 幂等状态机、scope、规范化 fingerprint、unique-index 并发 owner、后续 READ COMMITTED statement 回读、owner rollback 接管、有限等待 409、不同 payload 422、完成结果回放和错误缓存边界见协议 §4 与 Proposal §4。方案明确不把 prototype 声称为完全符合 IETF 草案所有建议。引用的是 2026-11-21 的 Internet-Draft -09，不是 RFC，见 [IETF Datatracker](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-09)。
+- W2/W4 记录 assigned、eligible、triggered、retry attempts、committed transactions 与 unknown outcomes，按预分配场景分析；W3 只有 trace 证明事务未开始才算 pre-transaction gate；W5 与 DB COMMIT acknowledgement loss 不混入主矩阵。
+- Correctly Confirmed Logical TPS 的成功分子要求：窗口内首次发送、drain 截止前有效客户端成功确认、恰好一个已提交财务效果、最终 ledger reconciliation 通过；固定 60 秒分母。重复效果、晚到和 unknown 均另报，不将 HTTP 2xx 当正确性证明。
+- 样本量方法已明确：RQ3 的 s_ΔI 来自五个配对 pilot block；主要 CI 为完整独立区组 ΔI 的双侧 Student-t 95% 区间并展示全部 block。δ 是 pilot A/W1-high 参考 TPS 的 10% 精度容限，不是最小效果或功效声明。RQ2 报告区组级效应与 CI，但不声称由 RQ3 精度规则单独保证功效。
+- 预算已补齐 drain 与固定成本：每轮 180 秒（60 秒测量、30 秒 drain、30 秒预热、30 秒重置/归档、30 秒审计准备）；n=10 时正式 8h、pilot 4h、32 次复跑 1.6h、环境冻结 3h、最终批量审计/导出 2h、分析执行 1h，合计 19.6h。24h ceiling 下最多 14 个共同区组（n=14 约 23.45h）；精度需更多时保留全部工况并将 RQ3 降为 exploratory。180 秒/轮、2 小时审计和机器预算仍是 pilot 前估算，必须实测验证。
+- 工程价值被收敛到版本比较、请求键、retry budget、lock-wait/replay 监控和账本 reconciliation 决策，不预设赢家。
+- Level 9 定位补充 NZQCF 官方来源：拟议贡献是批判性综合、系统实证评价和有依据的工程决策边界，而非新算法。NZQA Level 9 描述强调高级专业知识、专业方法/系统研究和严谨分析；此对齐仍属方案阶段，须导师确认 MSE907 的具体标准。见 [NZQA Level descriptors](https://www2.nzqa.govt.nz/qualifications-and-standards/about-new-zealand-qualifications-credentials-framework/level-descriptors-nzqcf/)。
+
+P2 — 已修复或保留为学生提交前核验：
+- README 标明 Week 1 历史归档、Week 2 v1.1 当前审阅稿、实验未运行和导师待确认。
+- Word 正文双倍行距，参考文献采用一致 APA 风格和悬挂缩进；姓名及学号保持明确占位符。正式提交前仍需按学生所属课程模板核实纸张尺寸、PDF 要求和最新格式。
+- PPT 第 15–16 页把完整引用指向 companion proposal 的 References section；不再写错误的 §13。封面为 Pending Supervisor Confirmation，未暗示批准。
+- 课程 Week 6 presentation 与官方 by Week 15 区分，待课程/导师确认。AI 使用披露由学生按机构政策完成。
+- W0–W5 编号在协议、RQ 矩阵、提案和讲解提纲中统一：旧 W0 并入 W1-low，旧 W1 拆分为 W1-low/high，旧 W2–W4 保留触发边界，旧 W5 强制冲突轨迹为 T8，v1.1 W5 专用于不安全覆盖诊断。
+
+4. Assessment 1 官方 Rubric 证据映射
+
+| Criterion | Weight | 状态 | Proposal evidence | Remaining risk |
+|---|---:|---|---|---|
+| Literature Review depth and clarity | 20% | PASS（proposal-stage） | §2.1–2.2；证据比较矩阵 §§3–5 | 非系统综述；Zhang 竞争度来源仅摘要级；Histrio 仅相关可访问章节。 |
+| Research Gap identification and justification | 20% | PASS | §2.3；研究空白说明 §§1–5 | 有界检索支持“尚未识别”，不证明全球新颖性；Level 9 贡献待导师确认。 |
+| Research Questions / Problem Statement | 15% | PASS | §1、§3；RQ 矩阵 §2 | 所有 RQ 均待原型和实验后验证。 |
+| Research Methodology | 15% | PASS（design only） | §4–5；实验协议 §§1–6 | SQL/事务语义经过纸面审查；实现后的 trace、回滚与性能行为尚未执行。 |
+| Proposed Solution Feasibility | 15% | PASS（conditional） | §7；14 周计划与资源表 | 人时、机器上限和配置需学生/导师及 pilot 核实。 |
+| Evaluation Plan | 15% | PASS（estimation-focused） | §6；正确性标准、指标、区组单位、精度及降级规则 | RQ2 无独立功效保证；小 pilot 的 s_ΔI 不稳定，区组上限可能使 RQ3 exploratory。 |
+
+以上是提案内容与证据的内部映射，不是评分承诺。六项没有 FAIL；这不代表最终实验质量已知。
+
+5. 文档及排版 QA
+
+- 英文 DOCX：Microsoft Word COM 只读打开并导出 QA PDF；15 页 Letter。中文 DOCX：12 页 Letter。正文双倍行距，参考段落悬挂缩进；标题、表格、页码和身份占位符均存在。实际检查整份页缩略图及变化的统计/编号段、rubric 表分页；没有表格标题孤行、裁切或可见重叠。QA PDF/PNG 保存在本地忽略目录，不进入 Git 或交付 ZIP。
+- PPTX：17 张、16:9，Arial/Consolas 字体策略；Package integrity、Artifact Tool 导入和几何/字体策略检查通过，0 layout warnings；3 张原生表格位于第 6、9、14 页。Microsoft PowerPoint 只读导出 PDF 17 页并检查整套 Office 渲染，重点复查第 9 页编号映射和第 12 页样本/预算文本；没有溢出。Notes 17/17 存在。最终 PPTX SHA-256：11A2BD9BF0C9A3461E6E6646F23A552C4757FABE610C9D76D4DBCA5D29DDB153。
+- DOCX / PPT 文本核对：研究问题、四组、READ COMMITTED 边界、W0–W5 映射、主要吞吐、RQ3 ΔI、预算和导师待确认内容一致；引用与 References 对应。演示不包含实验结果。
+- 最终 DOCX 未生成交付 PDF；官方提交材料中的 DOCX/PDF 要求由学生按课程平台确认后再导出最终 PDF。本轮 Word 导出 PDF 仅用于排版 QA。
+
+6. 最终决定与待办
+
+建议不改 RQ1–RQ3，也不改变 A–D 核心 2×2 和四个主要条件。已做的实验协议小修订是：明确样本精度估计量与 t 区间、纳入 drain 的运行预算、限定 14 个共同区组预算上限，以及消除 W0–W5 版本编号歧义。RQ3 在精度或可估性不足时须按预案降为 exploratory。
+
+**Ready for Student and Supervisor Review：是。** 当前方案对导师审阅最低要求已具备：有界文献 gap、可测量 RQ、相对公平且数据库语义一致的 OFF/ON 基线、可追溯矩阵、预算和官方 rubric 证据。不建议标记 Ready for Final Academic Submission，原因是：
+- 导师尚未批准课题转向、技术栈、研究范围及 Level 9 贡献；
+- 伦理/机构审查路径和合成数据适用性尚待确认；
+- 原型、正确性轨迹和实验均未执行；机器时间和 pilot 精度假设未验证；
+- 学生需填写姓名/学号、逐条核对来源、以本人理解修改 AI 辅助文字并按规定披露；
+- 课程需确认 Week 6 presentation、正式截止日期、PDF/Word/PPT 格式和纸张模板。
+
+无任何实验结果、成绩或导师批准被声称。该报告本身是同一执行代理的内部 red-team 复核，建议导师仍独立质询 gap、Level 9 适配及 precision/budget 折衷。

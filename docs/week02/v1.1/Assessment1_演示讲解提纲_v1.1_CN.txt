@@ -1,0 +1,21 @@
+Assessment 1 v1.1 英文 PPT 中文讲解提纲
+计划配合：Assessment1_Presentation_v1.1_EN.pptx
+说明：每页简要说明该讲什么及来源。演示为研究方案，不包含任何实验结果；课程是否需要 Week 6 PPT 尚待确认。
+
+1. 封面：介绍研究题目、姓名/学号待本人补充；此为研究计划 v1.1，主题批准待导师确认。
+2. 决策问题：一次转账提交后未收到 HTTP 响应时，客户端无法仅凭 timeout 判断是否已提交；并发冲突和重复 delivery 是两类问题。
+3. 先行证据：交易并发控制、Serverless retry transparency、Histrio 银行 Actor 模型、DBOS durable workflow 和 RIFL RPC 完成记录都已研究相关问题；不主张技术新颖。
+4. 有界 gap：已检查的有限语料中，尚未找到正确 PostgreSQL READ COMMITTED 转账 API 的 OCC × 持久请求 key 四组控制比较，覆盖不同热点、同 key 并发与已 commit 后 HTTP loss，并同时对账和测性能。有限搜索不是全球证明。
+5. RQ：RQ1 对 invariant，RQ2 对正确确认吞吐与逻辑尾延迟，RQ3 对 W2/W4 场景交互；指出 W2/W4 路径不同。
+6. 公平的 2×2：A/B/C/D；每组同样的 ACID/隔离/约束。OCC OFF 是安全相对更新，不是禁用数据库锁；key OFF 不去重。
+7. SQL 语义：相对扣款在最新行检查余额；ON 增加 expected version 条件。所有账户按 ID 顺序、每行恰好一条 RETURNING，任何失败都整笔回滚。
+8. key 状态机：事务内 unique claim、key/fingerprint/effect/completed response 原子化；同 key 并发等待 owner，成功后后续 statement replay；等待超时 409；不同 payload 422。
+9. 场景边界：W1 low/high、W2 同 key 同时请求、W4 commit 成功后 drop HTTP response；W3 before transaction 和 W5 旧值覆盖只做 correctness diagnostics；DB commit ack loss 排除。沿革：旧 W0 并入 W1-low；旧 W5 强制冲突轨迹对应 T8。
+10. 主结果：正确确认逻辑 TPS 需要有效 client confirmation + 恰好一笔 financial effect + reconciliation；2xx 不够。延迟和 attempt rate 分开报告。
+11. RQ3 算式：区组级 I_W2 和 I_W4，ΔI 是两类完整场景交互差；用加性 TPS 避免零值取 log，按完整区组 CI。若精度低，探索性报告。
+12. 样本和预算：160 次初始正式运行；80 次 pilot 排除。以5个配对 pilot 的区组级 ΔI 标准差规划 RQ3 精度，采用区组级 Student-t 95% CI；共用 n=10–14，δ 是基准 TPS 的10%精度容限而非功效目标。若需超过14区组或精度仍不足，RQ3 降为 exploratory；纯测量约2h40，含 pilot/复跑/审计等初始预算约19.6机器小时。
+13. 系统和伦理边界：本地 API+单 PostgreSQL；合成数据；不连支付系统；预计限制外部有效性。
+14. 14 周路径与六项官方 rubric：显示开发研究计划 Week1–14，与 A1 官方 by Week15 分开；Week6 presentation 要求待核实；六项 rubric 映射在 proposal 与 QA report。
+15. 导师关口：项目主题、技术/伦理、API 策略、precision/时间、课程时间表及姓名学号均需学生/导师核对；实验未运行。
+16. References I：显示近期同行评审研究与官方数据库/协议来源，完整书目在 companion research proposal References section。
+17. References II：补充 Histrio、DBOS、RIFL 等系统边界先例和近年定量证据；RIFL 为 2015 基础论文，不属于近五年。

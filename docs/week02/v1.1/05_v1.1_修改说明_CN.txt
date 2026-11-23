@@ -1,0 +1,35 @@
+MSE907 Capstone — Assessment 1 v1.1 修改说明
+日期：2026-11-24
+v1.0 文件保留原样；本轮新版本在 docs/week02/v1.1/。
+
+1. P0-1 — 基线公平性
+原 v1.0：OCC OFF 通过将按旧读余额计算的结果写回，可能人为制造 lost update；与 OCC ON 比较不公平。
+修订：协议 §2–3 将 OFF 改为 PostgreSQL 当前行相对算术、业务谓词和 version increment（不按 version 匹配）；ON 在同一谓词/事务上加入 expected-version predicate，并对版本冲突整笔回滚重试。四组同事务、READ COMMITTED、schema、约束和更新顺序。旧值覆盖仅 W5 诊断反例。证据：PostgreSQL 18 Transaction Isolation / Explicit Locking 官方说明。
+文件：02_实验协议_v1.1_CN.txt；中英提案 Methodology；PPT slides 6–8。
+
+2. P0-2 — 文献与 gap
+原 v1.0：19 项候选仅约 8 项进入核心学术书目；Histrio、DBOS、RIFL 等更接近的先例未被严谨定位，容易夸大“尚未研究”。
+修订：补入 Plor、竞争度生成、Histrio、DBOS、RIFL 证据；记录书目映射、阅读范围、授权边界和筛选理由。gap 收敛为有限检索中的尚未发现：正确 PostgreSQL READ COMMITTED 转账 API 下，OCC×持久请求键 2×2 实证比较，并覆盖竞争、并发同键和 post-commit HTTP loss。声明是 bounded gap，不称 first-ever/全球不存在。
+文件：01_新增文献与证据核查_CN.txt；01_研究空白修订说明_CN.txt；Proposal Literature Review/Gap；PPT slides 3–4,15–16。
+
+3. P0-3 — RQ 与估计量
+原 v1.0：RQ3 讨论异质故障条件的交互，但没有成对矩阵和统一估计式。
+修订：RQ3 限定 W2/W4，预先匹配背景负载、seed、预分配重复率、retry budget 与窗口；给出区组内 I_W2、I_W4 和 ΔI；以加性 correctly-confirmed TPS 为主尺度，遇零吞吐不加伪常数；不足精度则 exploratory。完整区组为样本单位。
+文件：03_研究问题与评价指标_v1.1_CN.txt；02_实验协议 §7；英中 Proposal Evaluation；PPT slide 12。
+
+4. P1
+- 幂等 owner/replay/mismatch/rollback/409 bounded wait、指纹和 key retention 明确：协议 §4。
+- W2/W4 记录 assigned/eligible/triggered/retries/commit/unknown，按意向分配场景分析，不只保留触发成功样本。
+- Correctly-confirmed logical TPS 需要 client success、单一财务效果及 final ledger audit；HTTP 2xx 不作为 correctness 证据。
+- 160 次初始正式运行及 80 次 pilot；每轮预算改为含 30 秒 drain 的 180 秒。重新计入环境冻结、pilot、正式运行、20%复跑 reserve、最终批量审计/导出和分析执行：n=10 约 19.6 machine-hours，24小时上限下最多14个共同区组。RQ3 精度基于 pilot 的区组级 ΔI 标准差和双侧 Student-t CI；超过预算或未达精度则 exploratory，不删条件。
+- 提案加入 NZQCF Level 9 描述来源，并将学术贡献定位为批判性综合、系统实证评价和有依据的决策边界；是否符合 MSE907 的具体 Level 9 要求仍待导师确认。
+- 统一 workload 编号沿革：旧 W0 并入 W1-low；旧 W1 拆成 low/high；旧 W2–W4 触发语义保留；旧 W5 强制 OCC 冲突轨迹对应 T8，v1.1 W5 只作不安全旧值覆盖诊断。无 W0 独立正式单元。
+- 工程输出决定绑定监控、retry budget、key policy、lock wait、reconciliation，而非泛化为“有理论意义”。
+- 所有测试轨迹是 protocol expectation，明确未实现、未运行。
+
+5. P2
+- PPT references 改成 companion proposal References section，不引用错误 §13。
+- README 增加 Week 2 v1.1 当前版本、v1.0 历史、实验未执行及导师待确认。
+- DOCX 预留姓名/学号字段、双倍行距及 APA 7 风格引用；加入 AI 辅助披露待学生最终校验。
+- Word/PPT 单独 render 和逐页/逐 slide QA；英文 deck 不承担官方 Assessment 1 未明确要求的独立 rubric。
+- A1 by Week 15 与课堂 Week 6 PPT 区分，不自行判定冲突。

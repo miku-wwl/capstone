@@ -1,0 +1,89 @@
+MSE907 Capstone — 实验协议 v1.1
+状态：预注册式方案草案，未实现/未执行；全部参数仍需导师确认并经 pilot 冻结。
+SUPERSEDES：docs/week02/04_实验设计与评价方案_CN.txt 中的旧基线定义。历史文件保留，不覆盖。
+
+1. 系统边界与公平原则
+
+候选原型：ASP.NET Core API + PostgreSQL；具体版本、主机、池大小、驱动、schema、日志级别和硬件在 pilot 前冻结。仅合成账户、金额及键；不接入真实资金、支付网络、第三方 API 或生产数据。四个组共享同一 ACID 事务、READ COMMITTED、业务约束、表结构、账户集合、事务范围、异常映射、连接池、客户端和机器。数据库自带行锁/隔离始终启用。OCC OFF 仅表示本研究增加的应用版本比较未启用，不表示数据库并发控制关闭。
+
+2. 四组策略矩阵
+
+A：应用 OCC OFF / 持久请求幂等 OFF。
+B：应用 OCC ON / 持久请求幂等 OFF。
+C：应用 OCC OFF / 持久请求幂等 ON。
+D：应用 OCC ON / 持久请求幂等 ON。
+
+OCC 因子估计的是可部署的整体应用事务策略差异，包括版本读取、比较条件及其引发的整笔重试/等待成本；不声称只测一条版本比较指令的成本。幂等 OFF 与 ON 使用相同schema，但 OFF 不读取/写入幂等表，也不得以唯一 logical_request_id 约束暗中去重。
+
+3. SQL 与事务逻辑
+
+建议 accounts(account_id, balance numeric(19,2), version bigint, status, ... CHECK balance >= 0)；transfers(transfer_id, logical_request_id 仅用于审计、from/to、amount、currency)；ledger_entries(transfer_id, entry_type, account_id, signed_amount)，唯一约束为 (transfer_id, entry_type)，保证每笔 transfer 的两条账项不重复，但不能唯一化 logical_request_id；idempotency_records(scope, endpoint, key, fingerprint, status, response_status, response_body, transfer_id, completed_at)。四组同一schema、约束与初始数据。金额单位、精度、币种和舍入策略须固定。
+
+每笔转账开始一笔数据库事务。验证金额为正、source != destination、账号存在且 active。选出源/目标账户后按稳定 account_id 升序更新；所有组以相同顺序处理并写 transfer 及借贷两条 ledger 行。每个账户更新必须恰好返回一行；否则整笔事务回滚。任何一步异常均不可留下单侧扣款/入账或不平衡 ledger。
+
+OCC OFF 使用当前行相对算术，不将应用旧余额覆盖写回：
+UPDATE accounts
+SET balance = balance - :amount, version = version + 1
+WHERE account_id = :source_id AND status = 'active' AND balance >= :amount
+RETURNING account_id, balance, version;
+贷方同一事务中使用 balance = balance + :amount，带 account_id/status 谓词并要求恰好一行。PostgreSQL READ COMMITTED 下，行 UPDATE 遇到并发写入会等待，随后在最新行上重检 WHERE，表达式对当前行应用。该策略保留行锁、原子性、余额约束和隔离语义；它不会刻意制造 lost update。
+
+OCC ON 在同一数据与业务谓词上增加 version = :expected_version。尝试开始时从新鲜语句快照读取双方版本；更新按相同 account_id 顺序执行，成功则 version = version + 1 并 RETURNING。任一更新影响 0 行时分类失败：用后续查询在新 READ COMMITTED statement snapshot 中检查账户是否缺失/非 active、余额不足、或版本与 expected 不同；只有版本不匹配是 OCC conflict。业务拒绝不重试；OCC conflict 或统一认定的短暂事务错误则回滚所有更新后重新开始整笔事务。死锁及连接暂时故障按冻结的公共 retry policy 记录，且所有组同一规则；OCC-specific retry 单独计数。固定上限为初始尝试加最多 3 次重试（共 4 次），固定指数退避和上限/抖动 seed；该设置为候选值，pilot 后在确认实验前冻结。禁止复用旧读集或同一事务中只重试第二条 UPDATE。
+
+4. 幂等状态机及 PostgreSQL 可见性
+
+Key scope：合成 tenant + HTTP endpoint/action + client key。Fingerprint 对规范化 source、destination、minor-unit amount、currency 计算。相同 key、不同 fingerprint 返回 422 且无财务变化；相同 key/相同 fingerprint 的已完成结果返回首次存储的 status/body/transfer_id；key retention 初始方案 7 天，仅限实验原型且不代表支付行业标准，最终需固定。
+
+ON 事务先尝试 INSERT 幂等 key/fingerprint；唯一索引决定 owner。处理中状态只存在未提交行，不允许提交 PROCESSING 占位记录。财务效果、ledger、COMPLETED 状态及可重放结果与 key 写入同一数据库事务。对同 key 并发请求，唯一键冲突可能等待 owner 事务；若 owner COMMIT，失败请求在后续 SQL statement（新的 READ COMMITTED 快照）读取 COMPLETED 并重放；若 owner ROLLBACK，等待方可获得 key 成为 owner。若唯一索引等待超过冻结的 lock timeout，返回可重试 409，客户端只能使用相同 key 重试。不可假设 INSERT ... ON CONFLICT DO NOTHING 后同一 statement snapshot 必能看到并发提交的冲突行；必要时将读取放在后续 statement 并有界重试。
+
+完成成功与确定性业务 4xx（如余额不足）按预定策略存储并回放；瞬时 5xx、死锁、OCC retry exhausted 不缓存为成功完成态，事务回滚或保留可审计状态须在实现时确认。必须保证数据库 COMMIT 成功后即使 HTTP 响应未写出，同 key 重放不重复财务效果。W2 同 key 并发处理政策是有限等待后 replay；锁等待超时返回 409，不宣称与 IETF draft -09 所有建议完全一致，接口策略由导师/学生冻结。
+
+5. 预期正确性轨迹（尚未执行）
+
+T1 同一热账户并发借记：初始余额足够/不足边界明确；并发不同 key 转账；应保持余额非负、资金守恒、借贷相等；记录锁等待与 OCC conflict；事务失败不留半笔。
+T2 余额不足：给定低余额和超额扣款；API 确定性拒绝；余额及 ledger 不变；不得把余额不足当 OCC conflict。
+T3 第二账户更新失败：注入失效/不 active 目标账户；确保第一账户更新也回滚；无 transfer/ledger 部分记录。
+T4 同 key/same payload 同时提交：两个客户端屏障同步；ON 最多一个 owner，另一方有限等待后 replay 或 409 后以同 key 重试；财务效果恰一次。OFF 不声称会去重，记录实际效果数。
+T5 同 key/different payload：相同 key 改金额/收款人；ON 返回 422 且无第二效果；OFF 按普通请求处理并记录可能产生的两个逻辑效果。
+T6 owner rollback：首个 owner 在 commit 前确定性失败/回滚；等待请求后成为 owner 并完成；无遗留已提交 PROCESSING。
+T7 post-commit HTTP loss：确认数据库 COMMIT 返回成功后、写 HTTP body 前丢弃首个响应；以同 key 重试；ON 重放完全一致记录，效果恰一次；OFF 是对照并计数可能的重复效果。
+T8 OCC conflict：屏障令两个不同 key 请求先读取同一版本后写；ON 失败方整笔回滚、读新状态并完整重试；OFF 使用相对行更新并遵守业务不变量。
+T9 retry limit exhausted：确定性持续冲突至 4 次尝试上限；无部分提交，分类为暂时失败/未知响应，计数尝试；不得缓存为完成成功。
+T10 W5 旧值覆盖反例：只在隔离的诊断性演示中，两个事务读取 balance=100，分别计算写 90、80，后写覆盖前写；清理后不进入 A–D 正式样本。仅用于说明该实现错误可能丢失一次扣款，不用来证明主实验的 OCC 优势。
+
+每条轨迹在实现后用屏障、确定性注入、HTTP/SQL trace、提交结果和 ledger reconciliation 验证。现在这些是预期而非已通过测试。
+
+6. 工作负载、故障和单位
+
+核心性能条件：W1-low、W1-high、W2、W4。W1-low/high 使用相同转账模型与数据规模，仅改变预设 hot-set 分配。例如 pilot 候选：1% 账户构成 hot set，请求中 10% 或 80% 访问 hot set；这两个比例是负载生成参数，不等于真实锁冲突率。pilot 选定并冻结后，另外记录账户重叠、PostgreSQL row-lock wait 与 OCC conflicts。相同随机 seed 在 A–D 完整区组内配对；执行顺序随机。
+
+W2：高背景并发中预先分配比例的逻辑请求生成同 key、同 payload 并发重复投递。
+W4：首个请求成功 COMMIT 后丢 HTTP response，再以同 key 发一次重试。设定相同的背景负载和 duplicate assignment rate。为避免按成功注入样本筛选，记录每个 scenario 的 assigned、eligible、triggered、retry attempts、committed transactions、unknown outcomes；主分析按预分配场景/运行意向分类，触发失败另作描述。
+W3：请求在 API transaction 开始前 gate/拒绝；trace 必须证明没有 transaction begin 或 commit，否则标记 unknown，不纳入“未开始”解释。
+W5：只作 deterministic correctness counterexample，不进入性能矩阵。
+编号与 v1.0 的对应关系：旧 W0（无故障、低竞争参考）并入 W1-low，不另设正式矩阵单元；旧 W1 拆为 W1-low/high；旧 W2–W4 的核心触发语义保留；旧 W5 的强制 OCC 冲突轨迹保留为 T8，W5 标签在 v1.1 专用于不安全旧值覆盖诊断。这样不把旧版 W5 测试误当成主性能结果。
+数据库 COMMIT acknowledgement loss、进程崩溃、磁盘损坏、跨区网络 partition 和外部支付回调不在主模型。
+
+测量窗固定 60 秒。逻辑请求以首次 dispatch 落在 [t0, t0+60s) 归属该 run；统一追加最多 30 秒 drain。正确确认逻辑吞吐 = 在固定 60 秒内首次发送、且到 drain 截止时获得有效成功 client confirmation、恰好一项已提交转账效果并通过最终 ledger audit 的唯一逻辑请求数 / 60 秒。恰好一次效果按审计后的实际 transfer/ledger 关联计数；任何多效果请求不计成功吞吐，单独作为 correctness failure。迟到、无响应或无法确定提交状态均不记有效确认成功，单独列为 unknown/outcome failure。正式审计应在测量与 drain 后固定执行并报告；不得变更分母。Logical E2E latency 从首次 dispatch 到最终确定结果；只对成功逻辑请求报告 P50/P95/P99，同时报告失败/unknown 数和率。HTTP 2xx 不是正确性证明。
+
+7. 统计计划
+
+独立重置的一次完整运行是运行层样本单位；HTTP 请求和同运行中的 transfer 不是独立样本。每个 block 为 A–D 共享 data snapshot、seed 与 workload 参数，各配置顺序随机。W2/W4 每个配对 block 包含 A–D×两种故障场景的 8 次运行。
+
+主要 RQ3 尺度预定义为正确确认吞吐的加性 transfers/s，避免吞吐为零时 log 不存在且不另加伪计数。每个完整 block b：
+I_W2,b = (D_W2,b − C_W2,b) − (B_W2,b − A_W2,b)
+I_W4,b = (D_W4,b − C_W4,b) − (B_W4,b − A_W4,b)
+ΔI_b = I_W4,b − I_W2,b
+主要估计量为完整区组级 ΔI 均值；主要 95% CI 使用独立区组 ΔI 的双侧 Student-t 区间，并报告中位数、全部原始区组点及预先说明的敏感性描述。它表示 W4 与 W2 两套完整场景策略的交互差，不解释为“只由网络故障位置导致”的因果效应。RQ2 报告 OCC 与幂等的 factorial main effect 和交互，主尺度一致为 correctly-confirmed TPS，并给出区组级估计与 CI；RQ3 的精度规则不构成 RQ2 独立功效保证。P95 等每运行先计算，再按区组计算配对效应。所有推断与重采样单位均为完整区组；正确性事件报告计数、曝光分母和必要的区间，避免将运行内请求当独立重复。
+
+初始正式计划为 10 个完整区组/条件，4 条件×4 组×10 = 160 次运行；W2/W4 以配对方式复用对应 block。pilot 每条件 5 个完整区组（80 次），排除于正式推断。10 只是运行计划下限，不代表具有足够统计功效。样本量精度门槛针对 RQ3 的 ΔI：pilot 得到 5 个配对区组 ΔI，估计其标准差 s_ΔI；选择 n=10…14 中满足 t(0.975,n−1)×s_ΔI/√n ≤ δ 的最小 n，并让所有条件使用共同区组数。δ 是在正式数据前冻结的精度容限，等于 pilot A/W1-high correctly-confirmed TPS 参考均值的 10%，不是最小预期效果，也不是功效声明。14 区组上限由 24 机器小时预算得出。若参考均值为零，说明 pilot 未形成有效参照，须修正并重新冻结。若预估需要超过 14 个区组，或正式结果令 ΔI 不可估/实际区间半宽未达 δ，则区组数不超过14，RQ3 降为 exploratory，报告实际区间且不作显著性声称。RQ2 因子效果仍报告区组级估计与 CI，但本规则不保证其功效。正式数据开始后不改矩阵、对比尺度、剔除规则或成功定义。
+
+8. 随机化、排除和报告
+
+保留原始日志、环境 manifest、seed、顺序、注入器分配/触发和审计结果。只有预先定义的基础设施失效（例如主机重启/驱动崩溃、无法建立数据 reset）可令整个 block 标记 invalid 并以新完整 block 重跑；保留原记录和理由。低吞吐、死锁、冲突、超时、业务拒绝、结果错误均是结果，不得因不利而剔除。所有组相同数据库 deadlock/连接重试政策；另外报告应用 OCC 重试，不混为一类。
+
+9. 追溯
+
+RQ1 对应 T1–T10、invariant audit、assigned/eligible/triggered/unknown trace。
+RQ2 对应 W1-low/high 主矩阵、correctly-confirmed TPS、logical E2E latency、冲突/重试/锁等待。
+RQ3 对应 W2/W4 匹配的背景参数、paired block 公式 ΔI、CI 和低精度降级。

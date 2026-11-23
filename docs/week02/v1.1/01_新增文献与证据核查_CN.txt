@@ -1,0 +1,75 @@
+MSE907 Capstone — Assessment 1 v1.1
+新增文献与证据核查、比较矩阵
+核查日期：2026-11-23（Pacific/Auckland）
+状态：定向补充核查；不是系统综述；不代表导师批准或实验结果。
+
+1. 文献数量与正式引用差距
+
+Week 1 原候选为 18 篇经 Crossref 与出版社书目核验的论文；Week 2 加入 Ding 等（Flux），候选筛查总数为 19。v1.0 的正式书目把其中 8 项作为学术研究依据纳入（Huang、de Heus、Ding/Flux、Liu/NOC-NOC、Styx、Ye/Polaris、Kanimozhi、Zhang transactional-stream survey；其中部分工作只支撑背景）。其余候选并非全部遗漏错误：有的只与事务执行间接相关，有的仅摘要筛查，有的全文权限不明或不是原始实证论文。问题在于 v1.0 的 gap 论证没有充分纳入最直接反例，并且把“候选清单”与“正式论证证据”混为一谈。
+
+v1.1 对核心论证补充 Plor（并发控制与尾延迟）、Zhang 等竞争度生成方法、Histrio（Actor 工作流 exactly-once 与银行负载）、DBOS（PostgreSQL 数据库工作流持久执行）及 RIFL（早期 exactly-once RPC 基础）。参考文献只收入能够支撑正文主张的同行评审研究、官方技术文档和协议草案；不是把 19 篇全部硬塞进参考文献。全套 19 篇状态逐项保留在第 4 节。
+
+2. 检索与证据记录
+
+检索日期：2026-11-23。检索范围：ACM/USENIX/Springer/Elsevier 出版页、VLDB/CIDR 官方论文页、IETF Datatracker、PostgreSQL 官方手册及作者/大学仓储。查询主题为 relational database idempotency、payment/API request replay、exactly-once effects under retries、OCC contention/tail latency、transactional recovery/response loss。使用题名与关键词组合及 DOI 回查；对明确边界论文定向查看摘要、架构/事务语义、实验和限制章节。
+
+此为有边界的定向检索，不是 PRISMA 系统综述：没有跨数据库完整检索式、双人筛选、引用追溯全量记录或系统综述流程图。因此只写“在已检查范围内尚未找到”，不写“全球不存在”。
+
+Histrio：核对 ScienceDirect 出版页面 DOI 10.1016/j.is.2026.102724、摘要及系统/保证/银行实验相关可访问段落（第 5、6.3、7 节）；未获得可独立确认的全文许可副本。作者为 De Martini、Buttiglieri 与 Margara；正式书目为 Information Systems, 140, Article 102724 (2026)。
+DBOS：阅读 CIDR 2026 官方 PDF 全文；重点为事务/工作流语义、执行日志与实验章节。书目页列 CIDR ’26；PDF 的 ACM 引文模板标有 2025 版权和占位 DOI，因此按正式会议年 2026 引用，不编造 DOI。
+RIFL：阅读 SOSP 2015 官方 PDF；重点为请求标识、完成记录持久化、重试汇合、垃圾回收及 RPC/事务语义。早于近五年范围，作为基础性反例，不计入近五年证据。
+Plor：阅读作者/机构可访问论文 PDF；重点为协议、冲突处理、benchmark 与尾延迟结果。引用 ACM 书目 DOI 10.1145/3514221.3517879。
+Zhang 等（竞争度生成）：核对期刊正式书目、摘要和 PDF 入口；本次没有确认并阅读全文，故只作摘要级证据，不报告摘要之外的方法细节。
+PostgreSQL：使用 PostgreSQL 18 官方手册的 READ COMMITTED 与行锁语义；不依靠未锁定版本的网络博客。
+IETF：使用 2026-11-21 发布的 draft-ietf-httpapi-idempotency-key-header-09。它仍是 Internet-Draft，不是已发布 RFC。
+
+3. 核心比较矩阵
+
+论文 | 系统/事务边界 | 故障模型 | 幂等策略 | 并发策略 | 工作负载 | 正确性/性能指标 | 发现及边界 | 与本研究差异
+de Heus et al. (2022), Transactions across serverless functions leveraging stateful dataflows, DOI 10.1016/j.is.2022.102015 | Serverless dataflow；消息状态、函数状态与数据库/检查点边界 | 消息确认丢失、函数/数据流恢复及重放 | 应用专用 key 用于处理重放；不等同于通用关系数据库 HTTP key 表 | 状态数据流事务与并发控制 | YCSB 转账等 serverless 数据流负载 | 事务语义、吞吐/延迟及恢复 | 明确揭示状态提交与 acknowledgement 分离会造成重复处理；其保证依赖系统边界，未比较本研究 2×2 | 转账语义相邻，但运行时、消息模型与系统事务边界不同
+Ding et al. (2023), Flux, OSDI 2023 | Java/NoSQL stateful serverless 函数状态 | 函数失败与并发 retry | 验证 retry transparency；不是 PostgreSQL 持久 key 事务协议 | 并发执行、选择性日志和程序分析 | 27 个应用、79 个函数 | 幂等性缺陷与验证/运行时性能 | 发现既有应用中重试相关错误；仅支持的程序/NoSQL 模型有限，sound but incomplete | 直接反证“重试幂等未研究”，但不测传统关系型转账 API 四组性能
+Histrio (De Martini et al., 2026), DOI 10.1016/j.is.2026.102724 | Lambda、DynamoDB 与 AmazonMQ 的 Actor/inbox 处理步骤；Actor 状态、收件箱与副作用同一数据库事务 | Worker crash、消息重复/遗漏、临时网络/通知失败；不等同于客户端 HTTP 响应丢失或外部响应链路 | Inbox/message identity 去重，按发送者 FIFO；不是通用客户端 Idempotency-Key + payload fingerprint | Actor 串行执行及条件操作/数据库事务 | 银行应用及其他 serverless 场景；银行例约 10,000 请求、200 账户、5 次运行 | Exactly-once message effects；银行场景 median/p90 latency | exactly-once 仅在进入 Histrio inbox 后的内部消息/side-effect 边界成立；未证明外部 HTTP response 交付 | 直接相关银行/重试先例，要求把 gap 收窄到普通关系型 API 边界及 OCC×key 组合的受控比较
+DBOS workflow paper, Stonebraker et al. (CIDR 2026), official PDF | PostgreSQL-backed durable workflow；步骤操作及执行日志协调；工作流级语义 | workflow step retry/recovery、事务 backout 或 saga compensation；不是外部 HTTP reply loss 专项 | 事务日志识别已完成步骤并重放工作流；不是本研究 client-provided HTTP key 的等价物 | PostgreSQL transactions；论文实验采用其实现语义，不可外推成应用 API OCC OFF | 电商工作流；低竞争与高竞争、长步骤 | Goodput/latency/abort 等 | 展示 workflow durable execution 与 AC/DC 语义；低竞争事务型 workflow 与高竞争 saga 有权衡；不研究同库转账 API 的 2×2 OCC×key | 近年强反例，说明 durable execution/步骤去重已存在；本研究仅评估更窄单库 HTTP 请求边界
+RIFL, Lee et al. (SOSP 2015), DOI 10.1145/2815400.2815416 | RAMCloud 分布式 RPC/对象线性化与事务 | RPC response/retry、节点故障、持久记录及 GC | Durable completion records 与 request ID；重试返回结果而不再次执行 | 线性化层与事务层组合；并非 PostgreSQL row-version OCC | RAMCloud 操作与分布式事务 | 额外延迟/吞吐和线性化正确性 | 证明持久请求结果记录是基础技术；系统模型为分布式内存对象，年代早 | 否定“exactly-once 不存在”的宽泛主张，但没有本研究财务 API 与实验矩阵
+Plor, Chen et al. (SIGMOD 2022), DOI 10.1145/3514221.3517879 | 主存事务引擎内事务执行/提交 | 冲突导致等待或 abort/retry；无客户端请求投递故障 | 无 API 幂等键机制 | 混合 optimistic read 与 pessimistic locking，延迟冲突决策 | YCSB/TPC-C 类不同热点/事务模式 | throughput、99.9th latency、abort/wait 表现 | 论文报告特定 workload 下尾延迟收益；不能推出 PostgreSQL READ COMMITTED API 的赢家 | 支持区分数据库冲突重试、锁等待与客户端重放；不测 key
+Zhang et al. (2023 issue), quantitative contention generation, DOI 10.1007/s11704-022-1056-2 | OLTP benchmark workload construction | 无主要恢复/HTTP故障模型 | 不涉及 request idempotency | 用可量化强度构造数据库竞争负载 | OLTP 竞争分布/强度 | 竞争度控制与 benchmark 可比性 | 仅核实书目与摘要；本次未读全文，支持“应量化而非仅说 high contention”的方向，不支持其技术细节 | 本研究仅借其问题意识；p_hot 不是论文算法的同义词，需实际记录 lock wait/conflict
+PostgreSQL 18 manual, Transaction Isolation / Explicit Locking | 单数据库 SQL transaction、READ COMMITTED command snapshots | 同行更新、锁等待、deadlock | 无 API 层去重 | UPDATE 等待并发 writer 后重检 WHERE，基于最新行执行表达式；deadlocks 仍可能 | 文档化数据库语义 | 事务/锁语义，不是性能实证 | OFF 相对更新仍由数据库行锁/事务保护；它不是“关闭所有并发控制” | 定义公平 OFF 基线和统一 ACID 边界
+IETF Idempotency-Key draft -09 (2026-11-21) | HTTP API 请求键约定 | 完成/处理中重复 key、不同 payload | key 唯一、不与不同 payload 混用；服务定义 expiry/fingerprint | 对在途重复请求建议 conflict 行为 | 协议草案，非 benchmark | API 状态码/协议语义 | 是 active draft，不是 RFC 或学术实证 | 用于冻结 prototype API contract；本方案明确 wait-then-replay/超时 409 的实现边界，不宣称全草案一致
+
+4. 19 篇候选及正式书目映射
+
+原始候选 01 Huang（OCC/主存 OLTP）、03 de Heus（事务数据流）、06 Polaris（OCC）、08 transactional stream survey、10 NOC-NOC（分布式事务）、14 Styx（事务型函数）、18 Kanimozhi（高竞争 OLTP）共 7 篇已进入 v1.0 正式学术书目；补充 Flux S1 是第 19 项并已正式引用。因此 v1.0 比例为 7/18 个原始候选 + Flux = 8/19。v1.1 再纳入原始候选 #2 Plor 与 #5 Zhang 竞争度生成论文，更新为 9/18 个原始候选 + Flux = 10/19。其余 9 篇原始候选不列入核心学术书目，理由见下；这不是主张它们无价值。
+
+02 Plor：v1.1 新纳入，直接支持尾延迟/等待与 abort 的比较边界。
+05 Zhang 竞争度生成：v1.1 新纳入，限定为摘要级引用；支持负载需描述竞争强度。
+04 SGPM：仅确认书目/摘要，事务 coroutine 执行框架与 HTTP retry 交叉点较弱。
+07 stream processing evolution survey：广泛背景，transactional stream processing survey 更直接，避免重复泛背景。
+09 Dodo：摘要可见的 deterministic OCC 相关，但全文未深读，和 Polaris/Huang/OCC 背景重复。
+11 Scaling up transactions with slower clocks：时钟扩展侧重，非请求重放和关系型 API 的核心依据。
+12 Pheromone：出版元数据已核实，但作者 PDF 显示受限授权，未下载/不作证据。
+13 OOCC：关注 disaggregated read-only OCC，与写入转账和幂等关系弱。
+15 Styx in Action：系统短演示，Styx 研究论文已经提供更充分证据。
+16 Transactional cloud applications tutorial：综述/教程类型，不计核心实证依据。
+17 Focus!：磁盘数据库底层并发性能，未涉及 API 请求重放。
+此段候选编号来自原始 18 篇清单；S1 为第 19 篇 Flux。
+
+5. 文献支撑的 gap 与边界
+
+近期研究已经覆盖：账户转账与消息确认边界（de Heus）；serverless 并发重试幂等性及缺陷验证（Flux）；serverless Actor inbox exactly-once 与银行 workload（Histrio）；数据库 durable workflow 的步骤执行记录与恢复（DBOS）；事务级 OCC/等待/abort 与尾延迟（Plor、Polaris、Huang 等）；请求级持久完成记录的基础架构（RIFL，较早）；以及工程协议中 key 与 payload 的约束（IETF 草案）。
+
+因此不能声称首次研究 OCC、幂等键、exactly-once 或金融转账。可辩护的窄 gap 是：在本轮 19 篇候选和上述定向官方/出版社检索范围内，尚未找到一项同行评审实证研究，在具备正确 PostgreSQL READ COMMITTED 事务基线的单库转账 API 中，把应用层版本验证和持久化 HTTP 请求键作为两个因素，系统比较四种组合，并在不同竞争度、并发同键交付及已提交后 HTTP 响应丢失下，同时报告业务不变量、正确确认吞吐、尾延迟及区组级交互估计。该陈述是有限范围内的“尚未找到”，不构成全球不存在证明，也需导师确认 Level 9 范围是否适当。
+
+6. DOI/官方来源
+
+de Heus et al. https://doi.org/10.1016/j.is.2022.102015
+Flux / Ding et al. https://www.usenix.org/conference/osdi23/presentation/ding
+Histrio https://doi.org/10.1016/j.is.2026.102724
+DBOS CIDR 2026 https://www.vldb.org/cidrdb/papers/2026/p9-stonebraker.pdf
+RIFL https://doi.org/10.1145/2815400.2815416
+Plor https://doi.org/10.1145/3514221.3517879
+Zhang et al. https://doi.org/10.1007/s11704-022-1056-2
+PostgreSQL 18 isolation https://www.postgresql.org/docs/18/transaction-iso.html
+PostgreSQL 18 locking https://www.postgresql.org/docs/18/explicit-locking.html
+IETF draft -09 https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-09
+
+备注：本文件总结既有阅读记录与本轮补充核查。出版论文作者报告的 benchmark 数值均非本 capstone 实验结果；本项目没有运行实验，没有生成性能或正确性实测结果。

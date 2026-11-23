@@ -1,0 +1,24 @@
+Assessment 1 v1.1 正式提交前学生清单（私人工作清单）
+本文件不是导师批准或正式成绩。
+
+A. 个人信息与学术责任
+[ ] 在英文及中文 DOCX 中填写准确姓名、学号。
+[ ] 逐条核对所引用论文原文与元数据；特别查看标为仅摘要级的 Zhang et al. (2023)。
+[ ] 用自己的理解改写并确认能口头解释事务语义、Research Gap、三个 RQ 和统计估计。
+[ ] 按学校/课程最新 AI-use 规则披露 AI 辅助，确认最终提交内容符合个人原创与引用规范。
+[ ] 确认导师批准了题目从早期 EchoCase 范围转为交易一致性研究，并确定适合 Level 9 的贡献与范围。
+[ ] 向导师/学校确认是否需伦理或项目风险审查；不要自行把 synthetic data 等同于正式豁免。
+
+B. 方法及实施关口
+[ ] 确认候选技术栈 ASP.NET Core/PostgreSQL、版本、主机、READ COMMITTED 与隔离方式。
+[ ] 与导师冻结 OCC retry 次数、退避、key scope/TTL、同 key 并发等待及 409/422 契约。
+[ ] 先完成 deterministic correctness traces 和完整 ledger reconciliation，再开始正式性能实验。
+[ ] Pilot 后、正式结果可见前冻结测量窗口、热点分配、seed、重复比例、区组数、分析代码及排除规则。
+[ ] 若最大区组精度仍不足，将 RQ3 标为 exploratory 并报告实际 CI，不得声称显著。
+
+C. 官方提交
+[ ] 从学校/课程平台确认正式截止日、上传平台、DOCX/PDF 双格式和 PPT/录像要求；A1 PDF 只写 by Week 15，Week 6 PPT 仍待确认。
+[ ] 若要求 PDF，请由最终 DOCX 正确导出并检查 PDF 页面；本包当前 proposal deliverables 为 DOCX，演示为 PPTX。
+[ ] 检查双倍行距、统一 APA 引用、标题、页码、姓名/学号和所有链接。
+[ ] 学生本人核对 Assessment 1 六项 Rubric，不把内部 review PASS 当成官方评分。
+[ ] 取得导师/课程确认后再按官方渠道正式提交；本轮没有替学生提交作业。

@@ -1,0 +1,50 @@
+MSE907 Capstone — 工程可行性、资源预算与 14 周计划
+状态：规划估算，不是实施承诺或已验证结果；研究主题、技术栈、时间节点待导师确认。
+
+1. 工程架构与边界
+
+Client / deterministic load generator → ASP.NET Core API → transaction + idempotency layer → PostgreSQL accounts / transfers / ledger / idempotency_records → independent audit + metrics export。
+故障注入点只模拟 API transaction begin 前 gate 和数据库 COMMIT 已确认后、HTTP body 写出前丢弃响应。注入器只连本地合成原型。所有账本审计离线执行；不得把观测埋点与业务结果混为同一来源。
+
+2. 工作量核心矩阵
+
+四条件：W1-low、W1-high、W2 concurrent same-key、W4 post-commit HTTP loss。每条件四组 A–D，各 10 个初始完整区组：4×4×10=160 次正式运行。每次 60 秒测量窗，纯正式测量 160 分钟=2 小时 40 分。pilot 初始五个区组/条件，共 80 次，纯测量 80 分钟=1小时20分；pilot 不进正式推断。
+每次运行预算 180 秒：测量窗 60 秒、固定 drain 30 秒、预热 30 秒、数据重置/日志归档 30 秒、审计准备 30 秒。初始正式 160×180 秒=8 机器小时；pilot 80×180 秒=4 小时；20%正式复跑 reserve 为32次、1.6小时。另列环境/版本冻结 3 小时、最终批量 ledger reconciliation 与导出 2 小时、分析脚本执行 1 小时；初始 n=10 合计 19.6 小时，24 machine-hours 内留 4.4 小时余量。每增加 1 个共同正式区组，正式及向上取整复跑 reserve 约增 0.96 小时，因此在固定预算内最多 n=14（正式224次、reserve45次，合计约23.45小时）。Pilot 后如果精度要求超过14组，保留全部工况并使用不超过14个共同区组，RQ3按预先规则降为 exploratory；不得选择性删除不利工况。环境诊断可用余量须在 pilot 中确认；预算若仍不可行，必须在正式结果前暂停并与导师缩小范围。
+
+3. 人时预算与可行性判定
+
+任务 | 估计人时 | 产出
+环境/版本冻结与 schema | 4–6 h | 可重建环境 manifest、seed/reset
+基线、交易审计、强制不变量 | 6–8 h | 可独立核对 ledger 的工具
+OCC 因子与 retry telemetry | 4–6 h | 两版本策略与分类日志
+幂等表、并发 key 行为、故障钩子 | 6–8 h | replay/mismatch/rollback traces
+Pilot、参数冻结、分析脚本 | 5–7 h | pilot report 与带日期协议
+正式 runs、审计、分析 | 5–7 h（机器时间另计） | 160 次初始结果及 CI
+撰写、复核、演示和提交 | 6–8 h | 终稿和学生核对清单
+合计约 36–50 人时，跨 Weeks 4–14 分阶段，每周约 3–5 小时；40 人时作为目标而非保证。关键风险：student’s available hours、API key 等待行为、PostgreSQL retry coding、单机资源瓶颈、导师批准延迟。机器预算含环境、pilot、正式轮次、复跑、批量审计/导出及分析执行的计划 allowance；尚未验证 180 秒/轮或 2 小时批量审计是否足够。若 pilot 表明预算/精度不可兼得，应由导师在查看正式结果前调整 scope 或将 RQ3 降为 exploratory，不伪称可行。
+
+4. 14 周工作表
+
+周次 | 计划工作 | 可审查证据 | 关口/依赖
+1 | 记录主题和评分方式疑问，确认导师联系路径、伦理评估 | 问题/决策记录 | Topic change approval pending
+2 | 定向文献核验和 bounded gap | 文献比较矩阵、检索边界 | 不称系统综述
+3 | 冻结 RQ、SQL 事务边界、不变量、API key 契约 | v1.1 protocol 草案 | 导师先行评审
+4 | schema、数据生成、reset、审计管线 | 版本控制 schema 与 synthetic seed | 只有批准后实施
+5 | 实现共同安全 OFF 基线与 deterministic traces | T1–T3 trace 和 reconciliation | 不跑性能推断
+6 | 实现 OCC ON 与整笔 retry；验证分类和回滚 | T8/T9 traces | freeze row-order strategy
+7 | 实现幂等状态机、并发 key 所有权、重放 | T4–T7 traces | 同 key race correctness gate
+8 | 集成 A–D、负载/故障注入、指标日志 | 配置 manifest、trace integrity | 检查 W3 无事务证据
+9 | Pilot，检查热点、窗口、load saturation、审计 | pilot memo，pilot 数据隔离 | 评估精度/预算
+10 | 在查阅正式结果前冻结 block 数、CI目标、顺序、排除规则 | dated analysis plan + seed/order list | 超 14 blocks: RQ3 exploratory
+11 | W1 low/high 正式 randomized blocks | raw data + host/resource manifest | 不删低表现结果
+12 | W2/W4 matched blocks + final ledger audit | 触发分母及 outcome table | DB COMMIT ack loss excluded
+13 | 配对统计、CI、威胁与工程解释 | 可复算脚本和结果草稿 | 低精度降级 exploratory
+14 | 导师审阅修订、终稿和演示 | reviewer comment log、submission checklist | 正式提交节点另核官方课程安排
+
+官方 Assessment 1 PDF 说明 by Week 15；本表 Weeks 1–14 是研究开发计划，不等于官方 course calendar。课堂提及 Week 6 presentation 仍待导师/课程安排确认，不据此推断 Assessment 1 的官方 PPT 要求。
+
+5. 资源、伦理及失败缩减规则
+
+一台本地隔离主机、一个 API 实例、一个 PostgreSQL 实例、合成数据；不需要云资源/外部付费。日志封顶 10 GB，轮次结束检查磁盘/PII。性能试验先确认 load generator 不成为瓶颈，固定 CPU governor / 电源与后台任务状态（若可控），记录温度或 throttling。伦理审查与合成数据的正式适用性须由 supervisor/institution 确认，不自行宣称豁免。
+
+基础设施失效只按预定义整 block 重跑，保留失败记录。若精度目标超过 14 blocks、数据收集窗口不足或原型不能达到测试触发能力，则在未查看 confirmatory outcomes 前缩小声明、转 exploratory 或暂停，不选择性删掉“不好看”的条件。适用范围只到本地单库原型，不外推为银行生产 benchmark。
