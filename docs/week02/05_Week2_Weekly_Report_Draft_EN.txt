@@ -1,0 +1,31 @@
+MSE907 Capstone Week 2 — Weekly Report Draft (English)
+Reporting period: 23–27 November 2026 (draft; confirm course template and actual reporting dates)
+Student name: [TO BE COMPLETED BY STUDENT]
+Student ID: [TO BE COMPLETED BY STUDENT]
+Status: Internal draft; no supervisor approval or experiment results claimed.
+
+1. Summary
+This week progressed the proposed research from source verification and protocol design to an Assessment 1 proposal draft. The topic under review is a synthetic relational transfer API comparing application-level optimistic concurrency control (OCC), persistent request-level idempotency, and their combination under concurrent and retry-prone workloads. The proposal is an AI-assisted internal draft and requires student authorship review and supervisor scope confirmation.
+
+2. Work completed in the research record
+- Consolidated the existing Week 2 source verification, critical review, bounded gap, research questions, and 2 × 2 experimental protocol; no Day 1–4 work was repeated.
+- Rechecked the supplied Assessment PDFs. Assessment 1 is weighted at 20%; Task 1/LO1 is 55% of the assessment and Task 2/LO2 is 45%. The six rubric criteria are literature review (20%), gap (20%), problem/RQs (15%), methodology (15%), solution (15%), and evaluation plan (15%).
+- Drafted English and Chinese internal-review proposals and this weekly report. The proposal includes the six rubric topics, a fourteen-week research plan, APA-style references, double-spaced body text, and student name/ID placeholders.
+- Retained the previously defined A–D groups and W0–W5 workload/fault boundaries. No experiment, prototype validation, or performance measurement is claimed.
+
+3. Research question and method status
+RQ1 concerns financial invariants and duplicate effects; RQ2 concerns logical-transfer throughput, request-attempt throughput, latency, retries, and resources; RQ3 concerns interaction across distinct-request contention, same-key duplicates, a verified pre-transaction timeout, and a post-commit lost HTTP response. Database COMMIT-acknowledgement loss remains outside the main experiment. Candidate ASP.NET Core/PostgreSQL technology and READ COMMITTED isolation remain subject to supervisor confirmation.
+
+4. Risks and open decisions
+- Supervisor approval is pending for the move from the earlier EchoCase context to the financial-transfer topic, the candidate technology, and the synthetic local experiment.
+- The supplied Assessment 1 PDF says completion by Week 15. A previously relayed classroom schedule mentions a Week 6 presentation. The official date and final submission format remain unresolved; both a written draft and presentation draft are planned.
+- Student name and ID must be completed by the student. The student must verify sources, revise this AI-assisted draft in their own words, and disclose assistance under school policy.
+- Ethics review, final API contract, fault-injection proof, final repeat count, and precision target remain pending.
+
+5. Next steps
+1. Review proposal against the official A1 rubric and complete layout/citation checks.
+2. Prepare a presentation consistent with the written proposal, with conceptual diagrams explicitly labelled.
+3. Complete the internal acceptance review and pre-submission checklist.
+4. Obtain supervisor and student decisions before treating the topic, ethics pathway, or final school submission as approved.
+
+AI assistance note: This report was drafted with AI assistance for internal review. The student must verify and rewrite it in their own words and disclose AI assistance as required by institutional policy.
