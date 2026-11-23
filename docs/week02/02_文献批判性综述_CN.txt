@@ -1,0 +1,181 @@
+# MSE907 Capstone Week 2
+
+## Day 2：文献批判性综述
+
+研究主题：Evaluating Data Consistency and Performance Trade-offs in Financial Transaction Systems under Concurrent and Retry-Prone Workloads
+
+编制日期：2026-11-23（Pacific/Auckland）
+
+### 1. 范围、资料来源与阅读方式
+
+本综述基于 Week 1 提供的 18 篇候选论文及 Day 1 DOI 核验结果。另通过针对性检索加入一篇直接涉及并发 Serverless 重试幂等性的 OSDI 2023 论文，作为补充文献 S1；因此本轮筛查的候选集合为 19 篇。S1 不属于 Week 1 原始清单，不回写或改动 Day 1 已提交的核验文件。
+
+本轮对 8 篇全文作了深度阅读：原清单中的 01、03、06、08、10、14、18，以及补充文献 S1。对每篇重点核对摘要、研究动机、系统边界、方法/架构、实验设置、结果、作者明确承认的局限和结论。阅读基于本地可读取的 PDF 文本及版面页码；没有逐条重核这些论文引用的全部参考文献，也没有复现任何论文实验或代码。其余 11 篇只按 Day 1 的已核验出版记录、题名和可见摘要信息作结构化相关性筛查；不把这种筛查称为全文阅读。
+
+全文 PDF 仅保存在仓库忽略的本地辅助目录，不放入 Git 或交付 ZIP。公开可读不等于可再分发：Harvard DASH 版本依其 OAP 条款使用；Polaris 作者副本、NOC-NOC 仓储副本和 Styx 仓储 PDF 的再利用许可本轮未逐一确认，不复制论文文件或论文图表。de Heus 等论文标示 CC BY；Zhang 等 2024 综述标示 CC BY 4.0；Flux 是 USENIX 官方开放会议论文集。
+
+### 2. 全文深读论文
+
+#### 2.1 Huang 等（2022）：主存 OLTP 中 OCC、MVCC 与高竞争优化
+
+来源：[论文 DOI 与出版记录](https://doi.org/10.1007/s00778-021-00719-9)；[Harvard DASH 全文存档](https://dash.harvard.edu/entities/publication/31b4134f-fbe3-436e-b2c7-9213da4943c0)。全文 PDF 24 页；重点阅读摘要、引言、实验设置、协议比较、高竞争优化和结论（期刊页 1239–1261）。
+
+- 研究问题：为什么不同主存多核事务处理系统的 OCC、MVCC 和 TicToc 实现，在竞争增加时表现不同；实现选择是否会被误认为并发控制协议本身的优势。
+- 方法与架构：在 STO 事务平台中比较 OCC、MVCC/TicToc 变体和若干实现“基础因素”（basis factors）；使用 TPC-C、YCSB、Wikipedia、RUBiS 等工作负载，分析不同竞争水平、线程数和协议实现。进一步评估 deferred updates（DU）与 timestamp splitting（TS）。
+- 作者报告的结果：作者指出，良好的实现基础因素会显著改变协议比较；DU 与 TS 在高竞争 TPC-C 上可令基线吞吐量提升约 2–5 倍，且优化组合有时胜过只更换 CC 协议。不同优化也可能在低竞争下带来开销或收益，效果依工作负载而异。
+- 作者明确的限制/后续方向：DU/TS 需要了解记录语义并作一定手工介入；作者提出未来可用静态分析寻找优化机会。结果只覆盖其所测的基准和实现，不能直接外推到关系型 Web API、持久化幂等键或网络响应丢失。
+- 与本研究的关系：支持把竞争度、冲突率、吞吐和尾延迟作为控制变量/指标，也提醒实验需保持数据库实现和其他“基础因素”一致。
+- 本综述的分析推断：该文研究的是同一事务/数据记录上的读写冲突与实现策略；它没有把同一逻辑 HTTP 请求的重放作为独立变量，也没有测试已提交但响应丢失后客户端再次发送相同请求。因此它为 OCC 维度提供基线依据，不解决 OCC 与请求级幂等性的交互问题。
+
+#### 2.2 de Heus 等（2022）：Stateful Serverless 函数间事务与重试语义
+
+来源：[论文 DOI 与 ScienceDirect 记录](https://doi.org/10.1016/j.is.2022.102015)；[TU Delft 仓储最终版](https://repository.tudelft.nl/record/uuid%3Abe25362c-0cff-4573-bc04-e7fe182b5c5c)。全文 PDF 16 页，CC BY；重点阅读交易模型、实验方法、结果、讨论/开放问题和结论（约第 1–14 页）。
+
+- 研究问题：怎样在 Stateful Functions-as-a-Service（SFaaS）中跨多个函数和状态实现事务工作流，同时提供可配置的强一致事务或 Saga 工作流。
+- 方法与架构：在 Apache Flink StateFun 上加入协调函数，利用数据流引擎对状态、消息和 checkpoint 的统一管理；实现 two-phase commit（2PC）和 Saga 两种模式。对照 Beldi 及 CockroachDB 加 Kafka 客户端方案。
+- 实验设置：因缺少 SFaaS 专用基准，作者扩展 YCSB，加入从一个账户扣款并向另一个账户加款的 transfer 操作；改变 transfer 占比和键数；主要用统一键访问分布。指标为吞吐和延迟，延迟在系统最大吞吐的约 80% 负载下测量，并另作扩展性、回滚等实验。
+- 作者报告的结果：协调函数使非事务工作负载吞吐在 100 keys 情况下下降约 20%，随键数增加降幅约 10%；低键数/高竞争下 Saga 可以显著快于 2PC，但 Saga 的一致性保证较弱。作者在与 CockroachDB 的测试中也说明，应用级 batching 和数据库配置差异会影响比较。
+- 作者明确讨论的限制：没有现成 SFaaS 基准，使用扩展 YCSB；实验采用 uniform key distribution，作者指出现实账户访问可能高度倾斜；TPC-C 功能不适合其 SFaaS 实现。论文还明确指出，数据库与消息队列分离时，消费客户端可能在事务已执行但 acknowledgement 未确认后重放；除非请求携带应用专用 idempotence key，否则该部署只能提供 at-least-once，而不能由两组件自行保证 exactly-once。
+- 与本研究的关系：这是候选文献中把“账户余额转账”“响应/确认未到达后的重放”和“应用专用幂等键”直接联系起来的重要证据；同时说明系统级 checkpoint 的 exactly-once 边界不能自动覆盖独立 API、数据库和消息组件。
+- 本综述的分析推断：论文主要比较 Serverless 协调与事务工作流，没有将稳定客户端幂等键作为可控处理组与 OCC 作 2×2 比较，也没有把“提交后丢响应”单独作为故障注入因子。
+
+#### 2.3 Ye 等（2023）：Polaris 与 OCC 下的事务优先级
+
+来源：[论文 DOI 与 ACM 记录](https://doi.org/10.1145/3588724)；[University of Wisconsin 作者页面 PDF](https://chenhao-ye.github.io/publication/polaris/polaris.pdf)。全文 PDF 24 页；重点阅读算法、正确性论证、实验设置、结果和结论（Proceedings of the ACM on Management of Data 1(1), Article 44）。
+
+- 研究问题：在高竞争在线事务处理中，能否让多级优先级在保留 OCC 优点的同时减少高优先级事务的尾延迟和饥饿。
+- 方法与架构：在 DBx1000 主存共享式 OLTP 上实现 Polaris。它用轻量 reservation 机制引入有限悲观性；同优先级事务仍以 OCC 方式执行，较高优先级事务可优先占用/覆盖低优先级 reservation。与 Silo OCC、No-Wait/Wait-Die/Wound-Wait 2PL 及批处理式优先级方法比较。
+- 实验设置：YCSB-A（读写混合）、YCSB-C（只读）及受限 TPC-C Payment/NewOrder；通过 Zipf 偏斜和线程数改变竞争，指标包括吞吐和 p999 尾延迟。实验在同一数据库代码基线上比较协议。
+- 作者报告的结果：Polaris 对少量需要提权的事务可以降低尾延迟，同时吞吐接近 Silo；论文摘要报告特定高竞争负载下高优先级事务 p999 可比低优先级低 13 倍，并报告相对 Silo 的吞吐与尾延迟改善。此类数字属于其 DBx1000/YCSB/TPC-C 配置，不应视为金融 API 的预测值。
+- 作者明确的边界：核心贡献是数据库事务优先级及其 reservation 算法；论文不是关于网络层请求重放、幂等键存储或已提交响应丢失。
+- 与本研究的关系：说明竞争控制会影响事务中止和长尾表现；对本研究可作为 OCC 机制背景，而不是幂等性设计依据。
+- 本综述的分析推断：不得把内部事务 abort/retry 与客户端把同一业务请求重新 POST 混为一谈；两者的重试对象、事务边界和重复副作用不同。
+
+#### 2.4 Zhang、Soto 与 Markl（2024）：事务流处理综述
+
+来源：[论文 DOI 与 Springer 全文](https://doi.org/10.1007/s00778-023-00814-z)。全文 PDF 29 页，Open Access/CC BY 4.0；阅读事务模型分类、可靠性/投递保证、系统架构、性能指标和结论（期刊页 451–479）。
+
+- 研究问题：事务流处理（TSP）如何将实时数据流与 ACID/事务语义组合；现有系统有哪些模型、架构和设计权衡。
+- 方法与架构：概念与文献综述，提出分类框架；讨论 per-tuple、micro-batch、窗口、自适应等事务边界，以及统一事务、嵌入式事务、状态事务等实现方式，并比较 DBMS 与流处理引擎的集成架构。
+- 作者报告的结论：应用对延迟、状态、顺序、恢复和一致性的要求不同，因而没有适用于全部场景的单一实现方式；数据流与事务组件的组合有接口、通信、同步和性能成本；领域缺少标准化事务模型/API。
+- 作者明确的范围：这是综述与分类框架，不是一项对本研究实验单元作因果比较的原始实证研究；其覆盖范围是事务流处理，不等同于关系型金融 API。
+- 与本研究的关系：帮助区分消息投递、流状态恢复、exactly-once processing 和数据库事务；支持在报告中清晰写明“幂等性在哪个系统边界成立”。
+- 本综述的分析推断：只有当输入偏移、状态更新和输出纳入同一可恢复/原子边界时，流处理系统的 exactly-once 结论才可直接应用；单独的 API 数据库与客户端响应链路仍需独立论证。
+
+#### 2.5 Liu 等（2024）：分布式事务读写性能设计目标 NOC-NOC
+
+来源：[论文 DOI 与 ACM 出版记录](https://doi.org/10.1145/3639264)；[ETH Zürich 仓储副本](https://people.inf.ethz.ch/~basin/pubs/acmsigmod24.pdf)。全文 PDF 25 页；重点阅读设计目标、不可实现性结果、算法、评估、讨论及结论（PACMMOD 2(1), Article 9）。仓储标示 In Copyright、允许非商业使用；本综述不再分发论文副本。
+
+- 研究问题：在分布式数据库事务中，读和写是否都能同时满足非阻塞、一轮往返、常量大小元数据等性能目标；这些目标与隔离保证之间有什么理论边界。
+- 方法与架构：定义 NOC-NOC 设计目标并给出不可实现性结果；设计 RA-NOC2 与 Eiger-NOC2 两类算法，分别面向 read-atomic 与事务因果一致性等隔离语义；在 RAMP/Eiger 代码基础上实现并评估。
+- 实验设置：CloudLab/Emulab 集群、主备数据中心、分片数据库；采用 YCSB/YCSB-like 合成工作负载，控制读写比例、事务大小、偏斜和服务器数；每个数据点 5 次、每次 60 秒。
+- 作者报告的结果：论文报告 RA-NOC2 在部分较大事务负载下相对竞争算法提升吞吐并降低延迟，同时读新鲜度保持在其报告的水平；Eiger-NOC2 相对其强基线也改善写延迟与吞吐。上述结论针对特定分布式隔离等级、算法和负载。
+- 作者明确讨论的限制：实验主要为合成 YCSB 类而非生产金融请求；作者指出应使用更现实的事务分布/生产工作负载，并讨论本地计算、双视图状态等可能引入的额外成本。
+- 与本研究的关系：提供分布式隔离级别、读写延迟/吞吐权衡的理论背景，并提醒强一致性和性能目标存在不可兼得之处。
+- 本综述的分析推断：其 NOC-NOC 是通信复杂度/系统协议层目标；它没有定义 API 的客户端请求键、重复请求响应缓存或响应丢失后的业务处理，也不直接检验本研究的 OCC×幂等键处理组。
+
+#### 2.6 Psarakis 等（2025）：Styx 事务型 Stateful Functions
+
+来源：[论文 DOI 与 ACM 出版记录](https://doi.org/10.1145/3725363)；[TU Delft 仓储作者 PDF](https://giorgoschristodoulou.github.io/styx_sigmod25.pdf)。全文 PDF 28 页；重点阅读架构、调用图/确认协议、提交、Exactly-Once、实验、局限与结论（PACMMOD 3(3), Article 226）。
+
+- 研究问题：如何为组成任意函数调用图的 Stateful Functions 提供可扩展的串行化事务与 exactly-once 处理。
+- 方法与架构：Styx 将确定性事务协议与流式数据流执行结合，包含调用图发现、函数 acknowledgement、缓存和早期 commit reply；用快照、恢复和输入/输出队列支持故障处理。
+- 实验设置：比较 Beldi、Boki、T-Statefun 等 SFaaS 系统；包括 YCSB-T 银行账户转账（10,000 keys，两个读和两个写）、DeathStar 与改写为函数调用的 TPC-C 子集；评估吞吐、延迟、偏斜、扩展性及 snapshot 影响。
+- 作者报告的结果：在其被测 workload 中，Styx 的吞吐明显超过比较对象；在高竞争 YCSB-T 下报告仍能完成事务且无 abort，而 Beldi/Boki 的 abort 比例随偏斜上升。论文也报告快照对吞吐影响很小但某些情况下会增加延迟。
+- 与请求幂等直接相关的作者设计：论文说明外部系统调用假设外部系统支持幂等键；Styx 在调用外部系统前记录 idempotency key 和事务标识，并在重放时使用日志中的响应。这说明事务型 Serverless 方案把外部副作用的幂等能力视为依赖条件。
+- 作者明确的边界/未来工作：Styx 要求应用逻辑具确定性；未来工作包括数据流弹性和更高可用性复制；当前结果不代表任意外部支付 API 的内部实现。
+- 本综述的分析推断：Styx 将重试、确定性执行和系统恢复合入运行时，但其外部服务幂等性是前提；它没有在传统关系型金融 API 中独立比较“没有 key / 有 key / OCC / 二者结合”。
+
+#### 2.7 Kanimozhi、Mary 与 Johnson（2026）：高竞争 OLTP 的测量驱动自适应控制
+
+来源：[Scientific Reports 全文与 DOI](https://doi.org/10.1038/s41598-026-60165-x)。全文 PDF 29 页，Open Access/CC BY 4.0；重点阅读系统/负载模型、比较方案、实验与统计方法、结果、Threats to Validity 和结论。
+
+- 研究问题：测量驱动的运行时控制能否在高竞争分布式 OLTP 中降低 OCC 等机制的 abort cascade 和 retry amplification，并稳定吞吐。
+- 方法与架构：提出 MD-ACC 控制层，观测冲突率、中止率、队列长度与 retry intensity，再依 contention 分类、滞后机制和 admission/backoff/wait-abort 策略自适应。与 2PL、OCC、MVCC 及若干 adaptive/hybrid 基线比较。
+- 实验设置：Java 17 的分布式测试床，4–16 个事务节点、LAN、内存 key-value store、2PC；复制被关闭以隔离竞争控制影响。使用 synthetic TPC-C-inspired 负载，而不是完整 TPC-C；改变客户端数、事务长度、读写比、热点/偏斜；作者称每个实验 10 次独立运行并报告均值、标准差和置信区间。
+- 作者报告的结果：论文报告 MD-ACC 在极端竞争下相对静态方案最高约 2.1 倍吞吐；结论部分报告 OCC abort rate 约 38–42% 对比 MD-ACC 约 13%。这是论文自身测试床上的结果，未在本项目复现。
+- 作者承认的威胁/局限：使用合成负载而非真实 OLTP，会有工作负载外部效度风险；固定网络/硬件/执行环境会影响结果；作者提出未来还需在异构、多租户分布式环境、工业级 OLTP 系统中比较，并需要进一步验证 starvation-freedom 与长期稳定性。
+- 可复现性注意：正文对 measurement-window 设定存在不一致：一处称 200 ms，配置表另列 1–5 s。复现实验前须对照公开代码/配置澄清，故本文参数不直接用作本项目阈值。
+- 与本研究的关系：支持收集 retry 次数、冲突率、延迟和吞吐，并提示竞争控制可能有动态行为；但方案是额外自适应算法，不能与本项目简单的 OCC on/off 操作等同。
+- 本综述的分析推断：论文没有测试 API 幂等键、重复支付副作用或提交后丢响应；其测试床复制关闭且使用内存键值数据层，金融关系型系统迁移有效性有限。
+
+#### 2.8 补充文献 S1：Ding 等（OSDI 2023），Flux 并发 Serverless 幂等性验证
+
+来源：[USENIX OSDI 2023 官方论文页](https://www.usenix.org/conference/osdi23/presentation/ding)；[官方开放 PDF](https://www.usenix.org/system/files/osdi23-ding.pdf)。正式发表在第 17 届 USENIX Symposium on Operating Systems Design and Implementation，页 887–910。USENIX BibTeX 未提供 DOI，本综述不编造 DOI。
+
+- 研究问题：在 stateful serverless 函数会并发执行且因失败被重试时，如何自动验证重试对客户端是否透明，并定位会破坏该性质的操作。
+- 方法与架构：定义 idempotence consistency：对任一带重试执行产生的可观测行为，须存在一个无重试执行能产生相同可观测行为；以 idempotence simulation 将系统证明拆为逐函数推理，并用符号执行、advisor 和日志只记录破坏幂等性的操作。定义不等价于“每一条数据库操作只执行一次”。
+- 实验设置：覆盖 27 个代表性 Serverless 应用、79 个函数；评估验证耗时、定位操作和日志机制与 Beldi/Boki 的性能差异。
+- 作者报告的结果：发现 12 个应用此前未知的问题，其中 8 个获得开发者确认；在所测环境中，选择性日志相较全操作日志的 Beldi/Boki 报告最高 6 倍低延迟和 10 倍峰值吞吐。
+- 作者明确的局限：状态模型限于 NoSQL 数据库；仅支持 Java；验证是 sound but incomplete，某些不受支持的循环无法完整验证，复杂分支会增大验证时间。
+- 与本研究的关系：这是直接的并发重试幂等性证据；示例包括重复扣余额、响应值与数据库状态不一致、并发函数观测到错误状态。它使“重试幂等性已完全无人研究”的说法明显不成立。
+- 本综述的分析推断：Flux 研究的是 serverless 程序正确性验证与选择性日志，而不是关系型金融 API 中稳定 Idempotency-Key 记录与 OCC 的性能/正确性因子实验。它将研究空白从“缺乏幂等性研究”收敛为“系统边界、请求键实现和 OCC 组合的差异尚需验证”。
+
+### 3. 其余 Week 1 候选文献结构化筛查
+
+下列文献没有按全文深读；筛查仅用于决定后续阅读优先级。除 Day 1 已核验的 DOI/书目资料与出版页/摘要可见信息外，不将下述一句话评价解释为完整方法审查。
+
+| 序号 | 候选文献 | 本轮筛查与用途 | 真实阅读范围 |
+|---|---|---|---|
+| 02 | [PLOR: General Transactions with Predictable, Low Tail Latency (2022)](https://doi.org/10.1145/3514221.3517879) | 通用事务调度与尾延迟，供 OCC/低尾延迟相关工作补充；不直接回答应用请求去重。 | 书目与题名/可见摘要；未读全文。 |
+| 04 | [SGPM: A Coroutine Framework for Transaction Processing (2022)](https://doi.org/10.1016/j.parco.2022.102980) | 事务执行框架/调度实现；与运行效率相关，和 HTTP retry 语义间接。 | 书目与题名；Day 1 未取得可确认开放全文；未读全文。 |
+| 05 | [Scalable and Quantitative Contention Generation for Performance Evaluation on OLTP Databases (2023 issue)](https://doi.org/10.1007/s11704-022-1056-2) | 与可控竞争负载设计高度相关，值得在 Day 4 设计工作负载时回查；并非幂等性论文。 | 出版记录/摘要层筛查；本轮未完成全文读取或许可核验。 |
+| 07 | [A Survey on the Evolution of Stream Processing Systems (2024)](https://doi.org/10.1007/s00778-023-00819-8) | 流处理系统历史与演化背景；比 08 的事务流综述更广，优先级较低。 | 出版记录/题名与摘要；未读全文。 |
+| 09 | [Dodo: A Scalable Optimistic Deterministic Concurrency Control Protocol (2024)](https://doi.org/10.1016/j.future.2024.05.004) | 确定性 OCC 与并发控制候选；可补充算法对照，但不是客户端稳定请求键。 | DOI/书目及出版页摘要可见信息；未读完整全文。 |
+| 11 | [Scaling Up Transactions with Slower Clocks (2024)](https://doi.org/10.1145/3627535.3638472) | 事务可扩展性与时钟机制；本研究主题相关度较低。 | 出版记录/题名；未读全文。 |
+| 12 | [Pheromone: Restructuring Serverless Computing with Data-Centric Function Orchestration (2025)](https://doi.org/10.1109/TNET.2024.3480031) | Serverless 函数编排背景，非主要金融事务正确性研究。Day 1 记录的 PDF 标有仅限 HKUST 的 IEEE 授权文字；不当作一般开放全文。 | 仅书目和出版信息；未下载/未阅读全文。 |
+| 13 | [OOCC: One-Round Optimistic Concurrency Control for Read-Only Disaggregated Transactions (ICDE 2025)](https://doi.org/10.1109/ICDE65448.2025.00025) | OCC 直接相关，但标题范围是 disaggregated read-only transactions；写入和幂等副作用不在标题范围。 | IEEE 书目/摘要信息；未确认当前全文访问权，未读全文。 |
+| 15 | [Styx in Action: Transactional Cloud Applications Made Easy (2025)](https://doi.org/10.14778/3750601.3750650) | Styx 系统演示短文；可用于介绍系统，但不替代 #14 的完整方案和评估。 | Day 1 出版记录及类型；未单独深读全文。 |
+| 16 | [Transactional Cloud Applications: Status Quo, Challenges, and Opportunities (SIGMOD-Companion 2025)](https://doi.org/10.1145/3722212.3725635) | 用于云事务系统范围与挑战的背景；属于 Companion tutorial/overview，不计为原始实证研究。 | 书目、出版页与类型信息；未阅读全文。 |
+| 17 | [Focus! Fast On-Disk Concurrency-Control Using Sketches (2025)](https://doi.org/10.1145/3769793) | 磁盘数据库并发控制性能候选；存储模型与 API 重试研究有距离。 | 出版记录/摘要可见信息；未读完整全文。 |
+
+### 4. 跨论文综合比较
+
+| 研究线 | 主要保护/优化对象 | 典型方法 | 本研究可借鉴内容 | 不能直接推出的结论 |
+|---|---|---|---|---|
+| OCC/数据库并发控制（01、06、18；部分 02、09、13、17） | 不同事务并发读写造成的冲突、中止、长尾及吞吐 | 乐观验证、reservation、动态竞争控制、底层实现优化 | 控制竞争水平；测吞吐、延迟分位数、冲突/abort/retry；同基线比较 | 一个请求重复提交是否产生双重业务副作用；幂等键是否有用。 |
+| 分布式事务与流处理（03、08、10、14；部分 07、12、15、16） | 跨函数/分片/流状态的一致性、隔离、故障恢复与投递语义 | 2PC、Saga、数据流 checkpoint、确定性执行、协议设计 | 明确事务边界、状态/消息边界和一致性保证；把恢复语义纳入实验 | 单独的 HTTP 客户端、API 响应、关系数据库和持久化键之间的端到端保证。 |
+| 幂等性与并发重试（03、14、S1） | 重复请求/函数执行时的业务状态与观测结果 | 应用专用 key、exactly-once 系统边界、外部调用日志、形式化验证 | 区分 at-least-once 与 exactly-once；考虑并发交错、重复扣款和返回值一致 | 在常规关系型金融 API 上，幂等记录与 OCC 单独或组合时的定量权衡。 |
+
+关键概念须严格区分：
+
+1. 数据库 OCC 的事务级 abort/re-execution 是并发控制的内部过程。
+2. 客户端在 timeout 后重发同一个逻辑请求，是分布式请求层的重复交付风险；客户端通常无法从未收到响应判断服务端是否已经提交。
+3. exactly-once processing 通常依赖一个受控边界中的输入、状态、offset/queue 和恢复机制，不表示任意网络请求都只发生一次。
+4. Idempotency-Key 是业务/API 层约定。可重复使用的 key 必须绑定逻辑请求并与财务效果以一致、持久的方式协调；数据库内部的 OCC 本身不提供该语义。其 key、请求体校验、并发首请求处理、结果重放和保留期限需要由实现具体定义，不能在尚未设计时视为已解决。
+
+### 5. 候选 Research Gap（暂定，非创新性结论）
+
+#### 证据支持的范围
+
+- 主存 OLTP/OCC 文献（01、06、18）研究并发冲突、事务中止、吞吐与尾延迟，但所读实验并不把同一逻辑 API 请求的重复重放与响应丢失作为独立因素。
+- de Heus 等（03）明确指出，当数据库与 Kafka/message acknowledgement 不在同一 checkpoint 边界时，事务可能已执行而 acknowledgement 丢失；没有应用专用 idempotence key 时，重放只具有 at-least-once 语义。该研究以账户转账扩展 YCSB，最贴近本研究业务例，但没有 OCC×key 四组比较。
+- Flux（S1）证明并发 Serverless 重试可导致重复余额扣减等真实代码错误，并提出 retry-transparency 形式化定义；其研究边界为 Java/NoSQL Serverless，不是关系型金融 API 的 OCC 实验。
+- Styx（14）把外部系统调用的 idempotency key 当作外部服务能力前提，并为重放日志记录 key/TID/响应；论文主要评估整个 Serverless 数据流事务运行时。
+- 本轮其余候选扩展了并发控制、事务隔离、流处理或工作流技术，但按当前阅读记录，没有直接覆盖下述四因素设计。
+
+#### 候选空白表述
+
+在本轮限定的 19 篇候选（其中 8 篇全文深读）和所记录的检索范围内，尚未找到一项研究在传统关系型数据库支持的金融转账 API 中，以可控的并发、重复请求及“提交已发生但响应丢失”故障为条件，同时比较 OCC 与持久化请求级幂等机制分别启用及组合时的业务正确性和性能。故可将研究问题暂定为：**在该明确系统边界与负载下，OCC 和请求级幂等键各自及组合对金融不变量、重复业务效果、吞吐和尾延迟的影响是什么？**
+
+该表述只代表当前受限语料中的未覆盖交叉点，不能写成“首次研究”“全球没有相关工作”或已被证明的新颖性。检索仍不是系统综述：没有完成多数据库检索式、完整引文追溯、灰色文献筛选或 PRISMA 流程；Day 3 需要继续扩大检索并寻找反例。尤其需要查找 API 幂等键协议/实现、交易重试和响应歧义、关系数据库去重账本、金融工作负载评测等更直接的研究与标准。
+
+#### 对拟议实验设计的初步含义
+
+- 2×2 OCC × 幂等性因子设计有研究逻辑：OCC 主要约束不同逻辑事务间的竞争冲突；幂等键主要识别相同逻辑请求的重放。两者保护的对象不同，不能预先假定效果互相替代。
+- 应将 Idempotency-Key 在一个逻辑转账的所有尝试中保持不变，并在相同数据库一致性边界中协调 key 记录、转账状态和账户余额变更；否则“启用幂等”不是可重复的处理定义。是否缓存/重放原始响应、冲突 key 对应不同请求体如何处理，须在方法中显式定义。
+- 注入故障时应分别记录：请求未到达、事务提交前失败、事务提交后丢失响应、客户端重试、事务被 OCC 中止。只观察 HTTP timeout 不能判断数据库是否已生效。
+- 正确性观察至少覆盖余额守恒、账户非负（若业务规则要求）、重复财务效果、丢失更新、交易状态与响应状态一致性。性能观察需在相同硬件、数据库、隔离级别和负载下测 throughput、P50/P95/P99、冲突率、abort/retry 次数及成功率。
+- 本综述不预填性能目标或预期胜者；每个配置的效果须由后续实测验证。
+
+### 6. 阅读可信度、引用与未解决事项
+
+- 已深读全文数：8（其中 7 篇来自 Week 1 清单，另加 1 篇官方 OSDI 开放论文）；原有其余 11 篇均明确标为题名/摘要/书目级筛查。
+- 全文文本提取及页数确认：本地 PDF 共确认上述 8 篇可读，页数分别为 Huang 24、de Heus 16、Polaris 24、TSP Survey 29、NOC-NOC 25、Styx 28、MD-ACC 29、Flux 25 页。阅读没有复现实验，不把论文报告的结果写成本项目实验结果。
+- 文献断言以论文 DOI/出版社/官方会议页面为可追溯入口；作者结果与本综述推断在各条中分开标记。文章发表年份按 Day 1 核验的期刊/会议正式书目口径。
+- 仍未取得用户列出的官方 MSE907 Assessment 1、2、3 PDF。此事不影响本阶段文献综合，但不应把本综述当作已核验官方 Assessment 文件或完整 Rubric 的替代品；正式计划书的提交形式和完整评分细则仍待官方文件/导师确认。
+- 需要学生本人阅读、核对引用和学校关于 AI 使用的规定；本轮是研究辅助草稿，不是导师认可，也不是学校正式提交。
+
+### 7. 下一阶段
+
+Day 3 将扩大和交叉核查直接相关文献，检验以上候选 gap 是否被其他关系型数据库、支付 API、幂等键或重试语义研究充分覆盖；再将 Research Questions 收敛到 2–3 个能被控制实验观测与验证的问题。若找到直接反例，将据证据改写 gap，而不维持当前措辞。
