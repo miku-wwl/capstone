@@ -1,0 +1,22 @@
+MSE907｜核心论文阅读入口
+
+并发控制与竞争负载（2022–2026）
+Huang et al. (2022) — https://doi.org/10.1007/s00778-021-00719-9
+Chen et al. (2022), Plor — https://doi.org/10.1145/3514221.3517879
+Ye et al. (2023), Polaris — https://doi.org/10.1145/3588724
+Zhang et al. (2023), Contention generation — https://doi.org/10.1007/s11704-022-1056-2
+Kanimozhi et al. (2026) — https://doi.org/10.1038/s41598-026-60165-x
+
+请求重试、幂等与事务恢复（2022–2026）
+de Heus et al. (2022) — https://doi.org/10.1016/j.is.2022.102015
+Ding et al. (2023), Flux — https://www.usenix.org/conference/osdi23/presentation/ding
+Psarakis et al. (2025), Styx — https://doi.org/10.1145/3725363
+De Martini et al. (2026), Histrio — https://doi.org/10.1016/j.is.2026.102724
+Stonebraker et al. (2026), DBOS — https://www.vldb.org/cidrdb/papers/2026/p9-stonebraker.pdf
+
+事务模型与背景（2024）
+Liu et al. (2024), NOC-NOC — https://doi.org/10.1145/3639264
+Zhang, Soto & Markl (2024) — https://doi.org/10.1007/s00778-023-00814-z
+
+早期基础研究（不计入近五年）
+Lee et al. (2015), RIFL — https://doi.org/10.1145/2815400.2815416

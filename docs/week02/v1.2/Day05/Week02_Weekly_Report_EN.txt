@@ -1,0 +1,10 @@
+Week 2 progress report — student review draft
+
+Progress
+The project record now contains a revised research proposal, focused literature comparison, three measurable research questions and a four-group experiment design. The planned comparison uses a safe PostgreSQL transaction baseline and separates concurrency conflicts from duplicate request effects. The evaluation specifies ledger reconciliation, correctly confirmed throughput, tail latency and a matched W2/W4 interaction contrast. A bounded pilot and 14-week implementation schedule have also been planned.
+
+Challenges
+The topic and ethics pathway still need supervisor confirmation. Some literature evidence is limited to abstracts or accessible sections and must be checked personally. The projected run time and precision are estimates; no prototype or experiment has been executed.
+
+Next steps
+Review and revise the draft in my own words, verify source claims, discuss the scope and submission requirements with my supervisor, and freeze the transaction and idempotency contract before building the prototype and running correctness tests. Confirm the reporting period and required AI-use disclosure before submission.

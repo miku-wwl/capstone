@@ -1,0 +1,24 @@
+Assessment 1 v1.2｜审阅状态与待办
+状态：研究计划草稿，供学生本人和导师讨论；尚未实现原型、运行 pilot 或正式实验。未获导师批准，不是正式提交稿。
+
+官方 Rubric（A1占课程20%，LO1 55%、LO2 45%；内部证据覆盖，不是评分）
+Literature Review 20% | Day02、Proposal §2 | 有批判性证据；摘要/章节证据仍需本人回查。
+Research Gap 20% | Day03、Proposal §2 | 有边界的比较缺口；未证明全球不存在。
+Research Questions 15% | Day03、Proposal §3 | 三条 RQ 可追溯到实验及指标。
+Methodology 15% | Day04、Proposal §§4–5 | 共同安全基线、2×2、失败契约与区组设计；实现待验证。
+Feasibility 15% | Day04、Proposal §6 | 条件性：24机器小时和区组上限待 pilot。
+Evaluation Plan 15% | Day04、Proposal §5 | 独立账本审计、正确确认 TPS、区组 CI；精度待 pilot。
+
+导师/课程负责人待确认
+[ ] 金融转账研究选题变更、Level 9 贡献与具体技术范围。
+[ ] 合成数据伦理审批路径、原型及故障实验边界。
+[ ] A1 DOCX/PDF 的确切截止日期、Week6展示用途、课程模板与后续评估节点。
+[ ] API 契约、资源/精度预算与 RQ3 探索性降级规则。
+
+学生提交前
+[ ] 阅读论文原文、核验引用和方法；以本人理解重新撰写正式学术内容。
+[ ] 核对导师反馈并修订；填写姓名及学号（仅私人提交版）。
+[ ] 查阅 Student Handbook 的原创性及 AI 使用政策，真实披露辅助内容。
+[ ] 用实际课程表单核对周报；最终 Word/PDF 双倍行距、APA、格式和页码。
+[ ] A1 官方要求书面 DOCX/PDF，by Week15；确认正式日期与演示安排后再提交。
+[ ] 原型阶段先执行 T1–T13、独立对账及 pilot，正式结果前冻结参数。

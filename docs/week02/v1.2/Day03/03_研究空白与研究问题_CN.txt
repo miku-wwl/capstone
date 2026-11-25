@@ -1,0 +1,35 @@
+MSE907｜研究空白、研究问题与验证关系
+题目：Evaluating Data Consistency and Performance Trade-offs in Financial Transaction Systems under Concurrent and Retry-Prone Workloads
+
+1. Research Problem｜同一个转账例子，三种不同风险
+假设账户余额100元。不同逻辑转账同时扣30元：若两笔均成功，余额应为40元；正确的数据库相对更新本身可以保证这点，不必假设没有应用 OCC 就必然丢失更新。
+若客户端提交一笔30元转账，服务端成功 COMMIT 但 HTTP 响应丢失，客户端不能从 timeout 判断是否成功。
+客户端以同一逻辑身份重发时，数据库事务即使各自正确，仍可能产生第二笔财务效果。请求幂等解决重复逻辑操作，而非数据库行竞争。
+应用 OCC 解决版本过期及冲突后整笔重试；持久请求键解决重复执行与结果回放。两者不能互相替代。
+
+2. Research Gap｜已知、未充分比较及研究贡献
+已知：Huang、Plor、Polaris 研究并发控制与竞争；Flux、Histrio、de Heus、Styx 研究重试安全、银行/转账负载或系统恢复；DBOS、RIFL 已展示持久执行记录与结果重放。
+在已有19项候选及后续定向检索范围内，尚未发现针对正确 PostgreSQL READ COMMITTED 单库转账 API 的四组受控实证，同时操纵应用版本验证与持久请求 key，并覆盖低/高竞争、并发同键重复和提交后 HTTP 响应丢失，同时审计财务正确性和性能。
+贡献：提供有明确边界、可复现的增量策略成本及交互效应证据。它可帮助维护同类 API 的工程团队判断是否采用额外版本检查、持久 key 和受限重试；不发明新算法，不声称全球首创或生产银行可推广性。
+
+3. Research Questions｜英文表述及中文解释
+RQ1 — Correctness
+Under shared PostgreSQL READ COMMITTED transactions and business constraints, what invariant violations, duplicate financial effects or client–ledger inconsistencies occur across A–D under concurrency, repeated delivery and specified fault traces?
+解释：比较四组在相同事务约束下的实际财务效果；即使四组正常并发都无丢失更新，仍是有效发现。
+
+RQ2 — Performance
+Under predefined low- and high-contention workloads, how do version validation and persistent request idempotency, separately and jointly, affect correctly confirmed logical throughput, logical end-to-end P95 latency and transaction costs? How do these measures vary descriptively in W2 and W4?
+解释：W1-low/high 是主要比较；W2/W4 仅报告同样指标的次要描述性对比，解释等待、重试、回放成本。
+
+RQ3 — Scenario interaction
+Under matched background load, hotspot distribution, assigned duplicate proportion, seed policy, retry budget and observation window, how does the OCC × idempotency interaction in concurrent same-key delivery (W2) differ from that in post-commit HTTP response loss (W4)?
+解释：对比两套完整场景策略中的交互差，不把差异归因于单一网络故障位置。
+
+4. Traceability｜问题如何获得证据
+RQ1 | T1–T13、W1/W2/W4 审计、W3/W5 诊断 | 财务不变量、每逻辑请求效果数、client–ledger 一致性 | 轨迹断言、事件数及曝光分母 | 判定各组正确性边界；不是全行业安全证明。
+RQ2 | W1-low/high 主矩阵；W2/W4 次要描述 | 正确确认 TPS；正确确认逻辑请求 P95；锁等待、事务重试、key 等待/回放 | 完整区组内因子效应与区间；各轮延迟分位数先计算再配对 | 估计机制整体增量成本，不孤立归因于 SQL 谓词。
+RQ3 | 匹配 W2/W4 的 A–D 八个单元/配对区组 | 加性正确确认 transfers/s | I_s=(D_s−C_s)−(B_s−A_s)；ΔI=I_W4−I_W2；区组均值及95% CI | 观察两类场景的交互差，精度不足时仅作探索性报告。
+
+5. 边界与下一步
+只研究本地单库合成转账，不连接真实支付或个人数据。DB COMMIT acknowledgement 丢失仅做实施安全边界，不纳入正式性能矩阵。
+实验尚未执行。具体 SQL、重试上限、故障触发、指标分母、预算及 pilot 精度闸门以 Day04 为唯一详细协议。

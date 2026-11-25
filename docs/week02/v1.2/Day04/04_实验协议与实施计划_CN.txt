@@ -1,0 +1,88 @@
+MSE907｜实验协议与实施计划 v1.2（设计稿，未执行）
+1. 系统、边界与共同约束
+确定性 Load Generator → ASP.NET Core API → Transaction / Idempotency Layer → PostgreSQL → 独立 Ledger Audit / Metrics。注入器只接本地 API；单服务、单库、合成账户和金额。不接真实支付服务、个人数据或资金。技术栈/伦理待导师确认。
+冻结引擎版本、主机、连接池、日志、种子、schema、约束、币种及精度。各组同一 ACID、READ COMMITTED、行锁、业务谓词和稳定账户 ID 更新顺序。
+Schema：accounts(id,balance numeric(19,2) CHECK balance>=0,version,status)；transfers(transfer_id,logical_request_id,source,destination,amount,currency)；ledger(transfer_id,entry_type,account_id,signed_amount)，每 transfer 的 entry_type 唯一；idempotency_records(scope,endpoint,key,fingerprint,status,response,transfer_id,completed_at)，(scope,endpoint,key) 唯一。logical_request_id 只供审计，不设置隐藏去重约束。
+
+2. 四组策略（2×2）
+A | OCC OFF | key OFF | 安全当前行更新，不去重。
+B | OCC ON  | key OFF | 版本谓词 + 完整事务重试，不去重。
+C | OCC OFF | key ON  | 当前行更新 + 持久 key/结果。
+D | OCC ON  | key ON  | 两种机制组合。
+OCC 因子是整体应用策略（读版本、校验、锁等待、重试成本），不是仅比较一个 SQL 指令。OFF 保留数据库自身并发控制；key OFF 不访问幂等表。
+
+3. 共同事务与 OCC SQL
+预校验正金额、不同账户、存在且 active；真正更新仍带业务谓词。按账户 ID 升序更新双方；每行恰好返回一行，随后写 transfer 和借贷两条 ledger，全部同一事务提交。任何失败必须撤销全部财务写入。
+OFF 借方：UPDATE accounts SET balance=balance-:amount, version=version+1 WHERE id=:source AND status='active' AND balance>=:amount RETURNING id,balance,version;
+OFF 贷方：UPDATE accounts SET balance=balance+:amount, version=version+1 WHERE id=:destination AND status='active' RETURNING id,balance,version;
+ON 在同一谓词上加 AND version=:expected_version，先读双方新鲜版本，双方均校验并递增版本。READ COMMITTED 更新等待竞争 writer 后重检最新行的 WHERE，当前行算术不会覆盖应用旧余额。旧值覆盖只能作为 W5 诊断。
+零行返回：终止财务写入。后续查询只观察新的快照，不能倒推唯一原始原因。分类顺序：账户缺失/失效、明确余额不足、可证版本不符、其他/ambiguous；证据不足不强记 OCC。若已发生 SQL 错误，先恢复 savepoint 或结束事务才能读；未知分类不自动重试。
+ON 可证 OCC 冲突：整笔回滚后读新版本、重新执行。候选初次+最多3次重试（共4次），指数退避/上限/抖动 seed 在 pilot 后冻结。不得复用旧读集、只重试第二条 UPDATE。公共短暂故障策略各组相同，只对已确认未提交且可重试的事务执行新尝试；OCC-specific retry 单独记录。
+
+4. 持久请求键与失败恢复
+Key=(synthetic tenant,endpoint/action,client key)；fingerprint=规范化 source/destination/minor-unit amount/currency；候选保留期7天，冻结后使用，不代表行业规范。首次请求在财务写入前执行事务内 INSERT，占用唯一键；PROCESSING 不得单独提交。
+同键同载荷：owner 成功后，竞争方用后续 SQL statement 新快照读 COMPLETED 并重放原 status/body/transfer_id；owner 回滚后等待方可接管。INSERT ON CONFLICT DO NOTHING 的同一语句快照可能看不到竞争提交的记录，不可依赖单语句读取。
+同键异载荷：C/D 返回候选422且无第二效果；A/B 无 key 去重，按普通请求审计。并发等待超过冻结 lock timeout：先安全回滚失败事务或恢复 savepoint，再返回候选409；重发必须使用相同 key。该策略不声称完全遵守 IETF 草案。
+成功路径：key、财务效果、ledger、COMPLETED 与响应同一事务提交；即使之后 HTTP 响应丢失，已完成 key 可回放。
+确定性业务拒绝：C/D 在占 key 后、首次业务写入前建立 SAVEPOINT；拒绝时回滚到该点，确认账户、transfer、ledger 全部撤销且事务可用，再缓存明确业务4xx并提交 key。若撤销/分类不确定或事务失效，整笔回滚、不缓存。A/B 同一拒绝谓词且整笔撤销，不写 key。瞬时5xx、死锁、重试耗尽不缓存为完成成功。
+提交结果契约：已确认未提交/回滚 → 仅可重试故障允许整笔新事务；已确认提交 → 返回/回放现有结果；提交未知 → 不盲目执行财务操作，保留 logical ID/key 并记录 unknown。C/D 可经新连接查询同键持久完成记录，确认后回放；一次查无记录不证明未提交。A/B 不作隐式幂等恢复。EF Core 透明重试须限制未知 COMMIT 路径。
+
+5. 工作负载及故障注入
+W0：无故障低竞争参考，作为 W1-low 的别名，不独立运行。
+W1-low/high：主性能工况；候选1%热账户，10%/80%请求访问热集合。固定其他参数；pilot 冻结并记录实际账户重叠/锁等待/版本冲突。
+W2：相同高背景负载中，预分配比例逻辑请求并发发送同键同载荷副本。
+W3：交易开始前 gate/拒绝；只有 trace 证明未 BEGIN/COMMIT 才算未开始。否则 unknown；仅诊断。
+W4：相同背景及预分配重复率，首个合格尝试确认 COMMIT 后、HTTP body 写出前丢响应，同键重发一次。
+W5：隔离的旧值覆盖反例；只作诊断，不进入四组性能样本。强制 OCC conflict 是 T8，不是 W5。
+主矩阵只有 W1-low/high、W2、W4。W2/W4 匹配数据初态、并发、热点、分配比例、seed、retry budget、发送/观察规则。分配数、合格数、实际触发数、重发数、已提交数、unknown 都记录；按分配场景分析，不筛选成功触发子集。数据库 COMMIT acknowledgement 丢失、进程崩溃、磁盘损坏、多区域故障、外部支付回调不进入主模型。
+
+6. 指标与审计
+正确性：非负余额、借贷平衡、资金守恒、整笔原子性、最终余额与账本对账、每 logical ID 的已提交效果数(0/1/>1)、客户端结果与账本一致。C/D 同键同载荷最多一次效果、同键异载荷无额外效果。用独立输入记录、transfer、ledger、账户余额和 client/commit trace 交叉验证；守恒或2xx单独不足。
+固定测量60秒，首次 dispatch 属于该窗的逻辑请求纳入，追加30秒 drain。Correctly Confirmed Logical TPS = 截止 drain 获成功确认、恰好一项已提交效果且最终对账通过的唯一逻辑请求数 / 60秒。重复效果、晚到、失败、未知单列，不入分子；测后固定审计，不变分母。
+正确确认逻辑请求 E2E latency 从首次 dispatch 到最终确认（含重发/回放），每轮 P50/P95/P99；并列失败与 unknown 率避免成功条件选择偏差。所有 HTTP 尝试 TPS另计；记录行锁等待、死锁、版本冲突、重试次数及耗尽、key claim/wait/replay、CPU/RAM/连接。
+
+7. 统计、冻结与复跑
+独立重置运行是样本单位，不将同轮请求视为独立重复。每个条件的完整 block 包含 A–D，共享快照、seed 和负载；W2/W4 配对 block 含8个单元，顺序随机（顺序 seed 与 workload seed 分离）。RQ1 用预定轨迹断言、事件数/曝光分母及区组不确定性，不声称零观察等于零风险。
+RQ2：W1-low/high 的正确确认 TPS 因子主效应与交互按 block 估计（OCC=[(B−A)+(D−C)]/2；key=[(C−A)+(D−B)]/2；交互=(D−C)−(B−A)）；报告区间。每轮 P95 再做配对效应。W2/W4 同指标仅次要描述性分析。
+RQ3：同一配对 block b，I_s,b=(D_s,b−C_s,b)−(B_s,b−A_s,b)，ΔI_b=I_W4,b−I_W2,b。尺度为加性 correctly-confirmed transfers/s，可含零值；报告均值、双侧 Student-t 95% CI、中位数和每个 block 点。只解释完整场景策略交互差。
+Pilot 每条件5个 block（80次），隔离于正式数据。正式初始10个共同 block（160次）；用 pilot 5个配对 ΔI 的标准差 s 选择 n∈[10,14] 中最小满足 t(0.975,n−1)×s/√n≤δ 的 n。δ=pilot A/W1-high 平均正确确认 TPS 的10%，正式数据前冻结。参考均值为零则先修复 pilot；预算/精度超限、不可估或最终半宽不达δ，RQ3降 exploratory；不声称功效或显著性。RQ2 不由该精度门槛保证功效。
+正式运行前冻结 seed/order、参数、观察窗、排除及分析规则。只对预定基础设施失效（重启、驱动崩溃、reset不可用）整 block 标 invalid并复跑，保留原因；低吞吐、死锁、业务拒绝、超时、错误效果都是结果，不排除。记录环境、原始日志、分配/注入及独立审计数据。
+
+8. T1–T13 预期正确性测试（尚未运行）
+编号 | 输入/触发 | 预期/断言
+T1 | 同热账户不同 key 并发借记 | 各组非负、守恒、借贷相等；失败无半笔。
+T2 | 金额大于可用余额 | 确定性拒绝，财务状态不变，不误计 OCC。
+T3 | 第一账户已更新，第二账户失效 | 账户/transfer/ledger 全部撤销。
+T4 | 有效转账、余额充足；同键同 payload，屏障并发 | C/D 唯一 owner、回放或409后同键重试；恰一次；A/B观察效果。
+T5 | 同键不同金额或收款人 | C/D 422且无新增效果；A/B普通请求，记录实际效果。
+T6 | 首 owner 在 commit 前因瞬时故障整笔回滚 | 等待者可接管，无已提交 PROCESSING。
+T7 | COMMIT 成功后丢 HTTP 响应 | C/D 同键回放、不重复；A/B观察可能重复效果。
+T8 | 两请求先读相同版本再竞争写 | ON 冲突后完整回滚/刷新/重试；OFF 当前行更新保持约束。
+T9 | 持续冲突至四次尝试 | 已确认回滚记未提交失败；证据不足记 unknown，不缓存成功。
+T10 | W5 两次读100后写不同旧值 | 诊断丢更新反例，隔离清理，不进入主矩阵。
+T11 | C/D 先一侧写入后确定性业务拒绝 | savepoint 撤销所有财务效果；安全缓存时回放相同4xx；A/B整笔回滚。
+T12 | COMMIT 时连接异常，状态不可知 | 无盲目重跑；C/D仅确认持久记录后回放，否则 unknown；A/B保留 unknown。
+T13 | 锁超时/SQL失败事务 | 恢复 savepoint 或整笔回滚后才读取/返回；分类可观测，无部分提交。
+原型闸门：真实 PostgreSQL 集成测试 T1–T13 与独立审计全部达到各组契约后才进入 pilot；T10 的预期反例不要求安全组出现丢更新。测试设计不等于已通过测试。
+
+9. 资源与时间预算（待 pilot 验证）
+4条件×4组×10 block=160正式运行；60秒纯测量2h40。每轮预算180秒（warm-up30、measure60、drain30、reset/archive30、审计准备30）。正式8h+pilot4h+32次复跑1.6h+环境3h+批量对账/导出2h+分析1h=19.6机器小时；上限24h。n=14时224正式+45复跑，合计23.45h；不得超预算。若不可行，正式数据前降级/与导师缩范围。
+人时估计36–50h：环境4–6、基线审计6–8、OCC4–6、key/注入6–8、pilot/脚本5–7、正式分析5–7、撰写6–8；机器时间另计。单机、无云费；日志上限10GB，监控磁盘、温度/资源，检查生成器不成瓶颈。
+
+10. 14周研究实施路径（与课程节点分开）
+Wk1–2 | 确认主题及伦理路径；定向文献与 gap | Proposal 证据
+Wk3 | 审阅并冻结 RQ、事务及 key 契约 | 导师认可后进入实现
+Wk4 | schema、seed/reset、独立账本审计 | 可复建环境
+Wk5 | 安全共同基线、T1–T3 | 正确性轨迹
+Wk6 | OCC、有限重试、T8/T9 | 冲突/回滚证据
+Wk7 | key、回放、T4–T7 | 并发与恢复证据
+Wk8 | 整合、注入、T10–T13 | 全部正确性闸门、W3 无事务 trace
+Wk9 | pilot、测量及预算检查 | 隔离 pilot 数据
+Wk10 | 冻结 n、δ、顺序、分析与排除规则 | 日期化协议
+Wk11 | W1-low/high 正式区组 | 原始结果
+Wk12 | W2/W4 配对区组与对账 | 故障分母/账本
+Wk13 | 效应量、区间、效度及工程解释 | 可复算分析
+Wk14 | 导师反馈、终稿及演示 | 学生核对材料
+课程：A1 官方书面 DOCX/PDF by Week15；Week6 课堂展示及 A2/A3 具体日期待确认，不能与研究实施周次混同。伦理批准路径亦须确认。
+
+技术依据：PostgreSQL 18 https://www.postgresql.org/docs/18/transaction-iso.html；https://www.postgresql.org/docs/18/explicit-locking.html；https://www.postgresql.org/docs/18/sql-savepoint.html；EF Core https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency；NIST https://www.itl.nist.gov/div898/handbook/ppc/section3/ppc333.htm。
