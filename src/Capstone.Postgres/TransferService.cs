@@ -19,10 +19,18 @@ public sealed class TransferService
         this.policy.Validate();
     }
 
-    public async Task<TransferResult> ExecuteAsync(TransferRequest request, CancellationToken ct = default)
+    public Task<TransferResult> ExecuteAsync(TransferRequest request, CancellationToken ct = default) =>
+        ExecuteAsync(request, clientKey: null, ct);
+
+    public async Task<TransferResult> ExecuteAsync(
+        TransferRequest request, string? clientKey, CancellationToken ct = default)
     {
         if (!request.IsValid)
             return new(TransferStatus.InvalidRequest);
+
+        var key = policy.PersistentKeys ? DurableKey.Create(clientKey, request) : null;
+        if (policy.PersistentKeys && key is null)
+            return new(TransferStatus.InvalidKey);
 
         int versionConflicts = 0, lockTimeouts = 0, deadlocks = 0;
         for (int attempt = 1; ; attempt++)
@@ -30,7 +38,7 @@ public sealed class TransferService
             TransferResult result;
             try
             {
-                result = await ExecuteAttemptAsync(request, ct);
+                result = await ExecuteAttemptAsync(request, key, ct);
             }
             catch (PostgresException failure)
             {
@@ -63,8 +71,10 @@ public sealed class TransferService
         }
     }
 
-    private async Task<TransferResult> ExecuteAttemptAsync(TransferRequest request, CancellationToken ct)
+    private async Task<TransferResult> ExecuteAttemptAsync(
+        TransferRequest request, DurableKey? key, CancellationToken ct)
     {
+        const string beforeFinancialWrites = "before_financial_writes";
         bool commitIssued = false;
         try
         {
@@ -76,46 +86,113 @@ public sealed class TransferService
                 await timeout.ExecuteNonQueryAsync(ct);
             }
 
-            Dictionary<long, long>? versions = null;
-            if (policy.VersionValidation)
+            if (key is not null)
             {
-                versions = await ReadVersionsAsync(transaction, request, ct);
-                if (versions.Count != 2)
+                bool claimed;
+                try
+                {
+                    claimed = await DurableKeys.ClaimAsync(transaction, key, ct);
+                }
+                catch (PostgresException error) when (error.SqlState == PostgresErrorCodes.LockNotAvailable)
+                {
+                    await transaction.RollbackAsync(CancellationToken.None);
+                    return new(TransferStatus.KeyBusy);
+                }
+
+                if (!claimed)
+                {
+                    // A second statement obtains a new READ COMMITTED snapshot.
+                    var existing = await DurableKeys.ReadAsync(connection, transaction, key, ct);
+                    await transaction.RollbackAsync(ct);
+                    return existing ?? new(TransferStatus.KeyBusy);
+                }
+                await transaction.SaveAsync(beforeFinancialWrites, ct);
+                if (probe is not null)
+                    await probe(TransferStep.AfterKeyClaim, request, ct);
+            }
+
+            var result = await ApplyTransferAsync(transaction, request, ct);
+            if (result.Status != TransferStatus.Committed)
+            {
+                bool cacheRejection = key is not null &&
+                    result.Status is TransferStatus.AccountUnavailable or TransferStatus.InsufficientFunds;
+                if (!cacheRejection)
                 {
                     await transaction.RollbackAsync(ct);
-                    return new(TransferStatus.AccountUnavailable);
+                    return result;
                 }
+                await transaction.RollbackAsync(beforeFinancialWrites, ct);
             }
+            if (key is not null)
+                await DurableKeys.CompleteAsync(transaction, key, result, ct);
+
             if (probe is not null)
-                await probe(TransferStep.BeforeAccountWrites, request, ct);
-
-            bool debitFirst = request.SourceAccount < request.DestinationAccount;
-            var failure = await UpdateAccountAsync(transaction, request, debitFirst, versions, ct);
-            if (failure is null)
-            {
-                if (probe is not null)
-                    await probe(TransferStep.AfterFirstAccountWrite, request, ct);
-                failure = await UpdateAccountAsync(transaction, request, !debitFirst, versions, ct);
-            }
-
-            if (failure is not null)
-            {
-                await transaction.RollbackAsync(ct);
-                return new(failure.Value);
-            }
-
-            var transferId = Guid.NewGuid();
-            await WriteLedgerAsync(transaction, request, transferId, ct);
+                await probe(TransferStep.BeforeCommit, request, ct);
             commitIssued = true;
             await transaction.CommitAsync(ct);
-            return new(TransferStatus.Committed, transferId);
+            if (probe is not null)
+                await probe(TransferStep.AfterCommit, request, ct);
+            return result;
         }
-        catch (Exception error) when (commitIssued &&
-            error is NpgsqlException or IOException or OperationCanceledException)
+        catch (InjectedRollbackException) when (!commitIssued)
         {
-            // An interrupted COMMIT is not evidence that the database rolled back.
-            return new(TransferStatus.UnknownCommit);
+            return new(TransferStatus.AbortedBeforeCommit);
         }
+        catch (Exception error) when (error is InjectedCommitUncertaintyException ||
+            (commitIssued && error is NpgsqlException or IOException or OperationCanceledException or InjectedRollbackException))
+        {
+            return await RecoverCompletedKeyAsync(key);
+        }
+    }
+
+    private async Task<TransferResult> ApplyTransferAsync(
+        NpgsqlTransaction transaction, TransferRequest request, CancellationToken ct)
+    {
+        Dictionary<long, long>? versions = null;
+        if (policy.VersionValidation)
+        {
+            versions = await ReadVersionsAsync(transaction, request, ct);
+            if (versions.Count != 2)
+                return new(TransferStatus.AccountUnavailable);
+        }
+        if (probe is not null)
+            await probe(TransferStep.BeforeAccountWrites, request, ct);
+
+        bool debitFirst = request.SourceAccount < request.DestinationAccount;
+        var failure = await UpdateAccountAsync(transaction, request, debitFirst, versions, ct);
+        if (failure is null)
+        {
+            if (probe is not null)
+                await probe(TransferStep.AfterFirstAccountWrite, request, ct);
+            failure = await UpdateAccountAsync(transaction, request, !debitFirst, versions, ct);
+        }
+
+        if (failure is not null)
+            return new(failure.Value);
+
+        var transferId = Guid.NewGuid();
+        await WriteLedgerAsync(transaction, request, transferId, ct);
+        return new(TransferStatus.Committed, transferId);
+    }
+
+    private async Task<TransferResult> RecoverCompletedKeyAsync(DurableKey? key)
+    {
+        if (key is null)
+            return new(TransferStatus.UnknownCommit);
+
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        try
+        {
+            await using var verification = await source.OpenConnectionAsync(timeout.Token);
+            var confirmed = await DurableKeys.ReadAsync(verification, tx: null, key, timeout.Token);
+            if (confirmed is { Replayed: true })
+                return confirmed with { RecoveredCommit = true };
+        }
+        catch (Exception error) when (error is NpgsqlException or IOException or OperationCanceledException)
+        {
+            // Verification failed; preserve the unknown outcome instead of doing a new write.
+        }
+        return new(TransferStatus.UnknownCommit);
     }
 
     private static async Task<Dictionary<long, long>> ReadVersionsAsync(

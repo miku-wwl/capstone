@@ -1,0 +1,25 @@
+MSE907｜Day04 持久请求键与事务恢复
+本地合成工程 · 2026-11-27（Pacific/Auckland）
+
+CAPSTONE_GROUP 现支持 A、B、C、D。C/D 使用 (synthetic-tenant, /transfers, client key) 唯一键，指纹为规范化账户 ID、最小货币单位金额和币种的 SHA-256。应用先在同一事务中占键，然后进行财务写。已完成记录持久保存原业务状态和 transfer ID，HTTP 回放按同一响应契约编码。每轮保留所有记录至停止派发、清场及审计后的实验库 reset。七天保留期仍是部署候选，试验中没有后台清理任务。
+
+占键后的并发副本在 PostgreSQL 唯一约束处等待。ON CONFLICT DO NOTHING 返回未插入时，由后续 READ COMMITTED 语句读取已完成记录。不同指纹返回 422，同键等待超时先整笔回滚再返回 409。未确认回滚或提交的失败不会形成“成功缓存”。A/B 不使用键表。
+
+确定性拒绝路径在占键之后、任何财务更新之前设置 savepoint。若后来证实账户不可用或资金不足，先用成功的 ROLLBACK TO 撤销全部财务写，再提交完成的失败响应。若业务结果不明确，则结束整个事务。未知 COMMIT 终止写入重试。C/D 用新连接在 2 秒内检查同键同指纹的完成记录，查到才回放。A/B 保留 unknown。一条查无记录的查询不能确认旧事务回滚。
+
+实测 PostgreSQL 17.7 及 Kestrel 回环 HTTP
+• T4 在 C 和 D 均观察到 pg_stat_activity 的唯一键锁等待。owner 及副本返回相同 transfer ID，副本标记 replay，恰好 1 条转账、2 条分录和 1 个完成键。
+• T5 同键异金额使第二请求进入 KeyPayloadMismatch，账本只保留原来 1 次效果。
+• T6 在已写入财务记录、尚未 COMMIT 时触发受控回滚。数据库等待者接管并获提交，审计只看到等待者的 attempt ID 和一次效果。
+• T7 在 COMMIT 成功并记录服务事件后中止实际 HTTP 连接。客户端收到传输异常，再以同一逻辑 ID 与 key 重发。场景 A 留下 2 次有效财务写，D 回放原 transfer ID 并留下 1 次。两边账户与各自分录均能对账。此用例说明业务重复与账本守恒可同时出现。
+• T11 第一账户写入后，第二账户的业务条件不满足。保存点下的账户、transfer 和分录都无残留，只有完成拒绝键。重放未再次执行第一账户更新。
+• T12 是应用层受控注入。数据库已提交而应用观察不明时，键关闭组保留 unknown，键开启组确认持久记录后回放同一结果。提交前注入且查无记录的用例保持 unknown，实测写入 0。三次用例都只尝试一次事务。未注入真实 PostgreSQL COMMIT 确认包丢失。
+• T13 真实键锁超时返回 KeyBusy，重新发同键可回放。真实账户行锁超时在第二侧阻塞时使第一侧更新和版本全部撤销。两类均通过独立账本对账。
+
+执行命令
+  ./infrastructure/Enter-Lab.ps1
+  dotnet restore Capstone.slnx --locked-mode
+  dotnet build Capstone.slnx --no-restore -c Release
+  dotnet test --solution Capstone.slnx --no-build -c Release
+
+Release 构建 0 警告、0 错误。28 项测试全部通过，7 项单位测试和 21 项真实数据库集成用例，0 跳过。代码见 src/Capstone.Postgres/DurableKeys.cs、TransferService.cs、src/Capstone.Api/LabApi.cs 及 tests/Capstone.IntegrationTests/IdempotencyRecoveryTests.cs。记录为工程验证，后续 Day05 完成 W3/W5、统一负载与复现准备。

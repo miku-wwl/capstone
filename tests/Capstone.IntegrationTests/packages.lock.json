@@ -157,6 +157,12 @@
           "xunit.v3.runner.common": "[4.0.3]"
         }
       },
+      "capstone.api": {
+        "type": "Project",
+        "dependencies": {
+          "Capstone.Postgres": "[1.0.0, )"
+        }
+      },
       "capstone.core": {
         "type": "Project"
       },

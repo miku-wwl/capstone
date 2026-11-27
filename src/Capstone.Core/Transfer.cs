@@ -34,7 +34,11 @@ public enum TransferStatus
     SerializationFailure,
     DatabaseUnavailable,
     DatabaseFailure,
-    RetryExhausted
+    RetryExhausted,
+    InvalidKey,
+    KeyPayloadMismatch,
+    KeyBusy,
+    AbortedBeforeCommit
 }
 
 public sealed record TransferResult(
@@ -44,13 +48,22 @@ public sealed record TransferResult(
     int VersionConflicts = 0,
     int LockTimeouts = 0,
     int Deadlocks = 0,
-    TransferStatus? LastFailure = null);
+    TransferStatus? LastFailure = null,
+    bool Replayed = false,
+    bool RecoveredCommit = false);
 
 public enum TransferStep
 {
     BeforeAccountWrites,
-    AfterFirstAccountWrite
+    AfterFirstAccountWrite,
+    AfterKeyClaim,
+    BeforeCommit,
+    AfterCommit
 }
 
 public delegate ValueTask TransferProbe(
     TransferStep step, TransferRequest request, CancellationToken cancellationToken);
+
+public sealed class InjectedRollbackException() : Exception("Controlled rollback before COMMIT.");
+
+public sealed class InjectedCommitUncertaintyException() : Exception("Controlled uncertain COMMIT receipt.");

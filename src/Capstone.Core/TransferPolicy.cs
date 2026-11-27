@@ -8,7 +8,8 @@ public sealed record TransferPolicy(
     int LockTimeoutMs = 1500,
     int InitialBackoffMs = 5,
     int BackoffCapMs = 50,
-    int JitterSeed = 907)
+    int JitterSeed = 907,
+    bool PersistentKeys = false)
 {
     public void Validate()
     {
