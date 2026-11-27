@@ -1,0 +1,144 @@
+MSE907｜Assessment 2 系统设计与研究方法
+Week03 Day01 · 2026-11-27（Pacific/Auckland）· 实施前设计
+
+1. 研究目标与当前证据
+
+Evaluating Data Consistency and Performance Trade-offs in Financial Transaction Systems under Concurrent and Retry-Prone Workloads
+
+研究比较同一合成转账 API 内两种可部署应用策略的增量效果。余额 100 时，两笔不同请求各转 30 且都成功，正确余额是 40。若实际只提交了一笔 30，账户余额为 70，而响应丢失后误执行同一逻辑请求可能再变成 40。后者即使借贷平衡，也可能是重复业务效果。该例说明行业团队需要同时知道交易是否完整、逻辑效果是否唯一、客户是否收到正确结果。这些是说明性输入与预期，实际效果待验证。
+
+证据基线为 Assessment 1 v1.2（eb1d9dcd43cc9cd953f3208ebde617212886ab79）Day03 与 Day04。Meeting 3 和本轮新增研究强化了因子控制、恢复边界及独立账本判定。以下细化供审阅，未经 pilot 或导师确认的参数均是候选。
+
+2. 研究问题及其对应证据
+
+RQ1 — Correctness
+Under shared PostgreSQL READ COMMITTED transactions and business constraints, what invariant violations, duplicate financial effects or client–ledger inconsistencies occur across A–D under concurrency, repeated delivery and specified fault traces?
+
+RQ2 — Performance
+Under predefined low- and high-contention workloads, how do version validation and persistent request idempotency, separately and jointly, affect correctly confirmed logical throughput, logical end-to-end P95 latency and transaction costs? How do these measures vary descriptively in W2 and W4?
+
+RQ3 — Scenario interaction
+Under matched background load, hotspot distribution, assigned duplicate proportion, seed policy, retry budget and observation window, how does the OCC × idempotency interaction in concurrent same-key delivery (W2) differ from that in post-commit HTTP response loss (W4)?
+
+保留 v1.2 英文原文。LO2 的细化体现在明确样本单位、分母、匹配条件、业务决策及取证方式。RQ1 用独立对账和 T1–T13 断言判断效果，再报告各组各场景的事件数和暴露分母。RQ2 使用 W1-low/high 各完整区组的正确确认吞吐、P95 和成本效应，并描述 W2/W4。RQ3 使用 W2/W4 加性正确确认 TPS 的配对区组交互差。即使 A–D 都无共同账本违例，或者 OCC 成本大于收益，这些仍是有效观察。
+
+问卷可以了解开发者需要，却无法证明财务效果与提交边界。选用受控 2×2 实验，既能对照两个机制各自的成本，又能检查开启另一机制是否改变其效应。金融行业的具体决策是：若所测同类接口主要风险来自响应丢失后的重复投递，应依据效果次数、用户能否取回原结果，以及重放等待与资源成本选择持久键策略。是否加版本校验应结合真实冲突与重试成本。研究结论限于观测到的单库合成负载。
+
+3. 组件、领域与存储
+
+Client / Load Generator
+    → ASP.NET Core Transfer API（请求校验、逻辑与尝试关联、结果映射）
+    → Transfer Service（策略开关、业务不变量、事务状态与重试边界）
+    → PostgreSQL（账户、转账、借贷分录、持久请求键）
+独立输入记录 + 客户端事件 + 终态数据库快照
+    → Ledger Auditor（对账及请求结果分类）→ 测量和分析
+
+应用负责工作流，不需要把上述职责拆成跨网络服务。候选实现按 API、领域/应用、数据库访问和独立工具组织，项目数量由实际依赖决定。统一的 Transfer Command 校验正金额、币种精度、双方账户不同，使用 C# decimal / PostgreSQL numeric(19,2)。只允许预定币种及其固定精度，拒绝超出范围的输入。禁止把数据库的数值舍入当作校验。双方存在且 active、借方余额充足，由写入谓词和约束落实。
+
+逻辑表 | 关键字段与约束 | 研究作用
+accounts | id（account_id）、balance、version、status。ID 主键，余额非空且不小于零 | 当前行相对更新和观测版本。
+transfers | transfer_id、logical_request_id、source、destination、amount、currency。独立 transfer_id 为主键 | 区分两次实际财务效果与一个逻辑请求。logical_request_id 允许重复，只供关联及审计。
+ledger_entries | transfer_id、account_id、entry_type、signed_amount。每笔每种借/贷分录唯一并关联账户与转账 | 检查两条分录的符号、金额、账户和总和。配对完整性由事务契约与独立审计共同验证。
+idempotency_records | scope、endpoint、key、fingerprint、status、response、transfer_id、completed_at。前三列联合唯一 | C/D 协调 owner、同载荷及可重放结果。确定性拒绝可以只有完成响应，无财务 transfer_id。
+
+组 | Version validation | Persistent key | 各组策略
+A | OFF | OFF | 安全当前行相对更新。
+B | ON  | OFF | 同一 UPDATE 增加版本条件并在确认冲突后整笔重试。
+C | OFF | ON  | 同一相对更新加事务内请求键。
+D | ON  | ON  | 组合 B 和 C 的策略。
+
+四组共享 ACID、READ COMMITTED、schema、约束、资源和稳定账户 ID 更新顺序。A/B 的生成器仍记录逻辑请求身份，执行路径不访问键表。所有资源和安全约束按组相同，版本读取、锁等待、冲突重试及键协调属于被比较的实际策略开销。
+
+4. 写入契约与失败状态
+
+统一路径：按账户 ID 升序对双方执行参数化 UPDATE。借方余额设为当前余额减金额，谓词包含账户 ID、active 与 balance ≥ amount。贷方设为当前余额加金额，谓词含 ID 与 active。两种 UPDATE 都递增 version，检查恰好一行更新。收到两个有效行结果后写 transfer 和两条借贷分录，并在同一事务提交。任一步失败撤销全部财务写入。两次 UPDATE 的账务顺序取决于账户 ID，贷方先更新时同样适用回滚要求。
+
+PostgreSQL 在 READ COMMITTED 下等待竞争写事务。竞争方提交后，重检当前行 WHERE，基于该行求余额相对更新。因此 OFF 不从此前读取的旧余额覆盖账户。B/D 先在本次事务读取双方新版本，仅给相同 UPDATE 添加 expected_version 谓词。零行不是冲突证据。区分可证账户无效、余额不足、预期版本不符或原因不明，后续快照只能提供当时观察，不能单独反推原失败原因。若 SQL 已使事务失败，先确认恢复 savepoint 或整笔结束，才执行后续查询。只有证明本次事务未提交且分类为可重试，才新建整笔尝试。候选初次加最多三次、退避上限与确定性抖动待冻结。
+
+C/D 的键范围为 (synthetic tenant, endpoint, client key)，指纹使用规范化的转出/转入 ID、最小货币单位金额和币种。所有组的请求输入一致。C/D 在财务写入前占用唯一键，不单独提交 PROCESSING。持久状态沿着以下契约：
+
+无记录 → 事务内占键 → 财务效果、分录和完成响应同事务提交 → COMPLETED。
+同键同载荷 → 等待当前 owner → owner 提交后用新的 SQL 语句及快照查 COMPLETED，再回放原状态、响应和 transfer_id。
+owner 回滚 → 未留持久 PROCESSING，另一请求可以取得键并执行。
+同键异载荷 → 无额外财务效果，候选 422。键等待超时 → 恢复或回滚并确认安全后，候选可重试 409，客户保留同键。
+
+INSERT ON CONFLICT DO NOTHING 可能因为其语句快照不可见的行而没有插入。其返回零行时，后续查询确认占用结果，不能把同一语句没有读到行理解成未提交。候选七天键保留期及相关超时须冻结，实验期间不在组间改变清理行为。HTTP 错误状态借鉴 IETF Internet-Draft -09，属于本实验候选契约。
+
+确定性业务拒绝。C/D 在占键之后、首次财务写前建立 savepoint。出现可证的确定性业务 4xx 时，回滚到保存点，确认余额、转账和分录写均已撤销且事务可用，再保存该响应并提交键记录。撤销无法确认、分类不明或事务失效时结束整个事务。A/B 用相同业务谓词，失败整笔回滚。死锁、短暂连接故障和重试耗尽等不得被缓存为已完成的财务成功。
+
+提交结果有三态。确认未提交时仅重试符合策略的故障。确认提交时返回或重放已有结果。提交未知时保持原 logical ID，记录 unknown，禁止数据库客户端透明重放财务事务。C/D 可在新连接对同一范围、键与指纹核实持久完成记录，证实后方可回放。查无记录不能证明回滚。A/B 保留未知结果供审计和对账，不另建隐藏去重路径。T12 应标明应用层可控注入和真实数据库 COMMIT 确认丢失的证据差异。
+
+5. 工作负载和测量契约
+
+W1-low 与 W1-high 为无故障低/高竞争主工况，W0 为 W1-low 别名。1% 热账户与 10%/80% 访问比例是 v1.2 候选，用账户实际重叠、锁等待和版本冲突验证区分度。W2 按预分配比例并发投递同键同载荷。W4 在数据库确认提交后、写 HTTP 响应前触发丢失，由生成器按相同键发送计划副本。W2/W4 配对使用相同背景负载、初态、hot set、种子、分配剂量、重试预算和观察窗。分配、合格、实际触发、重发、内部重试及确认分别计数。保留未触发的已分配样本。
+
+W3 只做事务开始前的 gate 诊断，由可关联的 API/数据库轨迹证明未 BEGIN/COMMIT。证据缺失留作 unknown。W5 仅为隔离的旧值覆盖诊断。真实 DB COMMIT acknowledgement 丢失是 T12 的独立实施安全问题。三者不进主性能矩阵。故障接口受本地实验控制，仅提供受限状态钩子，记录触发条件和时点。无实验配置时保持关闭。
+
+输入清单在运行前生成。区分 logical_request_id、attempt_id、transaction_attempt、transfer_id。每轮保存 run_id、block_id、scenario、group、Git SHA、环境/配置/初始数据的指纹、工作负载 seed、顺序 seed、计时与分配/触发结果。AUDIT 读取独立生成的初始状态/输入和事务结束后的账户/transfer/ledger 快照，用客户端和提交事件校对。逐笔复核金额、币种、账户、借方与贷方、每逻辑 ID 的 0/1/多次提交，根据期初余额加分录求期末预测值并对照实际余额。仅对账守恒无法发现成对重复扣款。提交/客户端证据欠缺则独立记录，避免把状态不明判为成功或失败。
+
+正确确认逻辑 TPS 的分子为首次发送在 60 秒测量窗内、到追加 30 秒 drain 截止前收到有效成功确认、恰好一项提交财务效果且最终对账通过的唯一请求，除以固定 60 秒。并列报告原始尝试 TPS、事件分母、重复效果、失败、晚到和 unknown。P50/P95/P99 以每轮正确确认逻辑请求的首次发送到确认计时，含重复发送、等待及回放。没有符合项时 P95 为 NA，报告可用轮数和失败/未知率。记录 CPU、内存、连接、锁等待、死锁、版本冲突、事务重试和键等待/回放。
+
+Drain 与清场是不同边界。测量窗后停止产生新逻辑请求，按契约处理已有请求的有界重发。到 drain 截止冻结计量集合，停止继续派发，对仍在执行的事务等待或受控取消并确认终态。记录晚到、取消、连接或提交状态未定。只有证明不会再有上一轮写入，才取独立审计快照和 reset。若不能确认清场，保存证据并阻止下一轮，按事前规则决定是否为基础设施失效。不能用 reset 消除不利结果。完成终态审计保留之前已固定的窗口规则。
+
+6. 正确性及分析设计
+
+下面是预计轨迹及判据，均待实现后验证。关键交错使用可诊断的屏障及真实 PostgreSQL，纯函数单元测试只验证输入、金额和状态映射。
+
+轨迹 | 主要预期证据
+T1 | 同热账户不同逻辑请求竞争，已提交余额非负，守恒，借贷对应。
+T2 | 资金不足，业务拒绝且无财务效果，不能计为版本冲突。
+T3 | 首侧已写、第二侧不满足谓词，快照无半笔、无残留转账或分录。
+T4 | 同键同载荷竞争，C/D 一次效果、回放或有界等待后同键重试。A/B 按实际效果数报告。
+T5 | 同键异载荷，C/D 拒绝且无新增效果，A/B 作为普通请求审计。
+T6 | owner 确认回滚，竞争方可接管，无持久 PROCESSING。
+T7 | 已确认提交后丢 HTTP 响应，C/D 回放已有结果，A/B 保留可能多次效果的观察。
+T8 | 版本冲突，ON 证明失败并整笔回滚后刷新版本，OFF 当前行相对更新。
+T9 | 冲突持续至预算耗尽，确认回滚的尝试无残留。证据不足保留 unknown。
+T10 | W5 的旧值覆盖反例只检查诊断逻辑，隔离数据库与计量结果。
+T11 | C/D 已有一侧写入后确定性拒绝，保存点撤销财务效果，已安全缓存的 4xx 可回放。
+T12 | COMMIT 结果未知，不重跑财务写。C/D 只回放已核实记录，无法核实则留 unknown。
+T13 | 行锁/键等待超时或 SQL 失败，确认恢复或回滚后才能分类和读取，无部分提交。
+
+计划以 T1–T13 和独立对账为 pilot 前闸门，CI 走 restore/build/单元与 PostgreSQL 集成/配置检查。正式性能测量使用冻结的本地环境。负载和测试脚本、新版本与证据索引在具备实施条件后交付。
+
+每次独立重置的运行是观测单位，完整区组对比用于不确定性估计。组内共享数据和 workload seed，另用独立顺序种子随机安排。W2/W4 配对块含八个单元，优先组织成四工况共 16 单元的共同区组。用区组内 [(B−A)+(D−C)]/2 与 [(C−A)+(D−B)]/2 估计两个主效应。交互 I_s=(D_s−C_s)−(B_s−A_s)。RQ3 的 ΔI=I_W4−I_W2 报告区组点、均值、中位数和双侧 Student-t 95% 区间。解释范围为完整匹配场景，不单独归因于故障位置。保留所有非基础设施故障结果，包括吞吐低、超时和重试耗尽。
+
+v1.2 规划为四工况×四组×五个 pilot 区组即 80 轮，隔离于正式样本。正式初始 n=10 即 160 轮，n≤14 即 224 轮。用五个配对 pilot ΔI 的标准差 s，选择 10–14 内最小满足 t(0.975,n−1)×s/√n≤δ 的 n。δ 为 pilot A/W1-high 平均正确确认 TPS 的 10%，参考均值为 0 先排查。样本不可估、预算不足或区间实际半宽超 δ 时按协议将 RQ3 降级为探索性。此规则估计区间精度，不担保 RQ2 功效。n、参数、顺序、分母和整区组失效规则都在正式结果前冻结。
+
+180 秒/轮估算含预热 30、测量 60、drain 30、重置/归档 30、审计准备 30。n=10 的 80 pilot＋160 正式＋32 预留复跑耗时 13.6h，环境、批量审计/导出和分析另 6h，共 19.6h。n=14 同口径含 45 轮预留，总计约 23.45h。总预算 24 机器小时贯穿两个阶段，pilot 验证计时、清场、生成器瓶颈、连接/资源、触发和独立复算。实际成本与精度尚未测量。
+
+7. 软件工程原则与效度
+
+原理 | 在设计中的作用 | 预期验证证据
+Separation of Concerns | HTTP、事务编排、SQL 与审计分离，避免业务自判通过 | 独立输入与账本复算可指出成功响应的错误效果。
+Encapsulation | 类型封装精确金额与不可变逻辑请求，将账户、转账和结果语义固定 | 金额、币种及状态映射可独立验证。
+Dependency Inversion | 应用依赖事务、时钟及故障钩子接口，数据库实现使用同一事务连接 | 测试可控制时点，事务可靠性仍用真实 PostgreSQL 验证。
+Transactional Integrity | 余额、转账、两条分录和适用的完成记录组成一个工作单元 | T3、T6、T11 撤销/保存点和重复后的终态对账。
+Defensive Programming | 谓词、受影响行数、有界重试、未知提交分类并列 | T8/T9/T12/T13 证明保守失败及安全降级路径。
+Testability | 确定性交错触发预设条件，独立断言共同约束和组特定契约 | T1–T13 的轨迹、初态、结果、环境与证据等级。
+Observability | 区分逻辑请求、HTTP 尝试、事务尝试与财务效果，并记录等待、冲突和回放 | RQ1/RQ2 能解释同样 HTTP 吞吐为何对应不同财务结果。
+Reproducibility | 版本化 schema、配置、seed、冻结顺序、清场及指标脚本 | 从 manifest 重建试验条件并复算区组对比、图表和数据哈希。
+
+内部效度依赖公平基线、同等日志配置、统一 warm-up 与清场。构念效度依赖正确确认和成功样本条件延迟同时报告失败分母。外部效度限单机、单数据库及人工触发场景。结论效度需报告各完整区组、区间精度、未通过的诊断和参数敏感性。无观察违例不等于零风险。
+
+8. 环境、批准与报告框架
+
+环境检查为只读。检测到 Ryzen 7 8845HS（8 核/16 逻辑处理器）、约 31.3 GiB 内存，D 盘检查时约 207.1 GiB 可用。可见 .NET SDK 9.0.304 与 10.0.300，Docker CLI 和 daemon 29.9.3、Compose v5.7.0，当前 PATH 未检出 Podman 和 psql。检查时未发现 5432 在监听。这些是现场快照。启动前需确认主机空闲、隔离资源、端口、实际 PostgreSQL 镜像版本及 digest。Docker/Compose 是本机可用候选，容器选择待与导师确认。Day01 未启动原型、未建立研究数据库、未使用外部支付或真实数据。
+
+实施闸门为待确认。Meeting 3 草稿、v1.2 待办和可查导师记录尚未提供对现课题、技术范围及机构伦理路径的项目级确认。学生须核实导师确认和适用的审批、豁免或无需审查决定。需要复用已有项目代码时，另确认规则及出处。本阶段只完成实施前资料。Day02 起的原型、CI、T1–T13、pilot 与正式实验均未执行。现在无实测数据和 RQ 结果。
+
+已读取官方 Assessment 1（20%）、Assessment 2（40%）与 Assessment 3（40%）的要求及评分表。A2 为基于 A1 的 written WIP Report（DOCX/PDF，姓名学号、双倍行距、一致引用）。四项评分维度各占 A2 的 25%。报告框架及证据落点：
+
+LO1｜导言与新增文献/gap。引用同目录文献分析，交代先例和阅读限制。
+LO2｜RQ 与方法。用本文第 2、4、5、6 节说明产业实例、2×2 设计、数据与测量。实施或 pilot 缺失时真实注明。
+LO3｜原则及其初步应用。用本文第 3、4、7 节说明设计决定与拟验证证据。实际源码、CI、账本和测试有证据后才能记作已应用。
+LO4｜伦理与文化。结合独立伦理分析、批准状态、数据与日志方案、弱网及本地文化背景。
+
+正式的 WIP 审阅稿还需整合后续真实进度、限制和参考文献。A2 官方提交说明列书面报告。本研究的 80/160 轮属于协议计划。A3 以封面、提交要求、任务和评分表为准，虽 Objective 沿用 WIP 字样。A3 需要 Final Research Report（DOCX/PDF，姓名学号、双倍行距、一致引用）、演示文件及学生本人的演示录制。LO1/LO3/LO4/LO5 各为 20%/40%/20%/20%。实验、最终报告和录制须在相应条件满足后形成。A2/A3 具体截止按课程通知核对。Day01–Day07 为工作阶段，记录实际日期与进展。
+
+技术来源
+PostgreSQL 18 文档，Read Committed Isolation Level 与 Explicit Locking。https://www.postgresql.org/docs/18/transaction-iso.html#XACT-READ-COMMITTED
+https://www.postgresql.org/docs/18/explicit-locking.html
+PostgreSQL 18，ROLLBACK TO SAVEPOINT。https://www.postgresql.org/docs/18/sql-rollback-to.html
+Microsoft，EF Core Connection Resiliency，Transaction commit failure and the idempotency issue。https://learn.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency#transaction-commit-failure-and-the-idempotency-issue
+IETF HTTPAPI，The Idempotency-Key HTTP Header Field，Internet-Draft -09（2026-11-21，工作稿）。https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-09

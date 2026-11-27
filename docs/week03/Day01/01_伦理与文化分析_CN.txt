@@ -1,0 +1,49 @@
+MSE907｜Assessment 2 伦理与文化初步分析
+Week03 Day01 · 2026-11-27（Pacific/Auckland）· LO4 审阅材料
+
+1. 研究范围与实施闸门
+
+拟议研究对象是本地单 PostgreSQL 数据库上的合成转账 API。用确定性种子生成账户、余额、请求 ID、币种及金额，不从真实客户交易或设备记录抽样。真实账户、支付卡、转账网络、资金和访谈均在范围外。研究不招募参与者，当前设计没有需要取得同意的人类参与者。若增设访谈、可用性测试、真实数据或观察真实用户，先向学校确认审查、知情同意、数据治理与撤回路径，再启动新增活动。
+
+截至本阶段，v1.2 与 Meeting 3 都将选题和伦理路径列为待确认。2026-11-12 导师会议记录提供了 PGR007 及可能需要伦理或同意流程的一般指导，现有可访问资料没有给出针对本项目当前题目、范围和技术方案的批准，也没有项目专属伦理审批、豁免或无需审查的确认。应向导师确认适用校内表单与决定人，并由学生在私有记录中保存确认的日期、范围、条件与来源。已有代码复用若适用需另行确认及标注。Day02 实施与后续数据采集须等到这些条件得到核实。
+
+2. 数据保护、保留和结果真实性
+
+Privacy Act 2020 第 7 条的核心判断之一是信息是否关于可识别个人。合成 ID 仍需与真人、真实银行标识及设备遥测断开。第 22 条关于目的必要性、存储安全、保留期限和使用范围的原则为本设计提供具体约束。是否有法律或学校义务适用，依据实际数据和校内决定核查。若误采可识别信息，隔离记录、暂停发布并按机构流程处理。
+
+采集源 | 允许保存及验证用途 | 处理原则
+合成初始化与输入 | seed、输入清单、合成账户编号、精确金额、负载和故障分配 | 用生成规则与哈希复建，禁止粘入生产数据或复制用户行为轨迹。
+运行事件 | run/block/scenario/group、逻辑与尝试 ID、相对时间、结果类别、提交与回放状态 | 使用运行范围内的相关 ID。去除外部 IP、主机登录名、访问令牌、连接串、请求原始头和不需留存的载荷。
+财务对账 | 每笔转账与分录、期初期末余额、差值、异常和 unknown | 脱敏设备元数据与栈信息后再同步。哈希与版本记录保证来源，不能用哈希代替敏感字段筛查。
+工作材料 | 公开来源、合成证据清单和可复算派生数据 | 可公开文件先审查字段与权限。导师记录、身份资料及原始私有配置保留在适当的权限范围，不随 Git 交付。
+
+待学校确认后，以保留目的决定数据期限、权限及到期处置方式。原始合成日志遵守 v1.2 的资源预算，并保留 run manifest、完整区组及足以复算的重要字段。原始文件、清洗后的数据、图表均记录 Git SHA、配置和 SHA-256。实验幂等记录的候选保留期与学术证据留存分别决定。
+
+避免因样本选择让系统显得更可靠。预先冻结分母与排除标准，记录每轮已分配、实际触发、重复效果、晚到及未知结果。只按事前规则处理有证据的整区组基础设施失效，保存原因。P95 的正确确认样本同时配报未成功和 unknown 比例，保证可见性。T1–T13、pilot 与正式实验都处于计划状态，文献数字注明作者来源。报告应以学生独立理解及证据为基础，核验引用、解释本人工作与 AI 辅助范围，按 Student Handbook 和课程最新规定披露。姓名和学号只在学生私人提交副本填写。
+
+3. 可靠性、数字接入与适应措施
+
+同一逻辑请求重复扣除 30 元可能导致低余额用户无法支付下一笔必要支出。弱网或连接中断可能延迟用户确认，即使数据库事务已结束。服务需要有明确的结果区分与可追踪参考号，避免让用户只能再发一次转账。本研究通过 W2/W4 验证后端的重复与响应中断机制，按是否存在真实提交、应向客户端确认什么、是否还能重放结果分别取证。研究使用的人造故障不估计任何社区的网络中断率或真实资金损害。
+
+Grimes 与 White（2019）结合四项新西兰调查，发现数字接入随地区、年龄、就业和居住情况等多种条件变化，在残障者与社会住房住户等群体观察到明显的接入差距。分析是历史性、观察性的。Reserve Bank of New Zealand 的金融包容指标把账户与支付渠道的可及性作为单独维度。来自这些来源的人群差异属于需求背景。它们不能作为当前实验合成用户的行为分布，也不能用本实验得出 Māori、Pasifika 或任何人群的可靠性排名。
+
+工程适应建议。在弱网下优先支持保留同一操作标识、轻量状态查询和恢复后查看原结果。界面应能读出待核对、已确认与未成功等状态，在状态不明时给出明确的后续查询或人工支持入口。后续可和实际用户与服务方共同验证低带宽、辅助技术、不同语言以及货币/小数显示的可用性，并考虑继续提供适当的非数字联系渠道。当前后端仅评估预定义故障与计量窗，不声称已验证这些界面和服务安排。
+
+4. Te Tiriti o Waitangi 与 Māori Data Sovereignty
+
+Waitangi Tribunal 发布的 te reo Māori 文本中，第二条（Ko te Tuarua）涉及 rangatira、hapū 与 Māori 对 whenua、kāinga 和 taonga 的 tino rangatiratanga。Te Mana Raraunga（2018）把 Māori 数据解释为来自或关乎 Māori 人群、语言、文化、资源或环境的信息，并提出 rangatiratanga（权威与控制）、whakapapa（来源及关系）、kaitiakitanga（守护）和同意等治理原则。其关注范围包括集体权利、数据语境和未来用途。个人去标识化无法单独解决这些问题。
+
+本研究账户和交错由合成规则生成，不代表 iwi、hapū 或任何真实人群。研究不收集 Māori 数据或设置族裔性能对比。实际措施是记录合成数据的来源与用途，不按族裔推断结果，也不把开放发布当作未来数据的默认权利。若以后采用源自 Māori 人群或关于 Māori 的数据、研究特定社区或公开其相关结论，先与相关 iwi、hapū 或适当代表确定研究目的、数据控制、访问、存放、保留、再用条件及受益安排，并经过机构审查及相应同意。该安排仍需共同商定，目前没有发生社区咨询或取得同意。
+
+5. LO4 的证据去向
+
+WIP 报告应解释采集边界、保护措施、潜在偏差、弱网下未知结果的影响与文化适应选择。后续如能获得实验数据，最终报告与答辩须把发生的财务异常、客户端结果和故障模型限制对应起来，并清楚区分样本发现与文化背景资料。核对实际课程截止、正式格式、AI 披露与学生本人录制要求后再准备正式交付。
+
+原始来源
+New Zealand Legislation. Privacy Act 2020, s. 7（定义）。https://www.legislation.govt.nz/act/public/2020/0031/latest/LMS23375.html
+New Zealand Legislation. Privacy Act 2020, s. 22（信息隐私原则）。https://www.legislation.govt.nz/act/public/2020/0031/latest/LMS23443.html
+Waitangi Tribunal. Māori and English texts（Ko te Tuarua 及当代译文）。https://www.waitangitribunal.govt.nz/en/about/the-treaty/maori-and-english-versions
+Te Mana Raraunga. (2018). Principles of Māori Data Sovereignty（Brief No. 1）。https://www.temanararaunga.maori.nz/principles-of-maori-data-sovereignty
+Grimes, A., & White, D. (2019). Digital Inclusion and Wellbeing in New Zealand（Motu Working Paper 19-17）。https://www.motu.nz/our-research/wellbeing-and-macroeconomics/well-being-and-sustainability-measures/digital-inclusion-and-wellbeing-in-new-zealand
+Reserve Bank of New Zealand – Te Pūtea Matua. Financial inclusion indicators。https://www.rbnz.govt.nz/statistics/series/financial-inclusion
+课程要求依据由现有的三份官方 MSE907 Assessment PDF、Meeting 3 及 2026-11-12 会议记录核对。校内伦理路径以项目实际确认记录为准。
