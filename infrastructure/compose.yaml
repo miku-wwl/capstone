@@ -1,0 +1,19 @@
+name: mse907-capstone
+services:
+  postgres:
+    image: postgres:17.7-alpine@sha256:bb377b7239d2774ac8cc76f481596ce96c5a6b5e9d141f6d0a0ee371a6e7c0f2
+    environment:
+      POSTGRES_DB: capstone
+      POSTGRES_USER: capstone
+      POSTGRES_PASSWORD: ${CAPSTONE_PASSWORD:?Set CAPSTONE_PASSWORD for the local lab}
+    ports:
+      - "127.0.0.1:${CAPSTONE_PORT:-55432}:5432"
+    volumes:
+      - capstone-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "capstone", "-d", "capstone"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+volumes:
+  capstone-pg:

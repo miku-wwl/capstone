@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../Capstone.Postgres/Capstone.Postgres.csproj" />
+  </ItemGroup>
+</Project>

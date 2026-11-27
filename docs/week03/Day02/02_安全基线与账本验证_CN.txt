@@ -1,0 +1,36 @@
+MSE907｜Day02 安全基线与账本验证
+执行日期 2026-11-27（Pacific/Auckland）
+
+完成 Group A 的本地合成转账 API。应用按账户 ID 升序，以 PostgreSQL READ COMMITTED 相对更新余额和版本。借记用余额、账户状态谓词，贷记用账户状态谓词，每步检查受影响行数。两边余额、一次 transfer 与两条 ledger entry 属于同一事务。logical_request_id 只有普通索引，A 组不使用持久键表。
+
+代码入口
+• Capstone.slnx 和 global.json 锁定 .NET 10 工具链，项目各自保存 NuGet lock 文件。
+• infrastructure/compose.yaml 使用独立 mse907-capstone 项目，数据库绑定 127.0.0.1:55432。实际 PostgreSQL 17.7，镜像索引 SHA-256 bb377b7239d2774ac8cc76f481596ce96c5a6b5e9d141f6d0a0ee371a6e7c0f2。
+• src/Capstone.Core/Transfer.cs 定义精确金额及请求校验。src/Capstone.Postgres/Migrations/001_initial.sql 是实际迁移。LabDatabase 提供版本检查与 seed/reset。
+• src/Capstone.Postgres/TransferService.cs 实现事务。LedgerAuditor.cs 以独立的输入和数据库快照复算账目。
+• src/Capstone.Api/Program.cs 提供本地 HTTP 入口。tests/Capstone.IntegrationTests/SafeBaselineTests.cs 包含真实数据库断言。
+
+实际执行
+PowerShell 7，从仓库根目录执行：
+  ./infrastructure/Enter-Lab.ps1
+  dotnet restore Capstone.slnx --locked-mode
+  dotnet build Capstone.slnx --no-restore -c Release
+  dotnet test --solution Capstone.slnx --no-build -c Release
+  dotnet ./src/Capstone.Api/bin/Release/net10.0/Capstone.Api.dll --migrate
+  dotnet ./src/Capstone.Api/bin/Release/net10.0/Capstone.Api.dll --reset 907 4
+  dotnet ./src/Capstone.Api/bin/Release/net10.0/Capstone.Api.dll
+
+初次依赖解析使用普通 restore，发布前用 --locked-mode 校验锁文件。Release 构建 0 警告、0 错误。12 项测试通过，其中 7 项单位测试、5 项 PostgreSQL 集成用例，失败 0、跳过 0。
+
+T1 两个请求同时就绪后竞争同一借方账户。100 元各扣 30 元时两笔提交，余额 40 元。各扣 60 元时一笔提交一笔余额不足，余额也是 40 元。独立快照核对每笔分录和余额。
+T2 尝试从 100 元扣 100.01 元，判定余额不足，转账、分录与版本无变化。
+T3 记录第一行已写的探针，第二行因账户 inactive 返回零行。事务撤销第一行余额和版本更新，转账及分录为零。
+固定 seed 907 重置前后账户快照逐项相同，已提交的试验记录被实验库 reset 清除。
+
+22:05:52 NZDT，实际 HTTP POST /transfers 返回 200 committed。4 个合成账户由 seed 907 生成，账户 1 至 2 转 30.25 NZD，余额 10566.00/10948.01 变为 10535.75/10978.26，两者版本均为 1。独立 psql 查询得到 1 条 transfer、2 条分录、带符号金额和 0.00、0 条幂等记录，库连接报告 read committed。
+
+环境调整
+候选 PostgreSQL 18.7 Alpine 在本机 Docker 启动时遇到 exec format error。改用已确认健康并接受事务测试的 17.7 Alpine，已固定公开镜像摘要。Docker 29.9.3、Compose v5.7.0、.NET SDK 10.0.300。实验使用独立容器卷，本地随机访问口令存放在忽略目录。
+
+证据范围
+用户授权按导师同意的工作假设推进本地合成工程。实际导师反馈与机构伦理路径仍按可核验证据记录。以上是工程正确性测试与一次冒烟转账。B–D、其余正确性契约、pilot、正式实验及 RQ 结论属于后续阶段。
