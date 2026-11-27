@@ -27,10 +27,24 @@ public enum TransferStatus
     AccountUnavailable,
     InsufficientFunds,
     PredicateUnresolved,
-    UnknownCommit
+    UnknownCommit,
+    VersionConflict,
+    LockTimeout,
+    Deadlock,
+    SerializationFailure,
+    DatabaseUnavailable,
+    DatabaseFailure,
+    RetryExhausted
 }
 
-public sealed record TransferResult(TransferStatus Status, Guid? TransferId = null);
+public sealed record TransferResult(
+    TransferStatus Status,
+    Guid? TransferId = null,
+    int TransactionAttempts = 0,
+    int VersionConflicts = 0,
+    int LockTimeouts = 0,
+    int Deadlocks = 0,
+    TransferStatus? LastFailure = null);
 
 public enum TransferStep
 {

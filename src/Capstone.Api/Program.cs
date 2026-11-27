@@ -26,14 +26,17 @@ if (args.Length != 0)
 var port = int.Parse(Environment.GetEnvironmentVariable("CAPSTONE_API_PORT") ?? "5187");
 if (port is < 1024 or > 65535)
     throw new ArgumentOutOfRangeException(nameof(port));
+string group = Environment.GetEnvironmentVariable("CAPSTONE_GROUP") ?? "A";
+if (group is not ("A" or "B"))
+    throw new ArgumentException("CAPSTONE_GROUP must be A or B.");
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls($"http://127.0.0.1:{port}");
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
 var app = builder.Build();
-var transfers = new TransferService(source);
+var transfers = new TransferService(source, policy: new(VersionValidation: group == "B"));
 
-app.MapGet("/healthz", () => Results.Ok(new { status = "ok", group = "A" }));
+app.MapGet("/healthz", () => Results.Ok(new { status = "ok", group }));
 app.MapPost("/transfers", async (TransferRequest request, CancellationToken ct) =>
 {
     var result = await transfers.ExecuteAsync(request, ct);

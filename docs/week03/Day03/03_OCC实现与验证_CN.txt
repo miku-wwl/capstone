@@ -1,0 +1,20 @@
+MSE907｜Day03 应用版本验证与有界重试
+本地合成工程 · 2026-11-27（Pacific/Auckland）
+
+A 用安全相对更新。B 在新事务内读取双方版本，在相同借/贷谓词上增加 expected_version。两组都递增版本、按稳定账户 ID 升序更新，并共享 READ COMMITTED、锁超时和业务谓词。
+
+零行返回后按行锁保护下的当前状态重新判断。先区分账户缺失/停用和资金不足，再判断当前版本是否与本次预期值不符。这个检查提供当时可验证的拒绝条件，无法证明前一条 UPDATE 唯一的失败原因。原因不明时整笔回滚，不按版本冲突重试。SQLSTATE 区分锁超时、死锁及序列化失败。连接或其他数据库失败具有独立分类。已到 COMMIT 边界后的异常记 unknown，终止自动重试。
+
+一次尝试失败后释放事务，符合规则才在新事务中读版本并整笔重试。初次加最多 3 次重试。默认退避从 5ms 起按指数增加，按尝试 ID 与 seed 907 给定抖动，50ms 封顶。候选 lock timeout 1500ms。API 启动配置 CAPSTONE_GROUP=A 或 B。响应提供事务尝试、版本冲突、锁超时、死锁及耗尽原因。
+
+真实 PostgreSQL 17.7 验证
+• T8 在读版本之后通过另一条真实转账改动第二账户。A 组整笔一次成功、冲突计数 0。B 首次写第一账户后发现第二账户版本已变，整笔回滚。B 第二次提交，尝试 2、版本冲突 1。第一账户版本只加 1，余额 100→70。两条独立转账与四条借贷分录均能对账。
+• T9 每次准备更新前执行另一条真实转账，四次版本冲突使主请求返回 RetryExhausted，LastFailure 为 VersionConflict。主请求无已提交效果，第一账户余额 100、版本 0。其余四条已知的竞争转账均通过独立对账。
+• B 的资金不足用例尝试 1、版本冲突 0。A 的 T1–T3 和确定性 reset 回归通过。
+
+执行命令
+  ./infrastructure/Enter-Lab.ps1
+  dotnet build Capstone.slnx --no-restore -c Release
+  dotnet test --solution Capstone.slnx --no-build -c Release
+
+最终 Release 构建 0 警告、0 错误。16 项测试全部通过，7 项单位测试和 9 项真实 PostgreSQL 集成用例。代码见 src/Capstone.Core/TransferPolicy.cs、src/Capstone.Postgres/TransferService.cs 和 tests/Capstone.IntegrationTests/VersionValidationTests.cs。本阶段证据用于机制与回滚验证。Pilot 与正式性能结果仍待后续阶段。
