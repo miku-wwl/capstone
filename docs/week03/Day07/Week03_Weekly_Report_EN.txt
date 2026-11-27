@@ -1,0 +1,14 @@
+MSE907 Week 03 Progress Report
+Activity date: 27 November 2026 (Pacific/Auckland)
+Assessment 2 work in progress
+
+Literature and design
+The review verified relevant sections of four additional papers and refined the research gap. Serverless banking workloads, OCC comparisons and persistent recovery have precedents. This capstone compares version validation and persistent client keys together on the same safe PostgreSQL transfer baseline, using independent ledger and confirmation evidence. The three v1.2 research questions were retained. Week 03 Day01 records literature limitations, the analysis plan and ethical and cultural considerations.
+
+Prototype and evidence
+The loopback API implements groups A–D with the same READ COMMITTED transaction and business constraints. Week 03 Days02–05 cover row-safe transfers, bounded version retries, transactionally persistent keys, savepoint rollback, uncertain commit handling and independently audited effects. The local suite passed 58 tests, including 51 PostgreSQL integration tests. T12 exercised application-level uncertainty around real database commits. Loss of the PostgreSQL wire acknowledgement remains unverified.
+
+All 16 engineering smoke cells reconciled and were independently recomputed. A/B recorded duplicate effects in W2 and W4, and C/D replayed the original transfer. After release, a run from clean commit 5933593474244ec5b04e023048234c631933ac66 repeated these checks. The manifest SHA-256 is a1f27673e293ddc08c3c204c5e89f907b51e28eabee6d551509cf6571e183b9a. GitHub CI passed for that commit. Run record: https://github.com/miku-wwl/capstone/actions/runs/45975048807
+
+Assessment 2 and research status
+The bilingual WIP covers LO1 literature and gap, LO2 research design, LO3 engineering principles and implementation, and LO4 ethics and culture. The project proceeded with supervisor-related items as a working assumption. Evidence of the applicable institutional decision is still pending. Pilot execution is 0/80, formal execution is 0, and there is no study precision estimate or formally frozen configuration. Confirm the institutional decision before collecting pilot data. The pilot will check actual load delivery, resource and archive costs, exposure, fixed-window audit and the initial formal block count.
