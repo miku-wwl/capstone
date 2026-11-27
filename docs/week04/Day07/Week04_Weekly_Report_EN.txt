@@ -1,0 +1,10 @@
+MSE907 Week 04 Progress Report
+Recorded 2026-11-28T11:40:47+13:00
+
+The formal protocol was frozen after the 80-run pilot. The code, runtime, seed schedule and analysis are linked to the complete study blocks. Across both formal batches, 160 runs in 10 blocks were verified. Invalid blocks 0. Reruns 0. Formal runner time was 5.3620 machine hours. The independent audit agreed with the stored logical outcome and exposure metrics.
+
+W2 and W4 produced 56,532 duplicate logical requests in the key-off groups and 0 in key-on groups. The matched scenario interaction was +0.041667 [+0.020450, +0.062883] requests/s and the report classifies RQ3 as confirmatory. These results describe the declared synthetic single-host workload and its two delivery sequences.
+
+The English final report, Chinese study copy, 18-slide presentation and Chinese defence outline were prepared. The English and Chinese WIP and final reports and the final presentation were rendered in native Office. Student identification, personal review, disclosure, recording and submission remain student tasks.
+
+Evidence https://drive.google.com/drive/folders/1fgFSHVdZxBYM9AuKnHGPqAoLGXwHffq7
