@@ -1,0 +1,2 @@
+# Preserve the frozen protocol's SHA-256 across Windows and Linux checkouts.
+/docs/week04/Day01/01_*.json text eol=lf

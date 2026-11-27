@@ -1,0 +1,1276 @@
+{
+  "codeCommit": "a00e7b3cdf241d4f9df271f4142d1d0800b8db95",
+  "identity": {
+    "observedHead": "a00e7b3cdf241d4f9df271f4142d1d0800b8db95",
+    "sourceSha256": "d1a00fbd440483ef034a88a040c2e6898513cdc166737d0018ec62db18435938",
+    "buildSha256": "b95ec9f37757ab9ed52d625f457587629b8777b22c2303a524008c9d5e271aaa",
+    "sourceFiles": [
+      {
+        "file": "Capstone.slnx",
+        "sha256": "e288200beb1f91fa1d5d1e6f44ceae68c16ee414f9a13e475c3fceb6f2709bfb"
+      },
+      {
+        "file": "Directory.Build.props",
+        "sha256": "6723171df8faab11c4b9290cff137d483bfff3dcf62c9053b857fecbbaf918ee"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/Capstone.Experiments.csproj",
+        "sha256": "608e67bbafcc3f1a0bec8ddfa8f27a9b5f08452dbceaa81dc5a4cbb6de6edb71"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/EvidenceFiles.cs",
+        "sha256": "4ff2908f81cae88dbd8c82d41c0c4dc8296b0acc31b445fe29856a279c85eaba"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/ExperimentRunner.cs",
+        "sha256": "dc212d07fd2b530282bf9db817a1e722516766a6e6ed7d2b5373989f4b2642d1"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/FormalFreeze.cs",
+        "sha256": "516a96ac2b4c3ad9e822e191beccb61605eb055fa64d44ea8500fa7a320afb49"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/PilotPrecision.cs",
+        "sha256": "d2c9ef7e1608fbfe27554ae428a8c472e0da19cdf50b28b6a1ca4f4f73c0963a"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/PilotRecovery.cs",
+        "sha256": "fea442f6ae2523d6d145f960e789e507cde1599066df1fef3026ca9c8cdbd8d3"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/Program.cs",
+        "sha256": "0def3dc013a9bb88d3096e7f6cfd18e49a0da644d0dd14e8061ba28530d49e81"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/ProtocolAudit.cs",
+        "sha256": "a3b7cf6d8a915774b95003be4dd200aa4b95bf69b768652379cc4183f1466a4e"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/RunEvidence.cs",
+        "sha256": "103013d98369d91c36d4269bb5c31c2e61557a67c758c35474a9ec0bcaa34f57"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/StudyCheckpoint.cs",
+        "sha256": "d6a470ccf5886899c5526a20aa77d007714105edc1ee0373ef36359cb0518a6c"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/StudyIdentity.cs",
+        "sha256": "bd5138590a29f696000a3fde92729afad227c1e0f7b1e0e5f0d0b2ef49e4d814"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/StudyRun.cs",
+        "sha256": "375de7051a468e316f41507dec365911a624eb8d669139af3bf04c5f4cf54176"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/WorkloadPlan.cs",
+        "sha256": "bf5260f6ae576df08158a7c98570d202eda76601e62508392e6fc365acf6e85d"
+      },
+      {
+        "file": "experiments/Capstone.Experiments/packages.lock.json",
+        "sha256": "6f7fa5011e4fe5f03e835f557d9108cd0db33f5f72b50446f861625d46eeef5a"
+      },
+      {
+        "file": "experiments/workloads/candidate.json",
+        "sha256": "8792af996f27fa2f2149cb3ae954f46ab19f638ad67586f1f408159094adbd23"
+      },
+      {
+        "file": "experiments/workloads/study-scope.json",
+        "sha256": "f0c6473ebb123c6b3c97d6ba41f3bacf192ec9144980dec5275b7b515067bae6"
+      },
+      {
+        "file": "global.json",
+        "sha256": "7f415c63700d66b89d7b25cd1d612df79cfa53c2cc052d5f18b5d169e8560d45"
+      },
+      {
+        "file": "infrastructure/Enter-Lab.ps1",
+        "sha256": "0815fa6652a51f4b3c4287236de057cf089e993bd0d475e7b0fa861ed6602955"
+      },
+      {
+        "file": "infrastructure/compose.yaml",
+        "sha256": "5a89d91c2cdf200b5b555ad3cdb04796c615bbfbb49d3861a28a3ca3117f77d6"
+      },
+      {
+        "file": "src/Capstone.Api/Capstone.Api.csproj",
+        "sha256": "bddd5742627b51d47c55b520529832197f4d7e70326c870b8d8447bfc1f5aae8"
+      },
+      {
+        "file": "src/Capstone.Api/LabAdmission.cs",
+        "sha256": "5baa8cb3d2bd50bdf215f0c6bd8dce8ed919bf69665a2bfb35092102293c3269"
+      },
+      {
+        "file": "src/Capstone.Api/LabApi.cs",
+        "sha256": "c7d42b7ba389fbf68026b3db0b25b58b0ef3498faacbce72dc8bbfe81195433a"
+      },
+      {
+        "file": "src/Capstone.Api/Program.cs",
+        "sha256": "878d7b60b05a7e577419947b284d01186c25e2d2fb599dd3e8168f4e9a9c9aa4"
+      },
+      {
+        "file": "src/Capstone.Api/packages.lock.json",
+        "sha256": "5f796628d3c35cf2eb50c3308d2db246e27b423c8f71ed6454f2cfe04174c39d"
+      },
+      {
+        "file": "src/Capstone.Core/Capstone.Core.csproj",
+        "sha256": "8d654c44b7bebb6b31a9f2f606927f45b5072193adc4eef8cce3f3cf3b278df3"
+      },
+      {
+        "file": "src/Capstone.Core/Transfer.cs",
+        "sha256": "2d01ef332ba06dbd9818b0ceb26bb340e48ea4e95c751b2014ccc2028e2a2ef9"
+      },
+      {
+        "file": "src/Capstone.Core/TransferPolicy.cs",
+        "sha256": "cc248df9717ed755cbf74fa8cf04f68b0d899547b363244d083963c49f46f364"
+      },
+      {
+        "file": "src/Capstone.Core/packages.lock.json",
+        "sha256": "a4364d81a6de2707d66fbced18fbbc926c882ab96e1d1aebbb17e871285b9d75"
+      },
+      {
+        "file": "src/Capstone.Postgres/Capstone.Postgres.csproj",
+        "sha256": "7b9811a3ee50011bba28915cf83fc4ad8def55d1988f49937dd63451b346d1f6"
+      },
+      {
+        "file": "src/Capstone.Postgres/DurableKeys.cs",
+        "sha256": "0b9f9d5633633ea09d04e9f92b84221cb4f641c7ad73b19b72b0cb155e9254f9"
+      },
+      {
+        "file": "src/Capstone.Postgres/LabDatabase.cs",
+        "sha256": "2f058b64dbd2aa54cf5ac6e914bac440e65fc602c9f2772169094a5828086a23"
+      },
+      {
+        "file": "src/Capstone.Postgres/LedgerAuditor.cs",
+        "sha256": "97bde57fee844fe9fddc2d40f615582231e3bf4d3b9d3370b0b0d5e8fafee469"
+      },
+      {
+        "file": "src/Capstone.Postgres/Migrations/001_initial.sql",
+        "sha256": "d44ed04aa73ec41fdfb34e0aec6797901dab1a9a4874a9b90c23b88a462a6936"
+      },
+      {
+        "file": "src/Capstone.Postgres/TransferService.cs",
+        "sha256": "f431915e9f8ae8984aae9243119b48cb55cc710188e5019aaa8bf8c4f3163296"
+      },
+      {
+        "file": "src/Capstone.Postgres/packages.lock.json",
+        "sha256": "65790e88c5c39d87db5708350c70fd47c98bfe2e884b3672f745b3232be50347"
+      }
+    ],
+    "buildFiles": [
+      {
+        "file": "Capstone.Api.deps.json",
+        "sha256": "ee7d19da54fa06677a3f05159bbba508e46e3e30e75d37c3697371f7e3079e06"
+      },
+      {
+        "file": "Capstone.Api.dll",
+        "sha256": "5dee74e2f18dd9387fbd690dd0494c4288b0a3b8d7109c000c7569268cc29b65"
+      },
+      {
+        "file": "Capstone.Api.runtimeconfig.json",
+        "sha256": "41442586a8262bc96a1c80f82f4d9384c03bfd465d221cbf01fb3563170f9e65"
+      },
+      {
+        "file": "Capstone.Core.dll",
+        "sha256": "3e4ada3bbd8dc2429b8fb639aeaa209c14b1d8fa4f64b53fce5f40eb7b7b55a6"
+      },
+      {
+        "file": "Capstone.Experiments.deps.json",
+        "sha256": "f97df4ad4ddf9cce30b950a33810a8868faf4f2704bb0325e751c8b3e209e551"
+      },
+      {
+        "file": "Capstone.Experiments.dll",
+        "sha256": "bb907fa1cabb886ab1416a26c4bf53f4d17ef149b1a4c02e6380ffaddad2e25b"
+      },
+      {
+        "file": "Capstone.Experiments.runtimeconfig.json",
+        "sha256": "b4aad84277c120c025a443649c4e09ca20b08725acc12ef60940786bfb8c024f"
+      },
+      {
+        "file": "Capstone.Postgres.dll",
+        "sha256": "23ece2b1b08eb77d39bf0a710f3dec7f64d0af221112886dcb9c1580f8eefbf7"
+      },
+      {
+        "file": "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+        "sha256": "a015b5671749c8c5ae710feca9b7d7db0ef6e24cbbfbee616842536a6e665709"
+      },
+      {
+        "file": "Microsoft.Extensions.Logging.Abstractions.dll",
+        "sha256": "eb953d021377ef072497549b952ba7d2f7abb4458e0ae60d54b31e46d496364e"
+      },
+      {
+        "file": "Npgsql.dll",
+        "sha256": "34cc867646dcd1f85eed5117dc4c4f5ef373094c56228269bd09e85010795b3c"
+      },
+      {
+        "file": "System.Diagnostics.DiagnosticSource.dll",
+        "sha256": "c7dcfb2a2c7ebcfe7796603b77324aebc75ad639be16d479b49faf03524af516"
+      }
+    ],
+    "runtime": {
+      "dotNet": ".NET 10.0.9",
+      "os": "Microsoft Windows 10.0.26200",
+      "architecture": "X64",
+      "logicalCpu": 16,
+      "postgreSqlConfiguration": "17.7|on|on|on|128MB|100",
+      "containerImageAndLimits": "postgres:17.7-alpine@sha256:bb377b7239d2774ac8cc76f481596ce96c5a6b5e9d141f6d0a0ee371a6e7c0f2|sha256:bb377b7239d2774ac8cc76f481596ce96c5a6b5e9d141f6d0a0ee371a6e7c0f2|0|0",
+      "dockerVmResources": "16|16401903616",
+      "poolLimit": 64
+    }
+  },
+  "plan": {
+    "phase": "formal",
+    "blocks": 10,
+    "workloadSeed": 175921,
+    "orderSeed": 223447,
+    "settings": {
+      "accounts": 1000,
+      "offeredPerSecond": 120,
+      "maxInFlight": 48,
+      "warmupSeconds": 30,
+      "measureSeconds": 60,
+      "drainSeconds": 30,
+      "hotAccountFraction": 0.01,
+      "lowHotProbability": 0.1,
+      "highHotProbability": 0.8,
+      "assignedRepeatProbability": 0.2,
+      "maxTransactionRetries": 3,
+      "lockTimeoutMs": 1500,
+      "attemptTimeoutMs": 6000,
+      "initialBackoffMs": 5,
+      "backoffCapMs": 50
+    },
+    "cells": [
+      {
+        "block": 1,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 665592663
+      },
+      {
+        "block": 1,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 665592663
+      },
+      {
+        "block": 2,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 674203394
+      },
+      {
+        "block": 2,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 674203394
+      },
+      {
+        "block": 3,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 932642476
+      },
+      {
+        "block": 3,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 932642476
+      },
+      {
+        "block": 4,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 1400057791
+      },
+      {
+        "block": 4,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 1400057791
+      },
+      {
+        "block": 5,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 61973010
+      },
+      {
+        "block": 5,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 61973010
+      },
+      {
+        "block": 6,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 1148762447
+      },
+      {
+        "block": 6,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 1148762447
+      },
+      {
+        "block": 7,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 1048666778
+      },
+      {
+        "block": 7,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 1048666778
+      },
+      {
+        "block": 8,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 566947444
+      },
+      {
+        "block": 8,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 566947444
+      },
+      {
+        "block": 9,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 737023465
+      },
+      {
+        "block": 9,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 737023465
+      },
+      {
+        "block": 10,
+        "scenario": "W4",
+        "group": "B",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-high",
+        "group": "B",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-low",
+        "group": "B",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W2",
+        "group": "B",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-high",
+        "group": "C",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W4",
+        "group": "D",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-low",
+        "group": "A",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W4",
+        "group": "A",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W4",
+        "group": "C",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-high",
+        "group": "A",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-high",
+        "group": "D",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-low",
+        "group": "C",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W2",
+        "group": "D",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W1-low",
+        "group": "D",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W2",
+        "group": "C",
+        "seed": 720594102
+      },
+      {
+        "block": 10,
+        "scenario": "W2",
+        "group": "A",
+        "seed": 720594102
+      }
+    ]
+  },
+  "settingsSha256": "f74d079279d74e20e3175cf5f1e0eeec7a699cc3d9aa20add1aff534da3cf128",
+  "pilotCheckpointSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+  "scopeSha256": "f0c6473ebb123c6b3c97d6ba41f3bacf192ec9144980dec5275b7b515067bae6",
+  "frozenUtc": "2026-11-27T16:50:09.7980987+00:00",
+  "budget": {
+    "limitSeconds": 75600,
+    "priorStudySeconds": 11465.406711200001,
+    "maxInvalidBlocks": 2
+  },
+  "precision": {
+    "pairedInteractionDifferences": [
+      0.11666666666667425,
+      0.09999999999999432,
+      -0.01666666666666572,
+      -0.01666666666666572,
+      0.06666666666667709
+    ],
+    "referenceTps": 119.99333333333334,
+    "targetHalfWidth": 11.999333333333334,
+    "sampleStandardDeviation": 0.0634647758822003,
+    "secondsPerRun": 120.49924780750003,
+    "chargedBeforeFormalSeconds": 11465.406711200001,
+    "reservedPostprocessingSeconds": 10800,
+    "options": [
+      {
+        "blocks": 10,
+        "formalRuns": 160,
+        "reservedRerunRuns": 32,
+        "halfWidth": 0.0453999624459625,
+        "projectedTotalSeconds": 45401.26229024,
+        "meetsPrecision": true,
+        "withinBudget": true
+      },
+      {
+        "blocks": 11,
+        "formalRuns": 176,
+        "reservedRerunRuns": 32,
+        "halfWidth": 0.042636219412156354,
+        "projectedTotalSeconds": 47329.250255160005,
+        "meetsPrecision": true,
+        "withinBudget": true
+      },
+      {
+        "blocks": 12,
+        "formalRuns": 192,
+        "reservedRerunRuns": 32,
+        "halfWidth": 0.040323591875791404,
+        "projectedTotalSeconds": 49257.238220080006,
+        "meetsPrecision": true,
+        "withinBudget": true
+      },
+      {
+        "blocks": 13,
+        "formalRuns": 208,
+        "reservedRerunRuns": 32,
+        "halfWidth": 0.03835138323374138,
+        "projectedTotalSeconds": 51185.22618500001,
+        "meetsPrecision": true,
+        "withinBudget": true
+      },
+      {
+        "blocks": 14,
+        "formalRuns": 224,
+        "reservedRerunRuns": 32,
+        "halfWidth": 0.03664347646914492,
+        "projectedTotalSeconds": 53113.21414992001,
+        "meetsPrecision": true,
+        "withinBudget": true
+      }
+    ],
+    "selectedBlocks": 10,
+    "status": "confirmatory-candidate"
+  }
+}
