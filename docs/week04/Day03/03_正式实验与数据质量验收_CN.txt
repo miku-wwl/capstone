@@ -1,0 +1,24 @@
+MSE907 Week04 Day03 正式实验数据记录
+记录时间 2026-11-28T11:28:28+13:00
+
+正式配置 SHA-256 df55512e20bc4911a7cc1e65bfe3f2d676f8f870e57350aef180359291ea12ef
+冻结代码提交 a00e7b3cdf241d4f9df271f4142d1d0800b8db95
+完成本批区组 6–10，本批有效轮次 80。
+当前完整区组 10/10，有效轮次 160，无效区组 0，复跑 0。
+本批有效测量、归档、核验的运行器累计 9640.08 s。
+正式运行器已测总机器时 5.361977 h。加 pilot 和先前实际准备的预算计入 8.546813 h。
+本批压缩及文件校验 191.26 s。单元的 Warm-up、排空、重置、归档和审计分项时长均见原始及索引记录。
+各完整区组包括四组、四场景。原始记录按固定顺序与配对种子核验，成功/失败及实际故障均按预注册分类。
+技术核验包括冻结身份、初态、归档哈希、运行 ID、配对、账本及指标。
+本批计划/发出 576,000/575,964，正确确认 547,843，重复逻辑请求 28,115，终态 unknown 0，共同财务不变量异常单元 0。
+
+检查点 SHA-256 087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db
+原始证据 https://drive.google.com/drive/folders/1VuwXjSSiWbg5iRDwK-W3I--RyOAtRgsb
+第一批证据 https://drive.google.com/drive/folders/1w1XuIQO0DRtU8Ynp45Spmx2jFi0_a_d7
+独立分析从压缩原始记录核验 160 轮，与 .NET 指标逐轮一致。
+复算时先校验两个批次的 ZIP，再将所有原始分片放入同一数据根目录，采用第二批最终校验通过的 study-checkpoint.json。
+Capstone_Formal_Block_06_Raw.zip | SHA-256 5b92015734bfd042723df26daf66554a5eecabe824546f5c06c2fa66aea2371c
+Capstone_Formal_Block_07_Raw.zip | SHA-256 9a5b4b8273fbf3a7583be342ed237cda6eb8154624c72e2efb7acb94c7076a40
+Capstone_Formal_Block_08_Raw.zip | SHA-256 2ecd7f6c96f2d42f5fca4f17bcb73905e91d38368c1ac4d53027b5c0bf912b82
+Capstone_Formal_Block_09_Raw.zip | SHA-256 011ef247151d5bc88c94119402a493ca14e400808b2d0e2bb2765cae937ae286
+Capstone_Formal_Block_10_Raw.zip | SHA-256 0537a447e486e3fc60a4451b509b0805b74574b34ac3a5fea24f56a9aaf6a355

@@ -1,0 +1,67 @@
+{
+  "firstBlock": 6,
+  "lastBlock": 10,
+  "checkpointSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db",
+  "completedBlocks": 10,
+  "invalidBlocks": 0,
+  "reruns": 0,
+  "machineSeconds": 19303.1182903,
+  "archives": [
+    {
+      "file": "Capstone_Formal_Block_06_Raw.zip",
+      "block": 6,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62932003,
+      "archiveSha256": "5b92015734bfd042723df26daf66554a5eecabe824546f5c06c2fa66aea2371c",
+      "manifestSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db"
+    },
+    {
+      "file": "Capstone_Formal_Block_07_Raw.zip",
+      "block": 7,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62802718,
+      "archiveSha256": "9a5b4b8273fbf3a7583be342ed237cda6eb8154624c72e2efb7acb94c7076a40",
+      "manifestSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db"
+    },
+    {
+      "file": "Capstone_Formal_Block_08_Raw.zip",
+      "block": 8,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62825831,
+      "archiveSha256": "2ecd7f6c96f2d42f5fca4f17bcb73905e91d38368c1ac4d53027b5c0bf912b82",
+      "manifestSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db"
+    },
+    {
+      "file": "Capstone_Formal_Block_09_Raw.zip",
+      "block": 9,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62924469,
+      "archiveSha256": "011ef247151d5bc88c94119402a493ca14e400808b2d0e2bb2765cae937ae286",
+      "manifestSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db"
+    },
+    {
+      "file": "Capstone_Formal_Block_10_Raw.zip",
+      "block": 10,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62910989,
+      "archiveSha256": "0537a447e486e3fc60a4451b509b0805b74574b34ac3a5fea24f56a9aaf6a355",
+      "manifestSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db"
+    }
+  ],
+  "packagingSeconds": 191.26499999998487,
+  "datasetDriveFolder": "https://drive.google.com/drive/folders/1VuwXjSSiWbg5iRDwK-W3I--RyOAtRgsb",
+  "freezeSha256": "df55512e20bc4911a7cc1e65bfe3f2d676f8f870e57350aef180359291ea12ef",
+  "codeCommit": "a00e7b3cdf241d4f9df271f4142d1d0800b8db95",
+  "evidenceComplete": true,
+  "firstBatchDriveFolder": "https://drive.google.com/drive/folders/1w1XuIQO0DRtU8Ynp45Spmx2jFi0_a_d7"
+}
