@@ -16,10 +16,11 @@ public static class LabApi
     public const string KeyHeader = "Idempotency-Key";
     public const string FaultHeader = "X-Capstone-Lab-Fault";
     public const string ResponseLoss = "drop-after-commit";
+    public const string BeforeTransaction = "before-transaction";
 
     public static WebApplication Build(
         NpgsqlDataSource source, string group, int port, bool enableFaults = false,
-        TransferPolicy? settings = null, Action<ApiAttempt>? observe = null)
+        TransferPolicy? settings = null, Action<ApiAttempt>? observe = null, LabAdmission? admission = null)
     {
         if (group is not ("A" or "B" or "C" or "D"))
             throw new ArgumentException("CAPSTONE_GROUP must be A, B, C, or D.", nameof(group));
@@ -45,25 +46,37 @@ public static class LabApi
         app.MapGet("/healthz", () => Results.Ok(new { status = "ok", group }));
         app.MapPost("/transfers", async (HttpContext http, TransferRequest request, CancellationToken ct) =>
         {
-            var keys = http.Request.Headers[KeyHeader];
-            string? key = keys.Count == 1 ? keys[0] : null;
-            var result = await service.ExecuteAsync(request, key, ct);
-            bool drop = enableFaults && result.Status == TransferStatus.Committed &&
-                !result.Replayed && http.Request.Headers[FaultHeader] == ResponseLoss;
-            observe?.Invoke(new(request, result, drop));
-            if (drop)
+            if (admission is not null &&
+                !admission.TryEnter(http.Request.Headers[LabAdmission.Header].ToString()))
+                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+            try
             {
-                http.Abort();
-                return Results.Empty;
-            }
+                var keys = http.Request.Headers[KeyHeader];
+                string? key = keys.Count == 1 ? keys[0] : null;
+                var result = enableFaults && http.Request.Headers[FaultHeader] == BeforeTransaction
+                    ? new TransferResult(TransferStatus.DeniedBeforeTransaction)
+                    : await service.ExecuteAsync(request, key, ct);
+                bool drop = enableFaults && result.Status == TransferStatus.Committed &&
+                    !result.Replayed && http.Request.Headers[FaultHeader] == ResponseLoss;
+                observe?.Invoke(new(request, result, drop));
+                if (drop)
+                {
+                    http.Abort();
+                    return Results.Empty;
+                }
 
-            http.Response.Headers["X-Capstone-Transaction-Attempts"] =
-                result.TransactionAttempts.ToString(CultureInfo.InvariantCulture);
-            http.Response.Headers["X-Capstone-Version-Conflicts"] =
-                result.VersionConflicts.ToString(CultureInfo.InvariantCulture);
-            http.Response.Headers["X-Capstone-Replayed"] = result.Replayed ? "1" : "0";
-            return Results.Json(new TransferReply(result.Status, result.TransferId),
-                statusCode: StatusCodeFor(result.Status));
+                http.Response.Headers["X-Capstone-Transaction-Attempts"] =
+                    result.TransactionAttempts.ToString(CultureInfo.InvariantCulture);
+                http.Response.Headers["X-Capstone-Version-Conflicts"] =
+                    result.VersionConflicts.ToString(CultureInfo.InvariantCulture);
+                http.Response.Headers["X-Capstone-Replayed"] = result.Replayed ? "1" : "0";
+                return Results.Json(new TransferReply(result.Status, result.TransferId),
+                    statusCode: StatusCodeFor(result.Status));
+            }
+            finally
+            {
+                admission?.Exit();
+            }
         });
 
         return app;

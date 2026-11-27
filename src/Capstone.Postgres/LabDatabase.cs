@@ -19,6 +19,7 @@ public sealed class LabDatabase(NpgsqlDataSource source)
         if (!isLocal || settings.Database != "capstone" || settings.Username != "capstone")
             throw new InvalidOperationException("The lab requires a local capstone database and role.");
 
+        settings.ApplicationName = "mse907-capstone";
         return NpgsqlDataSource.Create(settings.ConnectionString);
     }
 

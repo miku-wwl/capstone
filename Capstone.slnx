@@ -8,4 +8,7 @@
     <Project Path="tests/Capstone.UnitTests/Capstone.UnitTests.csproj" />
     <Project Path="tests/Capstone.IntegrationTests/Capstone.IntegrationTests.csproj" />
   </Folder>
+  <Folder Name="/experiments/">
+    <Project Path="experiments/Capstone.Experiments/Capstone.Experiments.csproj" />
+  </Folder>
 </Solution>

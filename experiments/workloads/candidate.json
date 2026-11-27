@@ -1,0 +1,17 @@
+{
+  "accounts": 1000,
+  "offeredPerSecond": 120,
+  "maxInFlight": 48,
+  "warmupSeconds": 30,
+  "measureSeconds": 60,
+  "drainSeconds": 30,
+  "hotAccountFraction": 0.01,
+  "lowHotProbability": 0.10,
+  "highHotProbability": 0.80,
+  "assignedRepeatProbability": 0.20,
+  "maxTransactionRetries": 3,
+  "lockTimeoutMs": 1500,
+  "attemptTimeoutMs": 6000,
+  "initialBackoffMs": 5,
+  "backoffCapMs": 50
+}

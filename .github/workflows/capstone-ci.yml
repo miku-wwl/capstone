@@ -1,0 +1,49 @@
+name: Capstone prototype checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17.7-alpine@sha256:bb377b7239d2774ac8cc76f481596ce96c5a6b5e9d141f6d0a0ee371a6e7c0f2
+        env:
+          POSTGRES_DB: capstone
+          POSTGRES_USER: capstone
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 127.0.0.1:55432:5432
+        options: >-
+          --health-cmd "pg_isready -U capstone -d capstone"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      CAPSTONE_DB: Host=127.0.0.1;Port=55432;Database=capstone;Username=capstone
+      DOTNET_NOLOGO: "true"
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@2016bd2012dba4e32de620c46fe006a3ac9f0602 # v5.0.1
+        with:
+          global-json-file: global.json
+      - run: dotnet restore Capstone.slnx --locked-mode
+      - run: dotnet build Capstone.slnx --no-restore -c Release
+      - run: dotnet test --solution Capstone.slnx --no-build -c Release
+      - name: Validate pilot and formal run plans
+        run: |
+          runner=experiments/Capstone.Experiments
+          dotnet run --project "$runner" --no-build -c Release -- plan pilot 5 experiments/workloads/candidate.json 907 2026 > /tmp/capstone-pilot-plan.json
+          dotnet run --project "$runner" --no-build -c Release -- plan formal 10 experiments/workloads/candidate.json 1907 3026 > /tmp/capstone-formal-plan.json
+          jq -e '(.cells | length) == 80' /tmp/capstone-pilot-plan.json
+          jq -e '(.cells | length) == 160' /tmp/capstone-formal-plan.json

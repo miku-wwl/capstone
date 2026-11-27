@@ -6,11 +6,26 @@ Yoobee Master of Software Engineering · Industry-based Capstone Research Projec
 
 ## Assessment 1 v1.2 — Refined Research Proposal
 
-The current research materials are in [docs/week02/v1.2/](docs/week02/v1.2/). Day01–Day07 have been deeply refined; these ten files are the current research set. Assessment 1 v1.0 and v1.1 remain historical versions.
+The ten Assessment 1 proposal materials are in [docs/week02/v1.2/](docs/week02/v1.2/). Assessment 1 v1.0 and v1.1 are historical versions.
 
-The work is a research proposal. No prototype, pilot or formal experiment has been executed. Topic and scope approval, ethics guidance and final course submission requirements remain to be confirmed with the supervisor and course team.
+The proposal compares application-level OCC and persistent request idempotency in a synthetic transfer API with a shared PostgreSQL READ COMMITTED baseline.
 
-The proposal compares application-level OCC and persistent request idempotency in a synthetic transfer API while retaining the same safe PostgreSQL READ COMMITTED transaction baseline across all four groups.
+## Assessment 2 prototype and validation
+
+The loopback prototype implements groups A–D. [Week 03](docs/week03/) records the implementation, transaction tests and engineering smoke. The study pilot and formal experiments remain pending institutional research clearance and protocol freeze.
+
+From the repository root in PowerShell, with the pinned .NET SDK and Docker available:
+
+```powershell
+./infrastructure/Enter-Lab.ps1
+dotnet restore Capstone.slnx --locked-mode
+dotnet build Capstone.slnx --no-restore -c Release
+dotnet test --solution Capstone.slnx --no-build -c Release
+dotnet run --project experiments/Capstone.Experiments --no-build -c Release -- smoke _local_sources/engineering/example
+dotnet run --project experiments/Capstone.Experiments --no-build -c Release -- verify _local_sources/engineering/example
+```
+
+Use a fresh output directory for each smoke. Run it against the dedicated synthetic lab only. The optional `plan` command validates candidate settings and prints a randomized block schedule without executing it.
 
 ## Academic integrity and submission
 

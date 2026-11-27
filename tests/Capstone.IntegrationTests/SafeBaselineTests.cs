@@ -16,9 +16,16 @@ public sealed class SafeBaselineTests : IAsyncLifetime
     public ValueTask DisposeAsync() => source.DisposeAsync();
 
     [Theory]
-    [InlineData(30, 2, 40)]
-    [InlineData(60, 1, 40)]
-    public async Task T1_ConcurrentDebitsUseTheCurrentRow(int amount, int expectedCommits, int expectedBalance)
+    [InlineData(false, false, 30, 2, 40)]
+    [InlineData(false, false, 60, 1, 40)]
+    [InlineData(true, false, 30, 2, 40)]
+    [InlineData(true, false, 60, 1, 40)]
+    [InlineData(false, true, 30, 2, 40)]
+    [InlineData(false, true, 60, 1, 40)]
+    [InlineData(true, true, 30, 2, 40)]
+    [InlineData(true, true, 60, 1, 40)]
+    public async Task T1_ConcurrentDebitsUseTheCurrentRow(
+        bool versionValidation, bool keys, int amount, int expectedCommits, int expectedBalance)
     {
         SeedAccount[] initial = [new(1, 100m), new(2, 0m), new(3, 0m)];
         await new LabDatabase(source).ResetAsync(initial, Ct);
@@ -34,9 +41,9 @@ public sealed class SafeBaselineTests : IAsyncLifetime
                     staged.SetResult();
                 await staged.Task.WaitAsync(ct);
             }
-        });
+        }, new(VersionValidation: versionValidation, PersistentKeys: keys));
         TransferRequest[] inputs = [Create(1, 2, amount), Create(1, 3, amount)];
-        var receipts = await Task.WhenAll(inputs.Select(x => service.ExecuteAsync(x, timeout.Token)));
+        var receipts = await Task.WhenAll(inputs.Select(x => service.ExecuteAsync(x, x.LogicalRequestId.ToString("N"), timeout.Token)));
         Assert.Equal(expectedCommits, receipts.Count(x => x.Status == TransferStatus.Committed));
         Assert.Equal(2 - expectedCommits, receipts.Count(x => x.Status == TransferStatus.InsufficientFunds));
 

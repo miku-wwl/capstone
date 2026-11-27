@@ -38,7 +38,8 @@ public enum TransferStatus
     InvalidKey,
     KeyPayloadMismatch,
     KeyBusy,
-    AbortedBeforeCommit
+    AbortedBeforeCommit,
+    DeniedBeforeTransaction
 }
 
 public sealed record TransferResult(

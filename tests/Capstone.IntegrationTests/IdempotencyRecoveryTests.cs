@@ -64,19 +64,52 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
         Assert.Equal(1L, await CompletedKeysAsync());
     }
 
-    [Fact]
-    public async Task T5_SameKeyDifferentPayloadHasNoSecondEffect()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task T4_SafeKeyOffGroupsCanCommitBothDeliveries(bool versionValidation)
     {
-        var service = new TransferService(source, policy: new(PersistentKeys: true));
+        var both = NewGate();
+        int positioned = 0;
         var input = NewTransfer();
-        var changed = NewTransfer() with { Amount = 31m };
-        Assert.Equal(TransferStatus.Committed, (await service.ExecuteAsync(input, "t5", Ct)).Status);
-        Assert.Equal(TransferStatus.KeyPayloadMismatch, (await service.ExecuteAsync(changed, "t5", Ct)).Status);
-        Assert.Single((await ReconcileAsync(Initial, [input, changed])).Transfers);
+        var repeated = Retry(input);
+        var service = new TransferService(source, async (step, _, ct) =>
+        {
+            if (step == TransferStep.BeforeAccountWrites)
+            {
+                if (Interlocked.Increment(ref positioned) == 2)
+                    both.SetResult();
+                await both.Task.WaitAsync(TimeSpan.FromSeconds(5), ct);
+            }
+        }, new(VersionValidation: versionValidation));
+        var receipts = await Task.WhenAll(service.ExecuteAsync(input, "t4-off", Ct),
+            service.ExecuteAsync(repeated, "t4-off", Ct));
+
+        Assert.All(receipts, result => Assert.Equal(TransferStatus.Committed, result.Status));
+        Assert.NotEqual(receipts[0].TransferId, receipts[1].TransferId);
+        Assert.Equal(2, (await ReconcileAsync(Initial, [input, repeated])).Transfers.Count);
     }
 
-    [Fact]
-    public async Task T6_WaiterTakesOverAfterOwnerRollsBackItsWrites()
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task T5_SameKeyWithChangedPayloadFollowsTheGroupContract(bool versionValidation, bool keys)
+    {
+        var service = new TransferService(source, policy: new(VersionValidation: versionValidation, PersistentKeys: keys));
+        var input = NewTransfer();
+        var changed = Retry(input) with { Amount = 31m };
+        Assert.Equal(TransferStatus.Committed, (await service.ExecuteAsync(input, "t5", Ct)).Status);
+        Assert.Equal(keys ? TransferStatus.KeyPayloadMismatch : TransferStatus.Committed,
+            (await service.ExecuteAsync(changed, "t5", Ct)).Status);
+        Assert.Equal(keys ? 1 : 2, (await ReconcileAsync(Initial, [input, changed])).Transfers.Count);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task T6_WaiterTakesOverAfterOwnerRollsBackItsWrites(bool versionValidation)
     {
         var readyToAbort = NewGate();
         var release = NewGate();
@@ -90,7 +123,7 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
                 await release.Task.WaitAsync(ct);
                 throw new InjectedRollbackException();
             }
-        }, new(LockTimeoutMs: 4000, PersistentKeys: true));
+        }, new(VersionValidation: versionValidation, LockTimeoutMs: 4000, PersistentKeys: true));
 
         var owner = service.ExecuteAsync(input, "t6", Ct);
         await readyToAbort.Task.WaitAsync(TimeSpan.FromSeconds(5), Ct);
@@ -106,10 +139,14 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
         Assert.Equal(repeated.AttemptId, Assert.Single(snapshot.Transfers).AttemptId);
         Assert.Equal(1L, snapshot.Accounts[0].Version);
         Assert.Equal(1L, await CompletedKeysAsync());
+        await using var pending = source.CreateCommand("SELECT count(*) FROM capstone.idempotency_records WHERE status <> 'completed'");
+        Assert.Equal(0L, (long)(await pending.ExecuteScalarAsync(Ct))!);
     }
 
     [Theory]
     [InlineData("A", 2)]
+    [InlineData("B", 2)]
+    [InlineData("C", 1)]
     [InlineData("D", 1)]
     public async Task T7_ResponseLossAfterConfirmedCommitUsesARealHttpConnection(string group, int effects)
     {
@@ -138,8 +175,13 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
         Assert.Equal(effects, (await ReconcileAsync(Initial, [input, repeated])).Transfers.Count);
     }
 
-    [Fact]
-    public async Task T11_DeterministicRejectionReplaysOnlyAfterFinancialSavepointRollback()
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task T11_DeterministicRejectionReplaysOnlyAfterFinancialSavepointRollback(
+        bool versionValidation, bool keys)
     {
         SeedAccount[] initial = [new(1, 100m), new(2, 0m, false)];
         await new LabDatabase(source).ResetAsync(initial, Ct);
@@ -149,28 +191,31 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
             if (step == TransferStep.AfterFirstAccountWrite)
                 firstWrites++;
             return ValueTask.CompletedTask;
-        }, new(PersistentKeys: true));
+        }, new(VersionValidation: versionValidation, PersistentKeys: keys));
         var input = NewTransfer();
         var repeated = Retry(input);
         var original = await service.ExecuteAsync(input, "t11", Ct);
         var replay = await service.ExecuteAsync(repeated, "t11", Ct);
         Assert.Equal(TransferStatus.AccountUnavailable, original.Status);
         Assert.Equal(original.Status, replay.Status);
-        Assert.True(replay.Replayed);
-        Assert.Equal(1, firstWrites);
+        Assert.Equal(keys, replay.Replayed);
+        Assert.Equal(keys ? 1 : 2, firstWrites);
         var snapshot = await ReconcileAsync(initial, [input, repeated]);
         Assert.All(snapshot.Accounts, account => Assert.Equal(0, account.Version));
         Assert.Empty(snapshot.Transfers);
         Assert.Empty(snapshot.Entries);
-        Assert.Equal(1L, await CompletedKeysAsync());
+        Assert.Equal(keys ? 1L : 0L, await CompletedKeysAsync());
     }
 
     [Theory]
-    [InlineData(false, true, TransferStatus.UnknownCommit, 1)]
-    [InlineData(true, true, TransferStatus.Committed, 1)]
-    [InlineData(true, false, TransferStatus.UnknownCommit, 0)]
+    [InlineData(false, false, true, TransferStatus.UnknownCommit, 1)]
+    [InlineData(true, false, true, TransferStatus.UnknownCommit, 1)]
+    [InlineData(false, true, true, TransferStatus.Committed, 1)]
+    [InlineData(true, true, true, TransferStatus.Committed, 1)]
+    [InlineData(false, true, false, TransferStatus.UnknownCommit, 0)]
+    [InlineData(true, true, false, TransferStatus.UnknownCommit, 0)]
     public async Task T12_InjectedCommitUncertaintyNeverRepeatsFinancialWrites(
-        bool persistentKeys, bool afterCommit, TransferStatus expected, int effects)
+        bool versionValidation, bool persistentKeys, bool afterCommit, TransferStatus expected, int effects)
     {
         var input = NewTransfer();
         var stage = afterCommit ? TransferStep.AfterCommit : TransferStep.BeforeCommit;
@@ -179,7 +224,7 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
             if (step == stage)
                 throw new InjectedCommitUncertaintyException();
             return ValueTask.CompletedTask;
-        }, new(PersistentKeys: persistentKeys));
+        }, new(VersionValidation: versionValidation, PersistentKeys: persistentKeys));
 
         var receipt = await service.ExecuteAsync(input, "t12", Ct);
         Assert.Equal(expected, receipt.Status);
@@ -224,8 +269,12 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
         Assert.Single((await ReconcileAsync(Initial, [input, repeated, again])).Transfers);
     }
 
-    [Fact]
-    public async Task T13_AccountLockTimeoutLeavesNoPartialFinancialState()
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    public async Task T13_AccountLockTimeoutLeavesNoPartialFinancialState(bool versionValidation, bool keys)
     {
         await using var connection = await source.OpenConnectionAsync(Ct);
         await using var blocker = await connection.BeginTransactionAsync(Ct);
@@ -233,8 +282,9 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
             "SELECT id FROM capstone.accounts WHERE id = 2 FOR NO KEY UPDATE", connection, blocker);
         await lockRow.ExecuteNonQueryAsync(Ct);
         var input = NewTransfer();
-        var service = new TransferService(source, policy: new(RetryLimit: 0, LockTimeoutMs: 100));
-        var receipt = await service.ExecuteAsync(input, Ct);
+        var service = new TransferService(source, policy: new(VersionValidation: versionValidation,
+            RetryLimit: 0, LockTimeoutMs: 100, PersistentKeys: keys));
+        var receipt = await service.ExecuteAsync(input, "t13-account", Ct);
         Assert.Equal(TransferStatus.RetryExhausted, receipt.Status);
         Assert.Equal(TransferStatus.LockTimeout, receipt.LastFailure);
         Assert.Equal(1, receipt.LockTimeouts);
@@ -242,6 +292,10 @@ public sealed class IdempotencyRecoveryTests : IAsyncLifetime
         var snapshot = await ReconcileAsync(Initial, [input]);
         Assert.Empty(snapshot.Transfers);
         Assert.All(snapshot.Accounts, account => Assert.Equal(0, account.Version));
+        Assert.Equal(0L, await CompletedKeysAsync());
+        var retry = Retry(input);
+        Assert.Equal(TransferStatus.Committed, (await service.ExecuteAsync(retry, "t13-account", Ct)).Status);
+        Assert.Equal(retry.AttemptId, Assert.Single((await ReconcileAsync(Initial, [input, retry])).Transfers).AttemptId);
     }
 
     private async Task WaitForUniqueKeyLockAsync()
