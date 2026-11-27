@@ -4,5 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Capstone.Api/Capstone.Api.csproj" />
+    <InternalsVisibleTo Include="Capstone.UnitTests" />
   </ItemGroup>
 </Project>

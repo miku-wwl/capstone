@@ -7,9 +7,9 @@ namespace Capstone.Experiments;
 internal sealed record HttpAttempt(TransferRequest Request, bool Repeat, double SentMs, double EndedMs,
     int? HttpStatus, TransferReply? Reply, string? TransportFailure);
 
-internal sealed record LogicalRun(LogicalInput Input, double ScheduledMs, HttpAttempt[] Attempts);
+internal sealed record LogicalRun(LogicalInput Input, double ScheduledMs, HttpAttempt[] Attempts, string? Miss = null);
 
-internal sealed record ServerAttempt(double ObservedMs, ApiAttempt Attempt);
+internal sealed record ServerAttempt(double ObservedMs, ApiAttempt Attempt, double? AdmittedMs = null);
 
 internal sealed record RuntimeSample(double ElapsedMs, double ProcessCpuSeconds, long ProcessWorkingSetBytes,
     int DatabaseSessions, int ActiveQueries, int LockWaiters);
@@ -18,7 +18,11 @@ internal sealed record WindowEvidence(double CutoffMs, bool ClientActiveAtCutoff
     LogicalRun[] LogicalRequests, ServerAttempt[] ServerAttempts, RuntimeSample[] Resources);
 
 internal sealed record RunEvidence(string RunId, DateTimeOffset StartedUtc, RunCell Cell, WorkloadSettings Settings,
-    IReadOnlyList<SeedAccount> Initial, WindowEvidence Measurement, LedgerSnapshot Ledger, double ElapsedSeconds);
+    IReadOnlyList<SeedAccount> Initial, WindowEvidence Measurement, LedgerSnapshot Ledger, double ElapsedSeconds,
+    CellTiming? Timing = null, string? VerifiedResetSha256 = null);
+
+internal sealed record CellTiming(double SetupSeconds, double ResetSeconds, double WarmupAndSettleSeconds,
+    double MeasurementAndDrainSeconds, double SnapshotSeconds);
 
 internal sealed record RunSummary(
     string RunId, RunCell Cell, int Planned, int Dispatched, int CapacityOrWindowMisses,

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Capstone.Core;
@@ -9,7 +10,7 @@ namespace Capstone.Api;
 
 public sealed record TransferReply(TransferStatus Status, Guid? TransferId);
 
-public sealed record ApiAttempt(TransferRequest Request, TransferResult Result, bool ResponseDropped);
+public sealed record ApiAttempt(TransferRequest Request, TransferResult Result, bool ResponseDropped, long ReceivedTick = 0);
 
 public static class LabApi
 {
@@ -51,6 +52,7 @@ public static class LabApi
                 return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
             try
             {
+                long received = observe is null ? 0 : Stopwatch.GetTimestamp();
                 var keys = http.Request.Headers[KeyHeader];
                 string? key = keys.Count == 1 ? keys[0] : null;
                 var result = enableFaults && http.Request.Headers[FaultHeader] == BeforeTransaction
@@ -58,7 +60,7 @@ public static class LabApi
                     : await service.ExecuteAsync(request, key, ct);
                 bool drop = enableFaults && result.Status == TransferStatus.Committed &&
                     !result.Replayed && http.Request.Headers[FaultHeader] == ResponseLoss;
-                observe?.Invoke(new(request, result, drop));
+                observe?.Invoke(new(request, result, drop, received));
                 if (drop)
                 {
                     http.Abort();

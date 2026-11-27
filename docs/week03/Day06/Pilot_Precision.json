@@ -1,0 +1,158 @@
+{
+  "pairedInteractionDifferences": [
+    0.11666666666667425,
+    0.09999999999999432,
+    -0.01666666666666572,
+    -0.01666666666666572,
+    0.06666666666667709
+  ],
+  "referenceTps": 119.99333333333334,
+  "targetHalfWidth": 11.999333333333334,
+  "sampleStandardDeviation": 0.0634647758822003,
+  "secondsPerRun": 120.49924780750003,
+  "chargedBeforeFormalSeconds": 11265.1087112,
+  "reservedPostprocessingSeconds": 10800,
+  "options": [
+    {
+      "blocks": 10,
+      "formalRuns": 160,
+      "reservedRerunRuns": 32,
+      "halfWidth": 0.0453999624459625,
+      "projectedTotalSeconds": 45200.96429024001,
+      "meetsPrecision": true,
+      "withinBudget": true
+    },
+    {
+      "blocks": 11,
+      "formalRuns": 176,
+      "reservedRerunRuns": 32,
+      "halfWidth": 0.042636219412156354,
+      "projectedTotalSeconds": 47128.95225516001,
+      "meetsPrecision": true,
+      "withinBudget": true
+    },
+    {
+      "blocks": 12,
+      "formalRuns": 192,
+      "reservedRerunRuns": 32,
+      "halfWidth": 0.040323591875791404,
+      "projectedTotalSeconds": 49056.94022008001,
+      "meetsPrecision": true,
+      "withinBudget": true
+    },
+    {
+      "blocks": 13,
+      "formalRuns": 208,
+      "reservedRerunRuns": 32,
+      "halfWidth": 0.03835138323374138,
+      "projectedTotalSeconds": 50984.92818500001,
+      "meetsPrecision": true,
+      "withinBudget": true
+    },
+    {
+      "blocks": 14,
+      "formalRuns": 224,
+      "reservedRerunRuns": 32,
+      "halfWidth": 0.03664347646914492,
+      "projectedTotalSeconds": 52912.91614992001,
+      "meetsPrecision": true,
+      "withinBudget": true
+    }
+  ],
+  "selectedBlocks": 10,
+  "status": "confirmatory-candidate",
+  "pilotManifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+  "archives": [
+    {
+      "file": "Capstone_Pilot_Block_01_Raw.zip",
+      "block": 1,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62970673,
+      "archiveSha256": "5bd0959144e398e572799026bbcd2f0d506940bbbf2209acd1bf8f2320c31f88",
+      "manifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+      "driveFileId": "1J5idZzoX0-J1V_vaG-KBo1QhTyA4oyV0",
+      "driveUrl": "https://drive.google.com/file/d/1J5idZzoX0-J1V_vaG-KBo1QhTyA4oyV0/view?usp=drivesdk"
+    },
+    {
+      "file": "Capstone_Pilot_Block_02_Raw.zip",
+      "block": 2,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 63014087,
+      "archiveSha256": "7c62b2d11ca0accddd8d0665e415e0c14fec5c2f0a61b4997361709f4ad1cf0b",
+      "manifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+      "driveFileId": "1N15jiKngESdKpqRVJaxqxt-1u90Yiu2Q",
+      "driveUrl": "https://drive.google.com/file/d/1N15jiKngESdKpqRVJaxqxt-1u90Yiu2Q/view?usp=drivesdk"
+    },
+    {
+      "file": "Capstone_Pilot_Block_03_Raw.zip",
+      "block": 3,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62945568,
+      "archiveSha256": "db082c33b73dbab133608e8d49e86d6a5e9d6834df0542e1a4e029182417b8ab",
+      "manifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+      "driveFileId": "1-KHEzrnUijqoqSRhU5ziMD9MAxOAshF6",
+      "driveUrl": "https://drive.google.com/file/d/1-KHEzrnUijqoqSRhU5ziMD9MAxOAshF6/view?usp=drivesdk"
+    },
+    {
+      "file": "Capstone_Pilot_Block_04_Attempt_01_Raw.zip",
+      "block": 4,
+      "attempt": 1,
+      "state": "invalid",
+      "members": 15,
+      "bytes": 43475165,
+      "archiveSha256": "1accc52273805c111317a8e5c9f640b078b3cdd4b8abc4f7237fa3b74aa28655",
+      "manifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+      "driveFileId": "1PTHBG5YGLlQlhQwxPAt_AhU4-hyTJVRw",
+      "driveUrl": "https://drive.google.com/file/d/1PTHBG5YGLlQlhQwxPAt_AhU4-hyTJVRw/view?usp=drivesdk"
+    },
+    {
+      "file": "Capstone_Pilot_Block_04_Attempt_02_Raw.zip",
+      "block": 4,
+      "attempt": 2,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62928337,
+      "archiveSha256": "f82565085d832ebefd21efb4b2c91dec94bd4976ee9701eee8397059f270362c",
+      "manifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+      "driveFileId": "1Ft2eTYQGit_AhX1bWXhHUKHvdQd1qyjM",
+      "driveUrl": "https://drive.google.com/file/d/1Ft2eTYQGit_AhX1bWXhHUKHvdQd1qyjM/view?usp=drivesdk"
+    },
+    {
+      "file": "Capstone_Pilot_Block_05_Raw.zip",
+      "block": 5,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62983813,
+      "archiveSha256": "5375168d80c40c51d928e684c23f49e9bb52cb65892fbb0c4e70c539671933d0",
+      "manifestSha256": "c94dcda30e6645184fb8b186f78c421868974de0e5ffd05d516e0d88b00e53b0",
+      "driveFileId": "1AgtSlCXCDSMW3GIogkas0_jvBT7HPklY",
+      "driveUrl": "https://drive.google.com/file/d/1AgtSlCXCDSMW3GIogkas0_jvBT7HPklY/view?usp=drivesdk"
+    }
+  ],
+  "driveFolder": "https://drive.google.com/drive/folders/1qLnIepP_o1XSxkPHq_uoR8nMi1pG7l52",
+  "pilotMachineSeconds": 10987.882787800001,
+  "independentlyVerifiedRuns": 80,
+  "invalidBlocks": 1,
+  "reruns": 1,
+  "actualIndexedRuns": 91,
+  "checkpointRecovery": {
+    "originalCheckpointSha256": "927d059cbf5746ccd4841e20b97071f1efc214483bff63747f8bc316d76b4566",
+    "originalPendingSha256": "d233c747644e0cf92aa76cd11ba68a47d75ef960688da16fe2d35a171a816e2f",
+    "priorSourceSha256": "bca1b13aa8d2f889c367a7dbd4ae63e3ebb12d25e264f727f493d9702333f391",
+    "priorBuildSha256": "265b4c01d479109c156d16c454a35af700cd8fdaab720cc1fb8a41e3e1e68da6",
+    "resumedBuildSha256": "b95ec9f37757ab9ed52d625f457587629b8777b22c2303a524008c9d5e271aaa",
+    "retainedCompleteBlocks": 3,
+    "invalidatedBlock": 4,
+    "priorProcessMachineSeconds": 7113.921795,
+    "reason": "interrupted-checkpoint-publication",
+    "recoveredUtc": "2026-11-28T04:32:45.3986022+13:00"
+  },
+  "driveArchiveVerificationWallSeconds": 200.298
+}

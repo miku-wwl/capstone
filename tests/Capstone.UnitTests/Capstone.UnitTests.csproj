@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/Capstone.Core/Capstone.Core.csproj" />
+    <ProjectReference Include="../../experiments/Capstone.Experiments/Capstone.Experiments.csproj" />
     <PackageReference Include="xunit.v3" Version="4.0.3" />
   </ItemGroup>
 </Project>

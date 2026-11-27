@@ -1,48 +1,74 @@
-using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text.Json;
 using Capstone.Experiments;
-using Capstone.Postgres;
 using Npgsql;
 
 using var stop = new CancellationTokenSource();
 Console.CancelKeyPress += (_, args) => { args.Cancel = true; stop.Cancel(); };
+var ct = stop.Token;
 try
 {
     switch (args)
     {
-        case ["plan", string phase, string blocks, string configuration, string workloadSeed, string orderSeed]:
-            var plan = RunPlan.Create(phase, ParseInt(blocks), ParseInt(workloadSeed), ParseInt(orderSeed),
-                await ReadAsync<WorkloadSettings>(configuration));
-            Console.WriteLine(JsonSerializer.Serialize(plan, ExperimentRunner.Json));
+        case ["plan", string phase, string blocks, string settings, string workSeed, string orderSeed]:
+            Print(RunPlan.Create(phase, Int(blocks), Int(workSeed), Int(orderSeed),
+                await EvidenceFiles.ReadAsync<WorkloadSettings>(settings, ct)));
             break;
         case ["smoke", string output]:
             var smoke = RunPlan.Create("engineering", 1, 907, 2026, new(Accounts: 100,
                 OfferedPerSecond: 32, MaxInFlight: 16, WarmupSeconds: 1, MeasureSeconds: 1, DrainSeconds: 2));
-            await RunAsync(smoke, output);
+            await StudyRun.ExecuteAsync(smoke, output, "engineering-only", new(600, 0, 1), 1, null, null, ct);
             break;
-        case ["pilot", string configuration, string workloadSeed, string orderSeed, string decisionRecord, string output]:
-            var pilot = RunPlan.Create("pilot", 5, ParseInt(workloadSeed), ParseInt(orderSeed),
-                await ReadAsync<WorkloadSettings>(configuration));
-            if (new FileInfo(decisionRecord).Length == 0)
-                throw new InvalidDataException("Provide the documented institutional decision for this study.");
-            await RunAsync(pilot, output, await HashAsync(decisionRecord));
+        case ["pilot", string settings, string workSeed, string orderSeed, string scope, string output]:
+            var pilot = RunPlan.Create("pilot", 5, Int(workSeed), Int(orderSeed),
+                await EvidenceFiles.ReadAsync<WorkloadSettings>(settings, ct));
+            await StudyRun.ExecuteAsync(pilot, output, await StudyScope.ReadHashAsync(scope, ct),
+                new(86400, 0, 1), 5, null, null, ct);
             break;
-        case ["verify", string directory]:
-            var verified = await VerifyAsync(directory);
-            Console.WriteLine($"Verified {verified.Runs.Length} raw hashes and independently recomputed cell summaries ({verified.Plan.Phase}).");
+        case ["recover-pilot-checkpoint", string stopped, string resumed, string processSeconds]:
+            await PilotRecovery.RecoverAsync(stopped, resumed, Seconds(processSeconds), ct);
             break;
-        case ["pilot-precision", string directory]:
-            var precision = PilotPrecision.Evaluate(await VerifyAsync(directory));
-            Console.WriteLine(JsonSerializer.Serialize(precision, ExperimentRunner.Json));
+        case ["freeze", string pilotRoot, string settingsOut, string workSeed, string orderSeed, string prepSeconds]:
+            var draft = await FormalFreeze.CreateAsync(pilotRoot, Int(workSeed), Int(orderSeed), Seconds(prepSeconds), ct);
+            await EvidenceFiles.WriteAsync(settingsOut, draft, replace: false, ct);
+            Console.WriteLine(await EvidenceFiles.HashAsync(settingsOut, ct));
+            break;
+        case ["formal", string protocol, string expectedHash, string output, string throughBlock]:
+            var actualHash = await EvidenceFiles.HashAsync(protocol, ct);
+            if (actualHash != expectedHash.ToLowerInvariant())
+                throw new InvalidDataException("The supplied formal protocol SHA-256 does not match its frozen bytes.");
+            var frozen = await EvidenceFiles.ReadAsync<FormalFreeze>(protocol, ct);
+            frozen.Validate();
+            await StudyIdentity.VerifyFormalCommitAsync(frozen.CodeCommit, protocol, ct);
+            await StudyRun.ExecuteAsync(frozen.Plan, output, frozen.ScopeSha256, frozen.Budget, Int(throughBlock),
+                frozen, actualHash, ct);
+            break;
+        case ["verify" or "verify-progress", string folder]:
+            if (File.Exists(Path.Combine(folder, StudyCheckpoint.Filename)))
+            {
+                var state = await StudyRun.ReadAndVerifyAsync(folder, args[0] == "verify", ct);
+                Console.WriteLine($"Verified {state.Attempts.Sum(x => x.Runs.Count)} raw hashes and recomputed metrics " +
+                    $"({state.Binding.Plan.Phase}, {state.CompletedBlocks}/{state.Binding.Plan.Blocks} complete blocks).");
+            }
+            else
+            {
+                await VerifyLegacyAsync(folder);
+            }
+            break;
+        case ["pilot-precision", string folder, string setupSeconds]:
+            Print(StudyPrecision.Calculate(await StudyRun.ReadAndVerifyAsync(folder, complete: true, ct), Seconds(setupSeconds)));
             break;
         default:
-            Console.Error.WriteLine("Usage: plan <engineering|pilot|formal> <blocks> <settings.json> <workload-seed> <order-seed>");
-            Console.Error.WriteLine("       smoke <new-output-directory> | verify <evidence-directory>");
-            Console.Error.WriteLine("       pilot <settings.json> <workload-seed> <order-seed> <institutional-decision-file> <new-output-directory>");
-            Console.Error.WriteLine("       pilot-precision <verified-pilot-directory>");
+            Console.Error.WriteLine("""
+                plan <engineering|pilot|formal> <blocks> <settings.json> <workload-seed> <order-seed>
+                smoke <engineering-directory>
+                pilot <settings.json> <workload-seed> <order-seed> <student-scope-record.json> <pilot-directory>
+                recover-pilot-checkpoint <stopped-pilot> <new-pilot-directory> <original-measured-process-seconds>
+                pilot-precision <pilot-directory> <measured-preparation-and-other-study-seconds>
+                freeze <pilot-directory> <frozen-protocol.json> <formal-workload-seed> <formal-order-seed> <preparation-seconds>
+                formal <frozen-protocol.json> <protocol-sha256> <formal-directory> <last-block-this-batch>
+                verify <evidence-directory> | verify-progress <evidence-directory>
+                """);
             return 2;
     }
     return 0;
@@ -55,111 +81,33 @@ catch (Exception error)
     return 1;
 }
 
-async Task<ExperimentManifest> VerifyAsync(string directory)
+async Task VerifyLegacyAsync(string directory)
 {
-    var manifest = await ReadAsync<ExperimentManifest>(Path.Combine(directory, "manifest.json"));
+    var manifest = await EvidenceFiles.ReadAsync<ExperimentManifest>(Path.Combine(directory, "manifest.json"), ct);
+    if (manifest.Plan.Phase != "engineering")
+        throw new InvalidDataException("Only historic engineering evidence uses the legacy manifest format.");
     var expected = RunPlan.Create(manifest.Plan.Phase, manifest.Plan.Blocks, manifest.Plan.WorkloadSeed,
         manifest.Plan.OrderSeed, manifest.Plan.Settings).Cells;
     if (!expected.SequenceEqual(manifest.Plan.Cells) || expected.Length != manifest.Runs.Length)
-        throw new InvalidDataException("The manifest does not contain every planned cell in the registered order.");
+        throw new InvalidDataException("The historical manifest does not contain every planned cell in order.");
     for (int i = 0; i < expected.Length; i++)
     {
         var entry = manifest.Runs[i];
         if (Path.GetFileName(entry.File) != entry.File)
-            throw new InvalidDataException("Invalid raw evidence path.");
+            throw new InvalidDataException("Invalid historical evidence path.");
         string path = Path.Combine(directory, entry.File);
-        var raw = await ReadAsync<RunEvidence>(path);
-        var summary = RunAudit.Summarize(raw);
-        if (await HashAsync(path) != entry.Sha256 || raw.Cell != expected[i] ||
+        var raw = await EvidenceFiles.ReadAsync<RunEvidence>(path, ct);
+        if (await EvidenceFiles.HashAsync(path, ct) != entry.Sha256 || raw.Cell != expected[i] ||
             raw.Settings != manifest.Plan.Settings ||
-            JsonSerializer.Serialize(summary, ExperimentRunner.Json) != JsonSerializer.Serialize(entry.Summary, ExperimentRunner.Json))
-            throw new InvalidDataException($"Manifest or independently recomputed metrics differ for {entry.File}.");
+            EvidenceFiles.HashJson(RunAudit.Summarize(raw)) != EvidenceFiles.HashJson(entry.Summary))
+            throw new InvalidDataException($"Historical hash or recomputed metrics differ for {entry.File}.");
     }
-    return manifest;
+    Console.WriteLine($"Verified {expected.Length} historical engineering raw hashes and cell summaries.");
 }
 
-async Task RunAsync(RunPlan plan, string directory, string? decisionSha256 = null)
-{
-    if (Directory.Exists(directory) && Directory.EnumerateFileSystemEntries(directory).Any())
-        throw new IOException("Use an empty evidence directory.");
-    Directory.CreateDirectory(directory);
-    using var ownership = new FileStream(Path.Combine(directory, ".active"), FileMode.CreateNew, FileAccess.Write);
-    await using var source = LabDatabase.FromEnvironment();
-    await using var exclusive = await source.OpenConnectionAsync(stop.Token);
-    await using var lockRunner = new NpgsqlCommand("SELECT pg_try_advisory_lock(907002)", exclusive);
-    if (!(bool)(await lockRunner.ExecuteScalarAsync(stop.Token))!)
-        throw new InvalidOperationException("Another experiment runner owns the lab database.");
-    await new LabDatabase(source).MigrateAsync(stop.Token);
-    var assembly = typeof(ExperimentRunner).Assembly.Location;
-    var version = new RunEnvironment(RuntimeInformation.FrameworkDescription, RuntimeInformation.OSDescription,
-        RuntimeInformation.ProcessArchitecture.ToString(), Environment.ProcessorCount, exclusive.PostgreSqlVersion.ToString(),
-        await GitAsync("rev-parse", "HEAD"), (await GitAsync("status", "--porcelain", "--untracked-files=normal")) is { Length: > 0 },
-        await HashAsync(assembly));
-    var runner = new ExperimentRunner(source);
-    var runs = new List<RunArtifact>();
-    var started = DateTimeOffset.UtcNow;
-    foreach (var cell in plan.Cells)
-    {
-        var raw = await runner.RunCellAsync(cell, plan.Settings, stop.Token);
-        var summary = RunAudit.Summarize(raw);
-        string file = $"block-{cell.Block:D2}-{cell.Scenario}-{cell.Group}.json";
-        string path = Path.Combine(directory, file);
-        await WriteAsync(path, raw);
-        runs.Add(new(file, await HashAsync(path), summary));
-        await WriteAsync(Path.Combine(directory, "checkpoint.json"), new ExperimentManifest(plan, version, started, runs.ToArray(), decisionSha256));
-        Console.WriteLine($"{cell.Block:D2} {cell.Scenario,-7} {cell.Group}: dispatched={summary.Dispatched} " +
-            $"confirmed={summary.CorrectlyConfirmed} duplicate={summary.DuplicateLogical} triggered={summary.Triggered} " +
-            $"unknown={summary.Unknown} audit={summary.AuditViolations.Length}");
-        if (summary.AuditViolations.Length > 0 ||
-            (plan.Phase == "engineering" && (summary.ClientActiveAtCutoff || summary.CorrectlyConfirmed == 0)))
-            throw new InvalidDataException($"Cell {file} failed an audit or engineering check. Retained raw evidence.");
-    }
-    await WriteAsync(Path.Combine(directory, "manifest.json"), new ExperimentManifest(plan, version, started, runs.ToArray(), decisionSha256));
-}
+static int Int(string value) => int.Parse(value, CultureInfo.InvariantCulture);
+static double Seconds(string value) => double.Parse(value, CultureInfo.InvariantCulture);
+static void Print<T>(T value) => Console.WriteLine(JsonSerializer.Serialize(value, ExperimentRunner.Json));
 
-async Task<T> ReadAsync<T>(string path)
-{
-    await using var input = File.OpenRead(path);
-    return await JsonSerializer.DeserializeAsync<T>(input, ExperimentRunner.Json, stop.Token)
-        ?? throw new InvalidDataException($"Missing JSON content in {Path.GetFileName(path)}.");
-}
-
-async Task WriteAsync<T>(string path, T value)
-{
-    string pending = path + ".partial";
-    await using (var output = File.Create(pending))
-        await JsonSerializer.SerializeAsync(output, value, ExperimentRunner.Json, stop.Token);
-    File.Move(pending, path, overwrite: true);
-}
-
-async Task<string> HashAsync(string path)
-{
-    await using var input = File.OpenRead(path);
-    return Convert.ToHexString(await SHA256.HashDataAsync(input, stop.Token)).ToLowerInvariant();
-}
-
-async Task<string?> GitAsync(params string[] command)
-{
-    var start = new ProcessStartInfo("git") { RedirectStandardOutput = true, RedirectStandardError = true };
-    foreach (string argument in command)
-        start.ArgumentList.Add(argument);
-    try
-    {
-        using var process = Process.Start(start)!;
-        string value = await process.StandardOutput.ReadToEndAsync(stop.Token);
-        await process.WaitForExitAsync(stop.Token);
-        return process.ExitCode == 0 ? value.Trim() : null;
-    }
-    catch (System.ComponentModel.Win32Exception)
-    {
-        return null;
-    }
-}
-
-static int ParseInt(string value) => int.Parse(value, CultureInfo.InvariantCulture);
-
-internal sealed record RunEnvironment(string Runtime, string Os, string Architecture, int LogicalProcessors,
-    string PostgreSql, string? GitHead, bool GitWorkTreeDirty, string RunnerSha256);
 internal sealed record RunArtifact(string File, string Sha256, RunSummary Summary);
-internal sealed record ExperimentManifest(RunPlan Plan, RunEnvironment Environment, DateTimeOffset StartedUtc,
-    RunArtifact[] Runs, string? DecisionSha256 = null);
+internal sealed record ExperimentManifest(RunPlan Plan, RunArtifact[] Runs);

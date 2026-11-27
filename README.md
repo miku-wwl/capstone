@@ -12,7 +12,7 @@ The proposal compares application-level OCC and persistent request idempotency i
 
 ## Assessment 2 prototype and validation
 
-The loopback prototype implements groups A–D. [Week 03](docs/week03/) records the implementation, transaction tests and engineering smoke. The study pilot and formal experiments remain pending institutional research clearance and protocol freeze.
+The loopback prototype implements groups A–D. [Week03](docs/week03/) records the implementation, transaction tests and engineering smoke. The [study pilot](docs/week03/Day06/) completed five valid blocks with 80 eligible runs. The student confirmed that the local synthetic study requires no ethics approval. Formal measurement follows the versioned protocol freeze.
 
 From the repository root in PowerShell, with the pinned .NET SDK and Docker available:
 

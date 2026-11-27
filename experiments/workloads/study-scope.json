@@ -1,0 +1,9 @@
+{
+  "status": "student-confirmed-no-ethics-approval-required",
+  "confirmedOn": "2026-11-28",
+  "source": "Student confirmation in the MSE907 Assessment 2 Recovery & Assessment 3 Complete Execution instruction",
+  "scope": "Local .NET and PostgreSQL transfer API, deterministic synthetic workloads and simulated transport faults",
+  "humanParticipants": false,
+  "realFinancialOrPersonalData": false,
+  "institutionalReferenceProvided": false
+}
