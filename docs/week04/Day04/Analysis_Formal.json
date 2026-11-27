@@ -1,0 +1,5809 @@
+{
+  "phase": "formal",
+  "verifiedRuns": 160,
+  "completeBlocks": 10,
+  "manifestSha256": "087332d51be5032b3d961d44b652f5e7bc26bb754eb314862cd06770508380db",
+  "actualIndexedRuns": 160,
+  "checkpointRecovery": null,
+  "invalidBlocks": 0,
+  "reruns": 0,
+  "measuredMachineSeconds": 19303.1182903,
+  "budgetChargeSeconds": 30768.525001500002,
+  "archivalWriteSeconds": 23.6683059,
+  "localAnalysisSeconds": 7.2070794,
+  "timingSeconds": {
+    "setupSeconds": 3.2567069,
+    "resetSeconds": 13.3182397,
+    "warmupAndSettleSeconds": 4802.5704168,
+    "measurementAndDrainSeconds": 14402.6392181,
+    "snapshotSeconds": 9.9205221
+  },
+  "scenario": {
+    "W1-low": {
+      "A": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.995,
+            "median": 120.0,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98924083017424,
+            "upper": 120.00075916982577,
+            "standardisedPairedEffect": 14904.79502279229
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 9.251819999999771,
+            "median": 9.144100000001345,
+            "sd": 0.31918456450943034,
+            "halfWidth": 0.22833086606901976,
+            "lower": 9.023489133930752,
+            "upper": 9.48015086606879,
+            "standardisedPairedEffect": 28.985800156781785
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 12.769379999999,
+            "median": 12.536099999997532,
+            "sd": 0.7967378961185864,
+            "halfWidth": 0.5699519152198561,
+            "lower": 12.199428084779143,
+            "upper": 13.339331915218857,
+            "standardisedPairedEffect": 16.027077489606956
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 24.772679999999855,
+            "median": 23.110200000000077,
+            "sd": 4.518795159430915,
+            "halfWidth": 3.232551091332209,
+            "lower": 21.540128908667647,
+            "upper": 28.005231091332064,
+            "standardisedPairedEffect": 5.4821427229995665
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.50526999999995,
+            "median": 14.492099999999482,
+            "sd": 0.042654449784795455,
+            "halfWidth": 0.0305131530280253,
+            "lower": 14.474756846971925,
+            "upper": 14.535783153027975,
+            "standardisedPairedEffect": 340.06463741024453
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.995,
+            "median": 120.0,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98924083017424,
+            "upper": 120.00075916982577,
+            "standardisedPairedEffect": 14904.79502279229
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.1,
+            "median": 0.0,
+            "sd": 0.31622776601683794,
+            "halfWidth": 0.22621570000000002,
+            "lower": -0.12621570000000001,
+            "upper": 0.3262157,
+            "standardisedPairedEffect": 0.31622776601683794
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 10.7,
+            "median": 10.5,
+            "sd": 2.8303906287138374,
+            "halfWidth": 2.0247393371328704,
+            "lower": 8.675260662867128,
+            "upper": 12.72473933713287,
+            "standardisedPairedEffect": 3.7803969146344314
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 138221158.4,
+            "median": 137388032.0,
+            "sd": 3929553.245579259,
+            "halfWidth": 2811032.8493060027,
+            "lower": 135410125.550694,
+            "upper": 141032191.24930602,
+            "standardisedPairedEffect": 35.174776816041
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 18.6328125,
+            "median": 18.6328125,
+            "sd": 1.2815093318172608,
+            "halfWidth": 0.916736484607547,
+            "lower": 17.716076015392453,
+            "upper": 19.549548984607547,
+            "standardisedPairedEffect": 14.539740006089149
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71997,
+          "capacityMisses": 0,
+          "windowMisses": 3,
+          "httpAttempts": 71997,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71997,
+          "committedEffects": 71997,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 1,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 7260,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71997,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333
+          ],
+          "p50Ms": [
+            9.006000000001222,
+            8.993399999999838,
+            9.063799999996263,
+            9.078300000001036,
+            9.070200000001932,
+            9.209900000001653,
+            9.275799999999435,
+            9.215900000002875,
+            9.60089999999991,
+            10.003999999993539
+          ],
+          "p95Ms": [
+            12.346099999995204,
+            12.471199999999953,
+            12.325400000001537,
+            12.670200000000477,
+            12.532099999996717,
+            12.289600000000064,
+            12.540099999998347,
+            12.614300000001094,
+            12.933599999996659,
+            14.971199999999953
+          ],
+          "p99Ms": [
+            23.222900000000664,
+            22.50909999999567,
+            20.318599999998696,
+            26.370300000000498,
+            22.538800000002084,
+            19.763899999998102,
+            22.99749999999949,
+            27.086999999999534,
+            27.86420000000362,
+            35.05450000000019
+          ],
+          "p95DispatchLagMs": [
+            14.494599999998172,
+            14.523466666666764,
+            14.546733333336306,
+            14.488299999997253,
+            14.483500000002095,
+            14.530099999999948,
+            14.483299999999872,
+            14.584333333332324,
+            14.489600000000792,
+            14.428766666665979
+          ],
+          "httpAttemptTps": [
+            120,
+            120,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            10,
+            7,
+            11,
+            12,
+            12,
+            8,
+            9,
+            9,
+            12,
+            17
+          ],
+          "peakWorkingSetBytes": [
+            130994176,
+            137555968,
+            137220096,
+            141705216,
+            136728576,
+            135864320,
+            138584064,
+            143613952,
+            143847424,
+            136097792
+          ],
+          "sampledProcessCpuSeconds": [
+            19.546875,
+            17.546875,
+            17,
+            17.671875,
+            17.1875,
+            18.765625,
+            18.5,
+            19.234375,
+            20.734375,
+            20.140625
+          ]
+        }
+      },
+      "B": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99,
+            "median": 119.98333333333333,
+            "sd": 0.008606629658238215,
+            "halfWidth": 0.0061568115200720565,
+            "lower": 119.98384318847992,
+            "upper": 119.99615681152007,
+            "standardisedPairedEffect": 13941.57815134363
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 10.127840000000742,
+            "median": 10.057099999999991,
+            "sd": 0.2685620648319261,
+            "halfWidth": 0.19211771393333207,
+            "lower": 9.93572228606741,
+            "upper": 10.319957713934073,
+            "standardisedPairedEffect": 37.711357359197535
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 13.636300000000517,
+            "median": 13.663750000001528,
+            "sd": 0.27934835281833414,
+            "halfWidth": 0.19983375897890523,
+            "lower": 13.436466241021613,
+            "upper": 13.836133758979422,
+            "standardisedPairedEffect": 48.81467838426267
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 26.86295999999918,
+            "median": 27.182600000000093,
+            "sd": 3.0084247126278973,
+            "halfWidth": 2.1520972393935254,
+            "lower": 24.710862760605654,
+            "upper": 29.015057239392707,
+            "standardisedPairedEffect": 8.92924456019843
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.497909999999683,
+            "median": 14.494083333333037,
+            "sd": 0.03846084444834731,
+            "halfWidth": 0.027513228705573992,
+            "lower": 14.470396771294109,
+            "upper": 14.525423228705257,
+            "standardisedPairedEffect": 376.9524618594969
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.99,
+            "median": 119.98333333333333,
+            "sd": 0.008606629658238215,
+            "halfWidth": 0.0061568115200720565,
+            "lower": 119.98384318847992,
+            "upper": 119.99615681152007,
+            "standardisedPairedEffect": 13941.57815134363
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0,
+            "median": 0.0,
+            "sd": 0.0,
+            "halfWidth": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "standardisedPairedEffect": null
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 16.4,
+            "median": 11.5,
+            "sd": 12.112436217008993,
+            "halfWidth": 8.66471427240246,
+            "lower": 7.735285727597539,
+            "upper": 25.06471427240246,
+            "standardisedPairedEffect": 1.353980298114607
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 138826956.8,
+            "median": 142653440.0,
+            "sd": 10174621.941017812,
+            "halfWidth": 7278485.5473448485,
+            "lower": 131548471.25265516,
+            "upper": 146105442.34734488,
+            "standardisedPairedEffect": 13.64443392636882
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 20.1703125,
+            "median": 20.078125,
+            "sd": 1.0152763824754814,
+            "halfWidth": 0.7262849194049887,
+            "lower": 19.444027580595012,
+            "upper": 20.89659741940499,
+            "standardisedPairedEffect": 19.86681936875165
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71994,
+          "capacityMisses": 0,
+          "windowMisses": 6,
+          "httpAttempts": 71994,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71994,
+          "committedEffects": 71994,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 184,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 0,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 184,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 7259,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71994,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333
+          ],
+          "p50Ms": [
+            10.021600000000035,
+            10.04320000000007,
+            9.908399999999801,
+            9.998200000001816,
+            10.070999999999913,
+            9.791400000000067,
+            10.167200000003504,
+            10.078600000000733,
+            10.616499999999633,
+            10.582300000001851
+          ],
+          "p95Ms": [
+            13.324500000000626,
+            13.742000000000075,
+            13.438300000001618,
+            13.633800000003248,
+            13.693699999999808,
+            13.324399999997695,
+            13.730500000001484,
+            13.487700000000586,
+            14.283200000000306,
+            13.704899999999725
+          ],
+          "p99Ms": [
+            24.045500000000175,
+            33.1559999999954,
+            23.798499999997148,
+            24.15179999999964,
+            27.402000000001863,
+            26.963199999998324,
+            28.667999999997846,
+            27.630700000000616,
+            28.917900000000145,
+            23.89600000000064
+          ],
+          "p95DispatchLagMs": [
+            14.486866666666174,
+            14.466366666667454,
+            14.503300000000309,
+            14.5596000000005,
+            14.549400000003516,
+            14.476033333332452,
+            14.531133333333855,
+            14.453366666661168,
+            14.451733333331504,
+            14.501299999999901
+          ],
+          "httpAttemptTps": [
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            32,
+            11,
+            13,
+            9,
+            12,
+            45,
+            10,
+            11,
+            12,
+            9
+          ],
+          "peakWorkingSetBytes": [
+            112136192,
+            143691776,
+            131653632,
+            139587584,
+            142213120,
+            142385152,
+            143060992,
+            144703488,
+            142921728,
+            145915904
+          ],
+          "sampledProcessCpuSeconds": [
+            20.859375,
+            20,
+            19.203125,
+            19.625,
+            20.15625,
+            18.671875,
+            20.171875,
+            19.609375,
+            22.078125,
+            21.328125
+          ]
+        }
+      },
+      "C": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99166666666667,
+            "median": 119.99166666666667,
+            "sd": 0.008784104611578332,
+            "halfWidth": 0.006283769444444087,
+            "lower": 119.98538289722222,
+            "upper": 119.99795043611113,
+            "standardisedPairedEffect": 13660.090808630126
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 11.478559999999925,
+            "median": 11.364349999999831,
+            "sd": 0.33294666306277354,
+            "halfWidth": 0.2381756776013118,
+            "lower": 11.240384322398613,
+            "upper": 11.716735677601237,
+            "standardisedPairedEffect": 34.475672152436516
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 15.00196999999971,
+            "median": 14.89955000000009,
+            "sd": 0.44084818009024057,
+            "halfWidth": 0.3153637674167099,
+            "lower": 14.686606232583001,
+            "upper": 15.31733376741642,
+            "standardisedPairedEffect": 34.0297877535274
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 23.487460000000162,
+            "median": 23.135050000000774,
+            "sd": 1.9381139727989751,
+            "halfWidth": 1.3864431152233365,
+            "lower": 22.101016884776826,
+            "upper": 24.8739031152235,
+            "standardisedPairedEffect": 12.118719708769328
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.514126666665959,
+            "median": 14.508150000000057,
+            "sd": 0.03520671512883667,
+            "halfWidth": 0.02518536499146728,
+            "lower": 14.488941301674492,
+            "upper": 14.539312031657426,
+            "standardisedPairedEffect": 412.254497857936
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.99166666666667,
+            "median": 119.99166666666667,
+            "sd": 0.008784104611578332,
+            "halfWidth": 0.006283769444444087,
+            "lower": 119.98538289722222,
+            "upper": 119.99795043611113,
+            "standardisedPairedEffect": 13660.090808630126
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0,
+            "median": 0.0,
+            "sd": 0.0,
+            "halfWidth": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "standardisedPairedEffect": null
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.1,
+            "median": 10.5,
+            "sd": 3.142893217686178,
+            "halfWidth": 2.248290206199903,
+            "lower": 8.851709793800097,
+            "upper": 13.348290206199902,
+            "standardisedPairedEffect": 3.5317776428217007
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 138791321.6,
+            "median": 138160128.0,
+            "sd": 4064633.8857610724,
+            "halfWidth": 2907663.711168873,
+            "lower": 135883657.8888311,
+            "upper": 141698985.31116888,
+            "standardisedPairedEffect": 34.14608191064971
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 21.6609375,
+            "median": 21.4140625,
+            "sd": 1.236253624938512,
+            "halfWidth": 0.8843625044870732,
+            "lower": 20.776574995512927,
+            "upper": 22.54530000448707,
+            "standardisedPairedEffect": 17.52143497340795
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71995,
+          "capacityMisses": 0,
+          "windowMisses": 5,
+          "httpAttempts": 71995,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71995,
+          "committedEffects": 71995,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 0,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 7259,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71995,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120
+          ],
+          "p50Ms": [
+            11.371800000000803,
+            11.22780000000057,
+            11.311600000000908,
+            11.195200000000114,
+            11.409200000000055,
+            11.35689999999886,
+            11.438799999999901,
+            11.298799999996845,
+            11.989000000001397,
+            12.186499999999796
+          ],
+          "p95Ms": [
+            14.762699999999313,
+            15.024499999999534,
+            14.78320000000167,
+            14.670299999997951,
+            15.10529999999926,
+            14.613600000004226,
+            15.01589999999851,
+            14.536699999996927,
+            15.641999999999825,
+            15.865499999999884
+          ],
+          "p99Ms": [
+            22.80529999999999,
+            26.713500000005297,
+            20.707399999999325,
+            23.861399999999776,
+            26.114599999997154,
+            23.46480000000156,
+            24.88959999999952,
+            22.540200000001278,
+            22.196200000000033,
+            21.581599999997707
+          ],
+          "p95DispatchLagMs": [
+            14.51130000000012,
+            14.470433333335677,
+            14.485033333330648,
+            14.551166666666631,
+            14.588766666667652,
+            14.485066666660714,
+            14.517900000000736,
+            14.497400000000198,
+            14.529199999997218,
+            14.504999999999995
+          ],
+          "httpAttemptTps": [
+            120,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            10,
+            9,
+            12,
+            12,
+            12,
+            11,
+            9,
+            9,
+            8,
+            19
+          ],
+          "peakWorkingSetBytes": [
+            135118848,
+            138371072,
+            135733248,
+            139321344,
+            145526784,
+            137949184,
+            141824000,
+            133435392,
+            136028160,
+            144605184
+          ],
+          "sampledProcessCpuSeconds": [
+            21.453125,
+            22.59375,
+            20.515625,
+            20.375,
+            21.375,
+            20.75,
+            21.671875,
+            21.015625,
+            22.359375,
+            24.5
+          ]
+        }
+      },
+      "D": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.98833333333333,
+            "median": 119.98333333333333,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98257416350756,
+            "upper": 119.9940925031591,
+            "standardisedPairedEffect": 14903.966944121079
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 12.502980000000207,
+            "median": 12.245100000000093,
+            "sd": 0.4426465427154348,
+            "halfWidth": 0.31665023844750007,
+            "lower": 12.186329761552706,
+            "upper": 12.819630238447708,
+            "standardisedPairedEffect": 28.245967817347275
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 16.41396999999961,
+            "median": 16.068599999998696,
+            "sd": 0.7256712494870233,
+            "halfWidth": 0.5191139024263949,
+            "lower": 15.894856097573214,
+            "upper": 16.933083902426002,
+            "standardisedPairedEffect": 22.619016547234903
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 28.886959999999636,
+            "median": 27.35899999999856,
+            "sd": 3.7716247928736397,
+            "halfWidth": 2.698057648144141,
+            "lower": 26.188902351855496,
+            "upper": 31.585017648143776,
+            "standardisedPairedEffect": 7.659022725320024
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.511366666667527,
+            "median": 14.502816666668878,
+            "sd": 0.033370616187282175,
+            "halfWidth": 0.02387189902810563,
+            "lower": 14.487494767639422,
+            "upper": 14.535238565695632,
+            "standardisedPairedEffect": 434.8546213599116
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.98833333333333,
+            "median": 119.98333333333333,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98257416350756,
+            "upper": 119.9940925031591,
+            "standardisedPairedEffect": 14903.966944121079
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0,
+            "median": 0.0,
+            "sd": 0.0,
+            "halfWidth": 0.0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "standardisedPairedEffect": null
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.3,
+            "median": 11.5,
+            "sd": 1.888562063228706,
+            "halfWidth": 1.350995817059208,
+            "lower": 9.949004182940794,
+            "upper": 12.650995817059208,
+            "standardisedPairedEffect": 5.983388219014312
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 140169216,
+            "median": 140605440.0,
+            "sd": 4163275.003235901,
+            "halfWidth": 2978227.3106889813,
+            "lower": 137190988.68931103,
+            "upper": 143147443.31068897,
+            "standardisedPairedEffect": 33.668017580163124
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 23.6,
+            "median": 23.2734375,
+            "sd": 1.2554827673714468,
+            "halfWidth": 0.8981182033324252,
+            "lower": 22.701881796667575,
+            "upper": 24.498118203332428,
+            "standardisedPairedEffect": 18.797549925285203
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71993,
+          "capacityMisses": 0,
+          "windowMisses": 7,
+          "httpAttempts": 71993,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71993,
+          "committedEffects": 71993,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 188,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 0,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 188,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 7259,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71993,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            119.98333333333333
+          ],
+          "p50Ms": [
+            12.239999999997963,
+            12.181800000002113,
+            12.183399999999892,
+            12.204899999996996,
+            12.309900000000198,
+            12.250200000002224,
+            12.239000000001397,
+            13.133200000000215,
+            13.218000000000757,
+            13.069400000000314
+          ],
+          "p95Ms": [
+            15.977699999999459,
+            16.02889999999752,
+            15.94680000000153,
+            15.927700000000186,
+            16.108299999999872,
+            16.12120000000141,
+            15.828000000001339,
+            17.792900000000373,
+            17.573899999995774,
+            16.83429999999862
+          ],
+          "p99Ms": [
+            26.397200000006706,
+            29.442699999999604,
+            32.99699999999939,
+            26.868999999998778,
+            30.951399999998102,
+            24.93869999999879,
+            25.976199999997334,
+            36.970799999999144,
+            27.84899999999834,
+            26.477600000000166
+          ],
+          "p95DispatchLagMs": [
+            14.50476666666873,
+            14.544299999999566,
+            14.558900000003632,
+            14.487033333338331,
+            14.517933333332621,
+            14.559533333333093,
+            14.497833333332892,
+            14.462099999997008,
+            14.480400000000373,
+            14.500866666669026
+          ],
+          "httpAttemptTps": [
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            119.98333333333333
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            8,
+            11,
+            13,
+            14,
+            12,
+            11,
+            13,
+            12,
+            10,
+            9
+          ],
+          "peakWorkingSetBytes": [
+            131911680,
+            140509184,
+            140349440,
+            141799424,
+            140701696,
+            134737920,
+            138719232,
+            143585280,
+            144146432,
+            145231872
+          ],
+          "sampledProcessCpuSeconds": [
+            23.09375,
+            23.15625,
+            22.34375,
+            22.96875,
+            22.375,
+            23.390625,
+            23.5625,
+            23.734375,
+            24.828125,
+            26.546875
+          ]
+        }
+      }
+    },
+    "W1-high": {
+      "A": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.995,
+            "median": 120.0,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98924083017424,
+            "upper": 120.00075916982577,
+            "standardisedPairedEffect": 14904.79502279229
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 9.352159999999094,
+            "median": 9.21810000000005,
+            "sd": 0.2877690709966089,
+            "halfWidth": 0.2058575774474572,
+            "lower": 9.146302422551637,
+            "upper": 9.55801757744655,
+            "standardisedPairedEffect": 32.498836541433946
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 13.657640000000447,
+            "median": 13.532250000002023,
+            "sd": 0.3869156330680363,
+            "halfWidth": 0.27678275022430676,
+            "lower": 13.38085724977614,
+            "upper": 13.934422750224753,
+            "standardisedPairedEffect": 35.2987546450439
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 22.94559000000054,
+            "median": 22.054899999999634,
+            "sd": 2.7795089212330737,
+            "halfWidth": 1.9883407589183837,
+            "lower": 20.957249241082156,
+            "upper": 24.933930758918923,
+            "standardisedPairedEffect": 8.255267621095163
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.499696666666114,
+            "median": 14.498166666666293,
+            "sd": 0.059825636458935925,
+            "halfWidth": 0.0427966791150879,
+            "lower": 14.456899987551026,
+            "upper": 14.542493345781203,
+            "standardisedPairedEffect": 242.365940839069
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.995,
+            "median": 120.0,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98924083017424,
+            "upper": 120.00075916982577,
+            "standardisedPairedEffect": 14904.79502279229
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 1.1,
+            "median": 1.0,
+            "sd": 0.31622776601683794,
+            "halfWidth": 0.22621570000000002,
+            "lower": 0.8737843000000001,
+            "upper": 1.3262157,
+            "standardisedPairedEffect": 3.4785054261852175
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 12.9,
+            "median": 11.0,
+            "sd": 6.314885412877875,
+            "halfWidth": 4.51739656541701,
+            "lower": 8.38260343458299,
+            "upper": 17.41739656541701,
+            "standardisedPairedEffect": 2.0427924113544758
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 140994969.6,
+            "median": 142546944.0,
+            "sd": 4673706.194894992,
+            "halfWidth": 3343367.7623874797,
+            "lower": 137651601.8376125,
+            "upper": 144338337.36238748,
+            "standardisedPairedEffect": 30.167700689873563
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 18.5140625,
+            "median": 18.046875,
+            "sd": 1.4898828734375398,
+            "halfWidth": 1.065797925899836,
+            "lower": 17.448264574100165,
+            "upper": 19.579860425899838,
+            "standardisedPairedEffect": 12.426522131423216
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71997,
+          "capacityMisses": 0,
+          "windowMisses": 3,
+          "httpAttempts": 71997,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71997,
+          "committedEffects": 71997,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 69,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 57548,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71997,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120
+          ],
+          "p50Ms": [
+            9.218000000000757,
+            9.067799999997078,
+            9.274499999999534,
+            9.142699999996694,
+            9.131400000000212,
+            9.218199999999342,
+            9.66309999999794,
+            9.205900000000838,
+            9.872999999999593,
+            9.726999999998952
+          ],
+          "p95Ms": [
+            13.477100000000064,
+            13.183599999996659,
+            13.87619999999879,
+            13.265699999999924,
+            13.332499999996799,
+            13.431700000000092,
+            14.022100000001956,
+            13.587400000003981,
+            14.25340000000142,
+            14.146700000004785
+          ],
+          "p99Ms": [
+            21.880999999999403,
+            20.622200000001612,
+            22.92319999999745,
+            28.39719999999943,
+            21.02490000000398,
+            21.40230000000156,
+            21.004800000002433,
+            22.228799999999865,
+            27.68789999999717,
+            22.28360000000248
+          ],
+          "p95DispatchLagMs": [
+            14.459066666666331,
+            14.475166666663426,
+            14.389500000000226,
+            14.514400000000023,
+            14.573633333333419,
+            14.58663333333243,
+            14.453433333335852,
+            14.548799999996845,
+            14.49506666666639,
+            14.501266666666197
+          ],
+          "httpAttemptTps": [
+            120,
+            120,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120
+          ],
+          "peakLockWaiters": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "peakDbSessions": [
+            10,
+            11,
+            11,
+            14,
+            14,
+            8,
+            10,
+            9,
+            12,
+            30
+          ],
+          "peakWorkingSetBytes": [
+            133738496,
+            138559488,
+            147861504,
+            141774848,
+            144941056,
+            135061504,
+            136867840,
+            143319040,
+            143863808,
+            143962112
+          ],
+          "sampledProcessCpuSeconds": [
+            18.21875,
+            17.1875,
+            17.875,
+            17.140625,
+            18.453125,
+            21.4375,
+            17.078125,
+            17.703125,
+            19.953125,
+            20.09375
+          ]
+        }
+      },
+      "B": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.98666666666666,
+            "median": 119.98333333333333,
+            "sd": 0.010540925533893998,
+            "halfWidth": 0.007540523333332904,
+            "lower": 119.97912614333333,
+            "upper": 119.99420719,
+            "standardisedPairedEffect": 11382.934665542745
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 10.08831000000082,
+            "median": 10.023250000002008,
+            "sd": 0.2589172645627808,
+            "halfWidth": 0.18521823995061826,
+            "lower": 9.903091760050202,
+            "upper": 10.273528239951439,
+            "standardisedPairedEffect": 38.96345041740028
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 18.234280000000396,
+            "median": 17.656450000002224,
+            "sd": 2.1615662941479954,
+            "halfWidth": 1.5462912649519156,
+            "lower": 16.68798873504848,
+            "upper": 19.78057126495231,
+            "standardisedPairedEffect": 8.435679280050781
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 42.685700000000175,
+            "median": 42.82244999999989,
+            "sd": 0.4699543713072863,
+            "halfWidth": 0.33618508081190135,
+            "lower": 42.34951491918827,
+            "upper": 43.021885080812076,
+            "standardisedPairedEffect": 90.82945623265525
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.51945333333267,
+            "median": 14.521950000000288,
+            "sd": 0.0535750038444314,
+            "halfWidth": 0.038325246229407396,
+            "lower": 14.481128087103263,
+            "upper": 14.557778579562077,
+            "standardisedPairedEffect": 271.01170865976195
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.99,
+            "median": 119.98333333333333,
+            "sd": 0.008606629658238215,
+            "halfWidth": 0.0061568115200720565,
+            "lower": 119.98384318847992,
+            "upper": 119.99615681152007,
+            "standardisedPairedEffect": 13941.57815134363
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.5,
+            "median": 0.0,
+            "sd": 0.7071067811865476,
+            "halfWidth": 0.5058336827776992,
+            "lower": -0.005833682777699245,
+            "upper": 1.0058336827776992,
+            "standardisedPairedEffect": 0.7071067811865475
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 16.1,
+            "median": 11.0,
+            "sd": 12.314851016376753,
+            "halfWidth": 8.809513086580274,
+            "lower": 7.290486913419727,
+            "upper": 24.909513086580276,
+            "standardisedPairedEffect": 1.307364577824743
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 138992025.6,
+            "median": 139161600.0,
+            "sd": 5817400.371899217,
+            "halfWidth": 4161517.231347011,
+            "lower": 134830508.36865297,
+            "upper": 143153542.83134702,
+            "standardisedPairedEffect": 23.892463422561892
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 19.8296875,
+            "median": 19.796875,
+            "sd": 1.0727510491106758,
+            "halfWidth": 0.7673998161419654,
+            "lower": 19.062287683858035,
+            "upper": 20.597087316141963,
+            "standardisedPairedEffect": 18.484892199769053
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71994,
+          "capacityMisses": 0,
+          "windowMisses": 6,
+          "httpAttempts": 71994,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 2,
+          "oneEffectLogical": 71992,
+          "committedEffects": 71992,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 2835,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 4,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 2833,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 2,
+          "hotDebits": 57547,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71992,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 2
+        },
+        "failureRate": 2.7780092785509905e-05,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            119.98333333333333,
+            119.96666666666667,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120
+          ],
+          "p50Ms": [
+            10.020000000004075,
+            10.026499999999942,
+            9.87840000000142,
+            9.755699999999706,
+            10.019600000003265,
+            9.881000000001222,
+            10.224299999999857,
+            10.03899999999885,
+            10.523600000000442,
+            10.514999999999418
+          ],
+          "p95Ms": [
+            16.105100000000675,
+            17.31930000000284,
+            19.50050000000192,
+            16.84730000000127,
+            23.663399999997637,
+            16.953699999999998,
+            16.998199999998178,
+            18.074000000000524,
+            18.887699999999313,
+            17.993600000001607
+          ],
+          "p99Ms": [
+            42.62779999999475,
+            42.80069999999978,
+            42.8442,
+            41.79700000000048,
+            42.950000000004366,
+            42.14760000000388,
+            42.34679999999935,
+            43.05819999999949,
+            42.8912,
+            43.393499999999676
+          ],
+          "p95DispatchLagMs": [
+            14.5634666666665,
+            14.484899999999925,
+            14.433566666666593,
+            14.610866666662332,
+            14.55796666666538,
+            14.549299999998766,
+            14.52406666666684,
+            14.519833333333736,
+            14.4936,
+            14.45696666666663
+          ],
+          "httpAttemptTps": [
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120
+          ],
+          "peakLockWaiters": [
+            0,
+            1,
+            1,
+            2,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            32,
+            8,
+            11,
+            14,
+            10,
+            45,
+            9,
+            11,
+            12,
+            9
+          ],
+          "peakWorkingSetBytes": [
+            129552384,
+            133345280,
+            139546624,
+            143478784,
+            134696960,
+            134557696,
+            138776576,
+            143556608,
+            145969152,
+            146440192
+          ],
+          "sampledProcessCpuSeconds": [
+            19.46875,
+            21.234375,
+            19.71875,
+            18.34375,
+            17.9375,
+            19.8125,
+            19.78125,
+            20.859375,
+            20.1875,
+            20.953125
+          ]
+        }
+      },
+      "C": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99166666666667,
+            "median": 119.99166666666667,
+            "sd": 0.008784104611578332,
+            "halfWidth": 0.006283769444444087,
+            "lower": 119.98538289722222,
+            "upper": 119.99795043611113,
+            "standardisedPairedEffect": 13660.090808630126
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 11.576099999999718,
+            "median": 11.369100000001708,
+            "sd": 0.4393305993850023,
+            "halfWidth": 0.3142781556569769,
+            "lower": 11.261821844342741,
+            "upper": 11.890378155656695,
+            "standardisedPairedEffect": 26.349405245627192
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 16.47088999999869,
+            "median": 16.204900000000634,
+            "sd": 0.6586180421497406,
+            "halfWidth": 0.47114693094217397,
+            "lower": 15.999743069056516,
+            "upper": 16.942036930940862,
+            "standardisedPairedEffect": 25.008258119132936
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 24.463339999999924,
+            "median": 24.48780000000079,
+            "sd": 0.8365926171746649,
+            "halfWidth": 0.598462263111083,
+            "lower": 23.86487773688884,
+            "upper": 25.06180226311101,
+            "standardisedPairedEffect": 29.2416398349502
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.504513333333126,
+            "median": 14.503483333332952,
+            "sd": 0.04412973354395537,
+            "halfWidth": 0.03156850737745716,
+            "lower": 14.472944825955668,
+            "upper": 14.536081840710583,
+            "standardisedPairedEffect": 328.67892390254116
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.99166666666667,
+            "median": 119.99166666666667,
+            "sd": 0.008784104611578332,
+            "halfWidth": 0.006283769444444087,
+            "lower": 119.98538289722222,
+            "upper": 119.99795043611113,
+            "standardisedPairedEffect": 13660.090808630126
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.5,
+            "median": 0.5,
+            "sd": 0.5270462766947299,
+            "halfWidth": 0.37702616666666666,
+            "lower": 0.12297383333333334,
+            "upper": 0.8770261666666667,
+            "standardisedPairedEffect": 0.9486832980505138
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.4,
+            "median": 11.5,
+            "sd": 3.0983866769659336,
+            "halfWidth": 2.2164521472260668,
+            "lower": 9.183547852773934,
+            "upper": 13.616452147226067,
+            "standardisedPairedEffect": 3.679334178897046
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 140395315.2,
+            "median": 139794432.0,
+            "sd": 5423513.309562042,
+            "halfWidth": 3879747.4214094384,
+            "lower": 136515567.77859056,
+            "upper": 144275062.62140942,
+            "standardisedPairedEffect": 25.886414799143758
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 22.0,
+            "median": 21.7109375,
+            "sd": 1.3016874398150358,
+            "halfWidth": 0.9311710324743818,
+            "lower": 21.06882896752562,
+            "upper": 22.93117103247438,
+            "standardisedPairedEffect": 16.901138727378445
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71995,
+          "capacityMisses": 0,
+          "windowMisses": 5,
+          "httpAttempts": 71995,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71995,
+          "committedEffects": 71995,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 6,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 57547,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71995,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            120
+          ],
+          "p50Ms": [
+            11.11649999999645,
+            11.312199999998484,
+            11.347200000003795,
+            11.33940000000075,
+            11.390999999999622,
+            11.289099999998143,
+            12.141299999995681,
+            11.405500000000757,
+            12.410000000003492,
+            12.008800000000008
+          ],
+          "p95Ms": [
+            15.854899999998452,
+            15.883999999998196,
+            16.195800000001327,
+            16.064199999993434,
+            16.213999999999942,
+            16.104099999996834,
+            17.154700000002777,
+            16.242599999999584,
+            17.733699999997043,
+            17.26089999999931
+          ],
+          "p99Ms": [
+            24.329200000000128,
+            24.72809999999936,
+            23.22589999999991,
+            23.956399999995483,
+            24.64640000000145,
+            24.932600000000093,
+            26.10229999999865,
+            23.666299999999865,
+            25.171300000001793,
+            23.874900000002526
+          ],
+          "p95DispatchLagMs": [
+            14.546366666661925,
+            14.45436666666501,
+            14.51553333333868,
+            14.4848333333357,
+            14.591266666662705,
+            14.454966666664404,
+            14.512300000000323,
+            14.530400000003283,
+            14.49466666666558,
+            14.46043333333364
+          ],
+          "httpAttemptTps": [
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            120
+          ],
+          "peakLockWaiters": [
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            13,
+            11,
+            12,
+            8,
+            9,
+            13,
+            8,
+            18,
+            9,
+            13
+          ],
+          "peakWorkingSetBytes": [
+            134078464,
+            142618624,
+            138444800,
+            134934528,
+            146219008,
+            139227136,
+            133582848,
+            140361728,
+            144920576,
+            149565440
+          ],
+          "sampledProcessCpuSeconds": [
+            20.734375,
+            21.375,
+            22.046875,
+            21.375,
+            19.921875,
+            23.015625,
+            23.546875,
+            22.796875,
+            23.96875,
+            21.21875
+          ]
+        }
+      },
+      "D": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99166666666667,
+            "median": 120.0,
+            "sd": 0.011785113019775122,
+            "halfWidth": 0.008430561379627841,
+            "lower": 119.98323610528705,
+            "upper": 120.0000972280463,
+            "standardisedPairedEffect": 10181.630542305676
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 12.373789999999962,
+            "median": 12.223050000000512,
+            "sd": 0.4123035274863399,
+            "halfWidth": 0.29494415451749223,
+            "lower": 12.07884584548247,
+            "upper": 12.668734154517455,
+            "standardisedPairedEffect": 30.011360987955456
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 20.191489999999796,
+            "median": 20.600699999997232,
+            "sd": 1.3245568679956878,
+            "halfWidth": 0.9475308346816632,
+            "lower": 19.24395916531813,
+            "upper": 21.13902083468146,
+            "standardisedPairedEffect": 15.243958555402342
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 45.69295999999904,
+            "median": 45.7583999999988,
+            "sd": 0.915309538657325,
+            "halfWidth": 0.654772952458004,
+            "lower": 45.03818704754104,
+            "upper": 46.347732952457044,
+            "standardisedPairedEffect": 49.92077332333542
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.508986666666988,
+            "median": 14.49628333333385,
+            "sd": 0.03490936836989508,
+            "halfWidth": 0.024972655949298227,
+            "lower": 14.48401401071769,
+            "upper": 14.533959322616287,
+            "standardisedPairedEffect": 415.6187105115071
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 119.995,
+            "median": 120.0,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98924083017424,
+            "upper": 120.00075916982577,
+            "standardisedPairedEffect": 14904.79502279229
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.6,
+            "median": 0.0,
+            "sd": 0.8432740427115678,
+            "halfWidth": 0.6032418666666667,
+            "lower": -0.003241866666666704,
+            "upper": 1.2032418666666667,
+            "standardisedPairedEffect": 0.7115124735378854
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 13.3,
+            "median": 11.0,
+            "sd": 6.165315167216605,
+            "halfWidth": 4.410400464955564,
+            "lower": 8.889599535044436,
+            "upper": 17.710400464955566,
+            "standardisedPairedEffect": 2.1572295396545678
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 141328793.6,
+            "median": 141844480.0,
+            "sd": 4997013.103701833,
+            "halfWidth": 3574647.5757062174,
+            "lower": 137754146.02429378,
+            "upper": 144903441.1757062,
+            "standardisedPairedEffect": 28.2826541910211
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 23.3421875,
+            "median": 23.0,
+            "sd": 1.1724524040475777,
+            "halfWidth": 0.8387218637979541,
+            "lower": 22.503465636202048,
+            "upper": 24.180909363797955,
+            "standardisedPairedEffect": 19.908857211957905
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71997,
+          "capacityMisses": 0,
+          "windowMisses": 3,
+          "httpAttempts": 71997,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 2,
+          "oneEffectLogical": 71995,
+          "committedEffects": 71995,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 2846,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 4,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 2844,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 2,
+          "hotDebits": 57549,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71995,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 2
+        },
+        "failureRate": 2.7778935233412504e-05,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 0,
+          "assignedDispatched": 0,
+          "eligible": 0,
+          "triggered": 0,
+          "repeated": 0,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.96666666666667,
+            119.98333333333333
+          ],
+          "p50Ms": [
+            11.943999999999505,
+            12.198600000003353,
+            11.906399999999849,
+            12.320599999999104,
+            12.247499999997672,
+            12.166300000000774,
+            12.766799999999876,
+            12.151499999999942,
+            13.010599999999613,
+            13.02559999999994
+          ],
+          "p95Ms": [
+            20.96099999999933,
+            19.313399999999092,
+            18.097999999999956,
+            18.85910000000149,
+            21.9178000000029,
+            20.240399999995134,
+            21.21089999999822,
+            18.7925000000032,
+            21.22399999999834,
+            21.29780000000028
+          ],
+          "p99Ms": [
+            45.68609999999899,
+            45.14289999999892,
+            44.47339999999531,
+            44.644899999999325,
+            45.93640000000232,
+            45.28030000000035,
+            46.07549999999901,
+            45.830699999998615,
+            46.155799999996816,
+            47.70360000000073
+          ],
+          "p95DispatchLagMs": [
+            14.500133333334816,
+            14.466833333332033,
+            14.584100000000035,
+            14.532033333332947,
+            14.545099999999366,
+            14.485833333332266,
+            14.488566666666884,
+            14.492433333332883,
+            14.489033333338739,
+            14.505799999999908
+          ],
+          "httpAttemptTps": [
+            120,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            120
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            2,
+            1,
+            0,
+            0,
+            1,
+            2
+          ],
+          "peakDbSessions": [
+            13,
+            11,
+            11,
+            8,
+            15,
+            11,
+            10,
+            11,
+            13,
+            30
+          ],
+          "peakWorkingSetBytes": [
+            128831488,
+            140066816,
+            141926400,
+            144642048,
+            138592256,
+            141762560,
+            141688832,
+            146006016,
+            145448960,
+            144322560
+          ],
+          "sampledProcessCpuSeconds": [
+            22.875,
+            22.3125,
+            23.609375,
+            22.59375,
+            22.203125,
+            23.65625,
+            22.375,
+            23.125,
+            25.078125,
+            25.59375
+          ]
+        }
+      }
+    },
+    "W2": {
+      "A": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 96.42666666666668,
+            "median": 96.19166666666666,
+            "sd": 0.4334900001694512,
+            "halfWidth": 0.3101000429738073,
+            "lower": 96.11656662369288,
+            "upper": 96.73676670964048,
+            "standardisedPairedEffect": 222.4426552607292
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 9.153589999999394,
+            "median": 9.029699999998229,
+            "sd": 0.29524504869329543,
+            "halfWidth": 0.2112055693367914,
+            "lower": 8.942384430662603,
+            "upper": 9.364795569336184,
+            "standardisedPairedEffect": 31.00336496924041
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 13.374710000000004,
+            "median": 13.106999999999971,
+            "sd": 0.5458711741578407,
+            "halfWidth": 0.39049268610196225,
+            "lower": 12.984217313898041,
+            "upper": 13.765202686101967,
+            "standardisedPairedEffect": 24.501586881985926
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 23.27967000000067,
+            "median": 23.16374999999971,
+            "sd": 2.1478144499057708,
+            "halfWidth": 1.5364537889113703,
+            "lower": 21.7432162110893,
+            "upper": 24.81612378891204,
+            "standardisedPairedEffect": 10.838771478151662
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.44882666666839,
+            "median": 14.4568000000001,
+            "sd": 0.046316087383965525,
+            "halfWidth": 0.03313253058324754,
+            "lower": 14.415694136085143,
+            "upper": 14.481959197251637,
+            "standardisedPairedEffect": 311.9612964473015
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.55666666666667,
+            "median": 143.79166666666669,
+            "sd": 0.44411098601727894,
+            "halfWidth": 0.31769783800148527,
+            "lower": 143.23896882866518,
+            "upper": 143.87436450466816,
+            "standardisedPairedEffect": 323.24502474946956
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 2.3,
+            "median": 2.0,
+            "sd": 0.48304589153964794,
+            "halfWidth": 0.34555018954580724,
+            "lower": 1.9544498104541925,
+            "upper": 2.645550189545807,
+            "standardisedPairedEffect": 4.761452359462244
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 13.3,
+            "median": 13.0,
+            "sd": 2.110818693198342,
+            "halfWidth": 1.5099886207636908,
+            "lower": 11.79001137923631,
+            "upper": 14.809988620763692,
+            "standardisedPairedEffect": 6.300872757502282
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 140209356.8,
+            "median": 140359680.0,
+            "sd": 6056716.78766326,
+            "halfWidth": 4332713.8697556425,
+            "lower": 135876642.93024436,
+            "upper": 144542070.66975567,
+            "standardisedPairedEffect": 23.149399536988117
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 20.4765625,
+            "median": 20.484375,
+            "sd": 0.49723901323681574,
+            "halfWidth": 0.35570333643847785,
+            "lower": 20.120859163561523,
+            "upper": 20.832265836438477,
+            "standardisedPairedEffect": 41.180522756463205
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71995,
+          "capacityMisses": 0,
+          "windowMisses": 5,
+          "httpAttempts": 86134,
+          "duplicateLogical": 14139,
+          "extraFinancialEffects": 14139,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 57856,
+          "committedEffects": 86134,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 324,
+          "resourceSamples": 1710,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 57547,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 57856,
+          "duplicate": 14139,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14139,
+          "eligible": 14139,
+          "triggered": 14139,
+          "repeated": 14139,
+          "serverOverlap": 14139,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            96.2,
+            96.16666666666667,
+            96.73333333333333,
+            96.13333333333334,
+            96.28333333333333,
+            96.13333333333334,
+            97.36666666666666,
+            96.93333333333334,
+            96.13333333333334,
+            96.18333333333334
+          ],
+          "p50Ms": [
+            9.011899999999514,
+            8.963499999998021,
+            8.942900000001828,
+            8.979200000001583,
+            9.047499999996944,
+            9.082499999998618,
+            8.985900000000129,
+            9.116199999996752,
+            9.745899999999892,
+            9.660400000000664
+          ],
+          "p95Ms": [
+            13.029099999999744,
+            12.916600000000017,
+            13.139400000000023,
+            13.036400000004505,
+            13.373399999996764,
+            13.398500000002969,
+            13.074599999999919,
+            13.04030000000057,
+            14.343299999996816,
+            14.39549999999872
+          ],
+          "p99Ms": [
+            21.164299999999912,
+            20.830299999999625,
+            22.904899999999543,
+            22.095000000000255,
+            23.863200000007055,
+            21.754000000000815,
+            23.422599999999875,
+            24.33230000000185,
+            24.157099999996717,
+            28.273000000001048
+          ],
+          "p95DispatchLagMs": [
+            14.475899999999456,
+            14.504100000000108,
+            14.450933333333523,
+            14.425300000002608,
+            14.462666666666678,
+            14.424533333334693,
+            14.494266666668409,
+            14.493633333338948,
+            14.388600000000224,
+            14.368333333339251
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.83333333333334,
+            143.23333333333332,
+            143.86666666666667,
+            143.71666666666667,
+            143.86666666666667,
+            142.6,
+            143.03333333333333,
+            143.83333333333334,
+            143.78333333333333
+          ],
+          "peakLockWaiters": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            2,
+            2
+          ],
+          "peakDbSessions": [
+            13,
+            10,
+            13,
+            14,
+            15,
+            13,
+            13,
+            18,
+            12,
+            12
+          ],
+          "peakWorkingSetBytes": [
+            131072000,
+            143048704,
+            141357056,
+            139362304,
+            131182592,
+            136519680,
+            138911744,
+            144867328,
+            148221952,
+            147550208
+          ],
+          "sampledProcessCpuSeconds": [
+            20.390625,
+            20.46875,
+            19.96875,
+            20.5,
+            20.890625,
+            19.59375,
+            21.046875,
+            20,
+            20.921875,
+            20.984375
+          ]
+        }
+      },
+      "B": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 96.46833333333333,
+            "median": 96.25833333333333,
+            "sd": 0.43193863876055627,
+            "halfWidth": 0.3089902659561641,
+            "lower": 96.15934306737716,
+            "upper": 96.7773235992895,
+            "standardisedPairedEffect": 223.33805007615962
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 9.984310000000004,
+            "median": 9.855549999998402,
+            "sd": 0.325634244207204,
+            "halfWidth": 0.23294468865008297,
+            "lower": 9.751365311349922,
+            "upper": 10.217254688650087,
+            "standardisedPairedEffect": 30.66111804152544
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 26.90065000000004,
+            "median": 27.591050000000905,
+            "sd": 3.0817341572745973,
+            "halfWidth": 2.2045396531203503,
+            "lower": 24.696110346879692,
+            "upper": 29.10518965312039,
+            "standardisedPairedEffect": 8.72906247818282
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 46.22933000000112,
+            "median": 44.86760000000049,
+            "sd": 3.3039026505866467,
+            "halfWidth": 2.3634694076626963,
+            "lower": 43.86586059233842,
+            "upper": 48.59279940766382,
+            "standardisedPairedEffect": 13.992340237928184
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.316170000000966,
+            "median": 14.33060000000114,
+            "sd": 0.04282741261747624,
+            "halfWidth": 0.03063688317595539,
+            "lower": 14.285533116825011,
+            "upper": 14.34680688317692,
+            "standardisedPairedEffect": 334.2758556971308
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.56,
+            "median": 143.80833333333334,
+            "sd": 0.44097255030608923,
+            "halfWidth": 0.31545273650311156,
+            "lower": 143.24454726349688,
+            "upper": 143.87545273650312,
+            "standardisedPairedEffect": 325.5531436148388
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 1.5,
+            "median": 1.0,
+            "sd": 0.7071067811865476,
+            "halfWidth": 0.5058336827776992,
+            "lower": 0.9941663172223008,
+            "upper": 2.0058336827776992,
+            "standardisedPairedEffect": 2.1213203435596424
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 14.4,
+            "median": 12.5,
+            "sd": 6.292853089020909,
+            "halfWidth": 4.5016355915256,
+            "lower": 9.8983644084744,
+            "upper": 18.9016355915256,
+            "standardisedPairedEffect": 2.288310214189422
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 137981132.8,
+            "median": 139159552.0,
+            "sd": 6029582.463498978,
+            "halfWidth": 4313303.144972787,
+            "lower": 133667829.65502723,
+            "upper": 142294435.9449728,
+            "standardisedPairedEffect": 22.884027813748368
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 24.7796875,
+            "median": 24.40625,
+            "sd": 1.3765468335279527,
+            "halfWidth": 0.984722212889834,
+            "lower": 23.794965287110166,
+            "upper": 25.764409712889837,
+            "standardisedPairedEffect": 18.00133994460045
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71996,
+          "capacityMisses": 0,
+          "windowMisses": 4,
+          "httpAttempts": 86136,
+          "duplicateLogical": 14113,
+          "extraFinancialEffects": 14113,
+          "zeroEffectLogical": 2,
+          "oneEffectLogical": 57881,
+          "committedEffects": 86107,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 19961,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 39,
+          "resourceSamples": 1716,
+          "deadlocks": 0,
+          "internalRetries": 19932,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 29,
+          "hotDebits": 57549,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 57881,
+          "duplicate": 14113,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 2
+        },
+        "failureRate": 2.7779321073392966e-05,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14140,
+          "eligible": 14140,
+          "triggered": 14140,
+          "repeated": 14140,
+          "serverOverlap": 14140,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            96.3,
+            96.2,
+            96.76666666666667,
+            96.11666666666666,
+            96.33333333333333,
+            96.18333333333334,
+            97.41666666666667,
+            96.95,
+            96.2,
+            96.21666666666667
+          ],
+          "p50Ms": [
+            9.702500000001237,
+            9.77690000000075,
+            9.687899999997171,
+            9.851799999996729,
+            9.748200000001816,
+            9.859300000000076,
+            9.912499999998545,
+            10.56210000000101,
+            10.46349999999984,
+            10.278400000002875
+          ],
+          "p95Ms": [
+            27.989700000001903,
+            26.98990000000049,
+            23.647399999999834,
+            25.317299999995157,
+            28.34900000000198,
+            27.192399999999907,
+            20.629300000000512,
+            31.83639999999923,
+            28.42450000000099,
+            28.630600000000413
+          ],
+          "p99Ms": [
+            51.28369999999995,
+            44.69540000000052,
+            43.97450000000026,
+            43.79400000000169,
+            45.04690000000119,
+            43.509600000004866,
+            43.51409999999942,
+            51.57049999999981,
+            49.864800000003015,
+            45.03980000000047
+          ],
+          "p95DispatchLagMs": [
+            14.327933333333931,
+            14.33810000000085,
+            14.365799999999581,
+            14.34690000000046,
+            14.325633333333826,
+            14.33326666666835,
+            14.339366666667047,
+            14.276433333334353,
+            14.220333333338203,
+            14.287933333333058
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.81666666666666,
+            143.23333333333332,
+            143.85,
+            143.71666666666667,
+            143.86666666666667,
+            142.61666666666667,
+            143.03333333333333,
+            143.85,
+            143.81666666666666
+          ],
+          "peakLockWaiters": [
+            1,
+            1,
+            1,
+            3,
+            1,
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          "peakDbSessions": [
+            32,
+            12,
+            12,
+            14,
+            14,
+            12,
+            10,
+            12,
+            13,
+            13
+          ],
+          "peakWorkingSetBytes": [
+            130703360,
+            129003520,
+            130576384,
+            139132928,
+            142557184,
+            139186176,
+            139419648,
+            144990208,
+            138272768,
+            145969152
+          ],
+          "sampledProcessCpuSeconds": [
+            24.515625,
+            24.25,
+            23.03125,
+            24.640625,
+            23.640625,
+            25.125,
+            24.03125,
+            27.546875,
+            26.71875,
+            24.296875
+          ]
+        }
+      },
+      "C": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99666666666667,
+            "median": 120.0,
+            "sd": 0.007027283689262666,
+            "halfWidth": 0.00502701555555527,
+            "lower": 119.99163965111111,
+            "upper": 120.00169368222222,
+            "standardisedPairedEffect": 17075.825023261194
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 11.479190000000767,
+            "median": 11.329050000003917,
+            "sd": 0.3254175111388743,
+            "halfWidth": 0.2327896471640588,
+            "lower": 11.246400352836707,
+            "upper": 11.711979647164826,
+            "standardisedPairedEffect": 35.275268254085866
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 16.376520000000983,
+            "median": 16.160350000000108,
+            "sd": 0.6297485844017945,
+            "halfWidth": 0.45049496645678994,
+            "lower": 15.926025033544194,
+            "upper": 16.827014966457774,
+            "standardisedPairedEffect": 26.004854009409534
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 25.289519999998767,
+            "median": 24.278199999997014,
+            "sd": 3.2156621021358394,
+            "halfWidth": 2.300345926484512,
+            "lower": 22.989174073514256,
+            "upper": 27.589865926483277,
+            "standardisedPairedEffect": 7.864483019904826
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.501203333333706,
+            "median": 14.49976666666771,
+            "sd": 0.030463503563667737,
+            "halfWidth": 0.02179227608603052,
+            "lower": 14.479411057247676,
+            "upper": 14.522995609419736,
+            "standardisedPairedEffect": 476.01889595616143
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.565,
+            "median": 143.80833333333334,
+            "sd": 0.43662920393440435,
+            "halfWidth": 0.3123456939047053,
+            "lower": 143.25265430609528,
+            "upper": 143.87734569390472,
+            "standardisedPairedEffect": 328.8030179986954
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 2,
+            "median": 2.0,
+            "sd": 0.4714045207910317,
+            "halfWidth": 0.3372224551851328,
+            "lower": 1.6627775448148672,
+            "upper": 2.337222455185133,
+            "standardisedPairedEffect": 4.242640687119285
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.2,
+            "median": 11.0,
+            "sd": 1.3165611772087666,
+            "halfWidth": 0.9418110624708618,
+            "lower": 10.258188937529138,
+            "upper": 12.141811062470861,
+            "standardisedPairedEffect": 8.507010683502799
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 139390566.4,
+            "median": 141367296.0,
+            "sd": 5789265.930589726,
+            "halfWidth": 4141391.0659090383,
+            "lower": 135249175.33409098,
+            "upper": 143531957.46590903,
+            "standardisedPairedEffect": 24.077416389438675
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 23.9078125,
+            "median": 23.7734375,
+            "sd": 1.0216952674932265,
+            "halfWidth": 0.7308767128006116,
+            "lower": 23.176935787199387,
+            "upper": 24.63868921280061,
+            "standardisedPairedEffect": 23.400140199003612
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71998,
+          "capacityMisses": 0,
+          "windowMisses": 2,
+          "httpAttempts": 86139,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71998,
+          "committedEffects": 71998,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 291,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 14141,
+          "retryExhausted": 0,
+          "hotDebits": 57550,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71998,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14141,
+          "eligible": 14141,
+          "triggered": 14141,
+          "repeated": 14141,
+          "serverOverlap": 14141,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            120,
+            120
+          ],
+          "p50Ms": [
+            11.109099999997852,
+            11.275399999998626,
+            11.287199999998847,
+            11.331000000005588,
+            11.327100000002247,
+            11.308100000002014,
+            11.790899999999965,
+            11.355399999999918,
+            11.99109999999996,
+            12.016600000002654
+          ],
+          "p95Ms": [
+            16.113400000002002,
+            15.834200000001147,
+            15.807800000000498,
+            16.207299999998213,
+            16.27180000000044,
+            16.092900000000554,
+            16.62039999999979,
+            15.921000000002095,
+            17.133200000003853,
+            17.763200000001234
+          ],
+          "p99Ms": [
+            24.462399999996705,
+            23.459999999999127,
+            22.38869999999588,
+            28.240599999997357,
+            24.625599999999395,
+            25.01640000000043,
+            23.815600000001723,
+            24.093999999997322,
+            23.4719,
+            33.31999999999971
+          ],
+          "p95DispatchLagMs": [
+            14.547966666668799,
+            14.47876666666707,
+            14.504400000001624,
+            14.486866666666174,
+            14.495133333333797,
+            14.53666666666686,
+            14.528733333332639,
+            14.508333333331393,
+            14.449166666669043,
+            14.475999999999658
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.83333333333334,
+            143.26666666666668,
+            143.85,
+            143.7,
+            143.86666666666667,
+            142.61666666666667,
+            143.05,
+            143.85,
+            143.81666666666666
+          ],
+          "peakLockWaiters": [
+            2,
+            1,
+            2,
+            2,
+            2,
+            3,
+            2,
+            2,
+            2,
+            2
+          ],
+          "peakDbSessions": [
+            14,
+            12,
+            10,
+            12,
+            10,
+            11,
+            11,
+            10,
+            10,
+            12
+          ],
+          "peakWorkingSetBytes": [
+            128581632,
+            141070336,
+            141893632,
+            135634944,
+            145068032,
+            131215360,
+            139333632,
+            141664256,
+            144207872,
+            145235968
+          ],
+          "sampledProcessCpuSeconds": [
+            23.03125,
+            22.859375,
+            25.15625,
+            23.046875,
+            23.03125,
+            24.640625,
+            24.828125,
+            22.828125,
+            25.15625,
+            24.5
+          ]
+        }
+      },
+      "D": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99166666666667,
+            "median": 119.99166666666667,
+            "sd": 0.008784104611578332,
+            "halfWidth": 0.006283769444444087,
+            "lower": 119.98538289722222,
+            "upper": 119.99795043611113,
+            "standardisedPairedEffect": 13660.090808630126
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 12.315330000000722,
+            "median": 12.186599999999089,
+            "sd": 0.30161474341444106,
+            "halfWidth": 0.21576217411656756,
+            "lower": 12.099567825884154,
+            "upper": 12.53109217411729,
+            "standardisedPairedEffect": 40.83132628260994
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 19.844950000000743,
+            "median": 19.90584999999919,
+            "sd": 1.0616836851062421,
+            "halfWidth": 0.7594827014402652,
+            "lower": 19.085467298560477,
+            "upper": 20.60443270144101,
+            "standardisedPairedEffect": 18.691960965770015
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 44.94348999999984,
+            "median": 44.94444999999996,
+            "sd": 0.26302668411316377,
+            "halfWidth": 0.18815794139395725,
+            "lower": 44.75533205860588,
+            "upper": 45.1316479413938,
+            "standardisedPairedEffect": 170.87045807361315
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.487849999999435,
+            "median": 14.491249999997308,
+            "sd": 0.03114418182877732,
+            "halfWidth": 0.02227920394867858,
+            "lower": 14.465570796050756,
+            "upper": 14.510129203948114,
+            "standardisedPairedEffect": 465.186405590935
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.55833333333334,
+            "median": 143.79166666666669,
+            "sd": 0.43725081086824397,
+            "halfWidth": 0.3127903646856256,
+            "lower": 143.2455429686477,
+            "upper": 143.87112369801898,
+            "standardisedPairedEffect": 328.3203364409346
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 2.1,
+            "median": 2.0,
+            "sd": 0.31622776601683794,
+            "halfWidth": 0.22621570000000002,
+            "lower": 1.8737843,
+            "upper": 2.3262157,
+            "standardisedPairedEffect": 6.640783086353597
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 16,
+            "median": 12.0,
+            "sd": 10.498677165349081,
+            "halfWidth": 7.5103006733033055,
+            "lower": 8.489699326696694,
+            "upper": 23.510300673303306,
+            "standardisedPairedEffect": 1.5240015240022862
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 138314547.2,
+            "median": 138203136.0,
+            "sd": 5479954.022315086,
+            "halfWidth": 3920122.6721495925,
+            "lower": 134394424.5278504,
+            "upper": 142234669.8721496,
+            "standardisedPairedEffect": 25.240092642523123
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 25.7359375,
+            "median": 25.78125,
+            "sd": 1.0105092848445008,
+            "halfWidth": 0.7228747434386468,
+            "lower": 25.01306275656135,
+            "upper": 26.458812243438647,
+            "standardisedPairedEffect": 25.46828404843435
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71996,
+          "capacityMisses": 0,
+          "windowMisses": 4,
+          "httpAttempts": 86135,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 1,
+          "oneEffectLogical": 71995,
+          "committedEffects": 71995,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 2783,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 298,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 2782,
+          "keyBusy": 0,
+          "replays": 14139,
+          "retryExhausted": 1,
+          "hotDebits": 57549,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71995,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 1
+        },
+        "failureRate": 1.3889660536696483e-05,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14139,
+          "eligible": 14139,
+          "triggered": 14139,
+          "repeated": 14139,
+          "serverOverlap": 14139,
+          "injectedTransportLosses": 0,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            119.98333333333333
+          ],
+          "p50Ms": [
+            12.130800000000818,
+            12.205199999998513,
+            12.134099999999307,
+            12.260099999999511,
+            12.167999999999665,
+            12.154900000001362,
+            12.208400000003166,
+            12.149600000000646,
+            12.743500000000495,
+            12.998700000003737
+          ],
+          "p95Ms": [
+            19.98569999999745,
+            19.82600000000093,
+            18.665200000003097,
+            20.548399999999674,
+            20.220900000000256,
+            21.88420000000042,
+            19.62390000000005,
+            20.36540000000241,
+            18.019500000002154,
+            19.310300000001007
+          ],
+          "p99Ms": [
+            44.907899999998335,
+            44.981000000001586,
+            45.44670000000042,
+            44.78029999999853,
+            44.641599999999016,
+            45.07560000000012,
+            45.04729999999836,
+            44.69080000000031,
+            44.65200000000186,
+            45.21169999999984
+          ],
+          "p95DispatchLagMs": [
+            14.481033333337109,
+            14.445266666662064,
+            14.501399999999194,
+            14.54473333333408,
+            14.504733333335025,
+            14.48029999999926,
+            14.491666666661331,
+            14.490833333333285,
+            14.503866666666909,
+            14.43466666666609
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.83333333333334,
+            143.23333333333332,
+            143.86666666666667,
+            143.7,
+            143.85,
+            142.61666666666667,
+            143.05,
+            143.85,
+            143.78333333333333
+          ],
+          "peakLockWaiters": [
+            2,
+            2,
+            3,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "peakDbSessions": [
+            14,
+            12,
+            11,
+            14,
+            12,
+            45,
+            11,
+            12,
+            10,
+            19
+          ],
+          "peakWorkingSetBytes": [
+            131473408,
+            133705728,
+            136347648,
+            134619136,
+            143319040,
+            131059712,
+            143618048,
+            140058624,
+            144584704,
+            144359424
+          ],
+          "sampledProcessCpuSeconds": [
+            24.59375,
+            25.90625,
+            24.765625,
+            26,
+            24.453125,
+            26.5,
+            25.65625,
+            25.5,
+            27.828125,
+            26.15625
+          ]
+        }
+      }
+    },
+    "W4": {
+      "A": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 96.425,
+            "median": 96.19166666666666,
+            "sd": 0.4427223581656497,
+            "halfWidth": 0.3167044735494875,
+            "lower": 96.1082955264505,
+            "upper": 96.74170447354949,
+            "standardisedPairedEffect": 217.80015899698805
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 9.211250000000017,
+            "median": 9.086100000000442,
+            "sd": 0.2672042466823668,
+            "halfWidth": 0.1911463894128948,
+            "lower": 9.020103610587123,
+            "upper": 9.402396389412912,
+            "standardisedPairedEffect": 34.47269313406418
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 13.462229999999726,
+            "median": 13.28005000000121,
+            "sd": 0.39918764189760914,
+            "halfWidth": 0.28556161585889556,
+            "lower": 13.17666838414083,
+            "upper": 13.747791615858622,
+            "standardisedPairedEffect": 33.72406504370885
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 22.467460000000028,
+            "median": 22.125849999999446,
+            "sd": 2.079856493020348,
+            "halfWidth": 1.4878395986362911,
+            "lower": 20.979620401363736,
+            "upper": 23.95529959863632,
+            "standardisedPairedEffect": 10.802408760122193
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.45160666666634,
+            "median": 14.45558333333338,
+            "sd": 0.04000107344247683,
+            "halfWidth": 0.028615042074007783,
+            "lower": 14.422991624592331,
+            "upper": 14.480221708740348,
+            "standardisedPairedEffect": 361.28047132155933
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.55833333333334,
+            "median": 143.80833333333334,
+            "sd": 0.43696837188140975,
+            "halfWidth": 0.3125883200204187,
+            "lower": 143.24574501331293,
+            "upper": 143.87092165335375,
+            "standardisedPairedEffect": 328.53254965623483
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 1.1,
+            "median": 1.0,
+            "sd": 0.31622776601683794,
+            "halfWidth": 0.22621570000000002,
+            "lower": 0.8737843000000001,
+            "upper": 1.3262157,
+            "standardisedPairedEffect": 3.4785054261852175
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.2,
+            "median": 11.0,
+            "sd": 2.6583202716502514,
+            "halfWidth": 1.9016476277530037,
+            "lower": 9.298352372246995,
+            "upper": 13.101647627753003,
+            "standardisedPairedEffect": 4.21318684563436
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 142191001.6,
+            "median": 142036992.0,
+            "sd": 4675911.347590832,
+            "halfWidth": 3344945.2334836447,
+            "lower": 138846056.36651635,
+            "upper": 145535946.83348364,
+            "standardisedPairedEffect": 30.409259506868327
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 24.6359375,
+            "median": 24.453125,
+            "sd": 0.796519187992529,
+            "halfWidth": 0.5697954608627485,
+            "lower": 24.06614203913725,
+            "upper": 25.20573296086275,
+            "standardisedPairedEffect": 30.929496578845853
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71995,
+          "capacityMisses": 0,
+          "windowMisses": 5,
+          "httpAttempts": 86135,
+          "duplicateLogical": 14140,
+          "extraFinancialEffects": 14140,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 57855,
+          "committedEffects": 86135,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 46,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 0,
+          "hotDebits": 57549,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 57855,
+          "duplicate": 14140,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14140,
+          "eligible": 14140,
+          "triggered": 14140,
+          "repeated": 14140,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 14140,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            96.2,
+            96.15,
+            96.73333333333333,
+            96.13333333333334,
+            96.26666666666667,
+            96.11666666666666,
+            97.38333333333334,
+            96.95,
+            96.13333333333334,
+            96.18333333333334
+          ],
+          "p50Ms": [
+            9.092499999998836,
+            9.145400000001246,
+            9.061399999999594,
+            9.060499999999593,
+            9.079700000002049,
+            9.011099999996077,
+            9.063999999998487,
+            9.17870000000039,
+            9.676800000001094,
+            9.742400000002817
+          ],
+          "p95Ms": [
+            13.306300000000192,
+            13.22649999999976,
+            13.067399999999907,
+            13.65679999999702,
+            13.169799999999668,
+            13.463899999995192,
+            13.175800000004529,
+            13.25380000000223,
+            14.16989999999987,
+            14.1320999999989
+          ],
+          "p99Ms": [
+            21.964899999999034,
+            22.286799999999857,
+            19.59019999999873,
+            22.71860000000015,
+            20.948700000000827,
+            26.576900000000023,
+            20.848599999997532,
+            24.333800000000338,
+            24.26770000000397,
+            21.13839999999982
+          ],
+          "p95DispatchLagMs": [
+            14.476999999998952,
+            14.504499999999098,
+            14.475333333333765,
+            14.393899999999121,
+            14.437366666667003,
+            14.501933333333,
+            14.411466666664637,
+            14.473799999999756,
+            14.408633333332546,
+            14.432133333335514
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.81666666666666,
+            143.23333333333332,
+            143.86666666666667,
+            143.7,
+            143.85,
+            142.61666666666667,
+            143.05,
+            143.83333333333334,
+            143.81666666666666
+          ],
+          "peakLockWaiters": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "peakDbSessions": [
+            13,
+            12,
+            11,
+            12,
+            9,
+            11,
+            7,
+            10,
+            10,
+            17
+          ],
+          "peakWorkingSetBytes": [
+            132882432,
+            138391552,
+            142123008,
+            141950976,
+            141516800,
+            143740928,
+            139730944,
+            144547840,
+            149299200,
+            147726336
+          ],
+          "sampledProcessCpuSeconds": [
+            24.046875,
+            24.453125,
+            24.140625,
+            24.15625,
+            24.453125,
+            25,
+            24.734375,
+            23.6875,
+            25.1875,
+            26.5
+          ]
+        }
+      },
+      "B": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 96.42833333333334,
+            "median": 96.19166666666666,
+            "sd": 0.4409620515012583,
+            "halfWidth": 0.31544522611111175,
+            "lower": 96.11288810722223,
+            "upper": 96.74377855944445,
+            "standardisedPairedEffect": 218.6771696227429
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 10.085850000000164,
+            "median": 9.9971000000005,
+            "sd": 0.24130479688513673,
+            "halfWidth": 0.1726190404729434,
+            "lower": 9.91323095952722,
+            "upper": 10.258469040473107,
+            "standardisedPairedEffect": 41.797138433187136
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 25.70444999999943,
+            "median": 26.167349999997896,
+            "sd": 1.1303928601745494,
+            "halfWidth": 0.8086342807916876,
+            "lower": 24.895815719207743,
+            "upper": 26.513084280791116,
+            "standardisedPairedEffect": 22.739395218782857
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 43.34478999999951,
+            "median": 43.43960000000152,
+            "sd": 0.6525106409540716,
+            "halfWidth": 0.4667779596337357,
+            "lower": 42.878012040365775,
+            "upper": 43.81156795963325,
+            "standardisedPairedEffect": 66.42771363333281
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.393273333334582,
+            "median": 14.393516666666983,
+            "sd": 0.050429830971122615,
+            "halfWidth": 0.036075325255931975,
+            "lower": 14.35719800807865,
+            "upper": 14.429348658590515,
+            "standardisedPairedEffect": 285.4118892759433
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.565,
+            "median": 143.80833333333334,
+            "sd": 0.44113000239424366,
+            "halfWidth": 0.3155653709336265,
+            "lower": 143.24943462906637,
+            "upper": 143.88056537093362,
+            "standardisedPairedEffect": 325.4482787858398
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.1,
+            "median": 0.0,
+            "sd": 0.31622776601683794,
+            "halfWidth": 0.22621570000000002,
+            "lower": -0.12621570000000001,
+            "upper": 0.3262157,
+            "standardisedPairedEffect": 0.31622776601683794
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 12.3,
+            "median": 12.0,
+            "sd": 3.1640339933558095,
+            "halfWidth": 2.2634134049843952,
+            "lower": 10.036586595015606,
+            "upper": 14.563413404984395,
+            "standardisedPairedEffect": 3.88744243134837
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 141323059.2,
+            "median": 142598144.0,
+            "sd": 7443819.884338548,
+            "halfWidth": 5324987.577845717,
+            "lower": 135998071.62215427,
+            "upper": 146648046.7778457,
+            "standardisedPairedEffect": 18.98528731160424
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 26.96875,
+            "median": 26.6640625,
+            "sd": 0.9916097672751896,
+            "halfWidth": 0.7093548439988981,
+            "lower": 26.2593951560011,
+            "upper": 27.6781048439989,
+            "standardisedPairedEffect": 27.196938644630844
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71999,
+          "capacityMisses": 0,
+          "windowMisses": 1,
+          "httpAttempts": 86139,
+          "duplicateLogical": 14140,
+          "extraFinancialEffects": 14140,
+          "zeroEffectLogical": 2,
+          "oneEffectLogical": 57857,
+          "committedEffects": 86137,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 4118,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 1,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 4116,
+          "keyBusy": 0,
+          "replays": 0,
+          "retryExhausted": 2,
+          "hotDebits": 57551,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 57857,
+          "duplicate": 14140,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 2
+        },
+        "failureRate": 2.7778163585605356e-05,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14140,
+          "eligible": 14140,
+          "triggered": 14140,
+          "repeated": 14140,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 14140,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            96.2,
+            96.16666666666667,
+            96.73333333333333,
+            96.13333333333334,
+            96.28333333333333,
+            96.11666666666666,
+            97.38333333333334,
+            96.95,
+            96.13333333333334,
+            96.18333333333334
+          ],
+          "p50Ms": [
+            10.013200000001234,
+            9.980999999999767,
+            9.857399999998961,
+            9.928899999998976,
+            9.97110000000248,
+            10.070200000001932,
+            9.913000000000466,
+            10.071699999999964,
+            10.524599999998827,
+            10.527399999999034
+          ],
+          "p95Ms": [
+            26.631900000000314,
+            26.174299999998766,
+            25.32839999999942,
+            23.737099999998463,
+            26.417999999997846,
+            25.286400000000867,
+            23.854000000000042,
+            26.73400000000038,
+            26.720000000001164,
+            26.160399999997026
+          ],
+          "p99Ms": [
+            43.96780000000035,
+            44.29690000000119,
+            42.867099999995844,
+            42.31749999999738,
+            43.18100000000004,
+            43.52079999999842,
+            42.426199999994424,
+            43.35840000000462,
+            43.67360000000008,
+            43.83860000000277
+          ],
+          "p95DispatchLagMs": [
+            14.44896666666682,
+            14.422966666668799,
+            14.368633333331672,
+            14.418400000002293,
+            14.343033333338099,
+            14.354033333336702,
+            14.442033333332802,
+            14.457000000000335,
+            14.36369999999988,
+            14.31396666666842
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.83333333333334,
+            143.23333333333332,
+            143.86666666666667,
+            143.71666666666667,
+            143.86666666666667,
+            142.61666666666667,
+            143.05,
+            143.85,
+            143.81666666666666
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            10,
+            12,
+            11,
+            12,
+            10,
+            21,
+            12,
+            11,
+            12,
+            12
+          ],
+          "peakWorkingSetBytes": [
+            128004096,
+            138637312,
+            143147008,
+            138457088,
+            146739200,
+            130998272,
+            142049280,
+            145149952,
+            149929984,
+            150118400
+          ],
+          "sampledProcessCpuSeconds": [
+            28.8125,
+            26.40625,
+            26.421875,
+            25.6875,
+            25.96875,
+            27.203125,
+            26.625,
+            26.703125,
+            28.15625,
+            27.703125
+          ]
+        }
+      },
+      "C": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.995,
+            "median": 120.0,
+            "sd": 0.008050764858993675,
+            "halfWidth": 0.005759169825763127,
+            "lower": 119.98924083017424,
+            "upper": 120.00075916982577,
+            "standardisedPairedEffect": 14904.79502279229
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 11.992079999999897,
+            "median": 11.851999999998498,
+            "sd": 0.32402463486651084,
+            "halfWidth": 0.231793243575168,
+            "lower": 11.760286756424728,
+            "upper": 12.223873243575065,
+            "standardisedPairedEffect": 37.00977860816138
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 19.318030000001,
+            "median": 19.13124999999991,
+            "sd": 0.581577116410825,
+            "halfWidth": 0.41603517663863554,
+            "lower": 18.90199482336236,
+            "upper": 19.734065176639636,
+            "standardisedPairedEffect": 33.21662674628824
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 26.74477000000086,
+            "median": 26.1704000000027,
+            "sd": 1.814337554069429,
+            "halfWidth": 1.2978988056610117,
+            "lower": 25.44687119433985,
+            "upper": 28.04266880566187,
+            "standardisedPairedEffect": 14.740790620804963
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.444493333333686,
+            "median": 14.441033333332598,
+            "sd": 0.05972770682773991,
+            "halfWidth": 0.04272662448215422,
+            "lower": 14.40176670885153,
+            "upper": 14.48721995781584,
+            "standardisedPairedEffect": 241.83907436782908
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.56166666666667,
+            "median": 143.80833333333334,
+            "sd": 0.44208051889354455,
+            "halfWidth": 0.31624532942670663,
+            "lower": 143.24542133723997,
+            "upper": 143.87791199609336,
+            "standardisedPairedEffect": 324.7409929439508
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.3,
+            "median": 0.0,
+            "sd": 0.48304589153964794,
+            "halfWidth": 0.34555018954580724,
+            "lower": -0.04555018954580725,
+            "upper": 0.6455501895458072,
+            "standardisedPairedEffect": 0.6210590034081188
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.1,
+            "median": 9.0,
+            "sd": 6.723920813863821,
+            "halfWidth": 4.810002843241107,
+            "lower": 6.289997156758893,
+            "upper": 15.910002843241106,
+            "standardisedPairedEffect": 1.6508225345416458
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 142784512,
+            "median": 143235072.0,
+            "sd": 8005462.277499394,
+            "halfWidth": 5726762.313565131,
+            "lower": 137057749.68643486,
+            "upper": 148511274.31356514,
+            "standardisedPairedEffect": 17.835885930200213
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 27.403125,
+            "median": 26.7109375,
+            "sd": 1.4762625540439012,
+            "halfWidth": 1.0560545370612624,
+            "lower": 26.34707046293874,
+            "upper": 28.45917953706126,
+            "standardisedPairedEffect": 18.56250090807701
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71997,
+          "capacityMisses": 0,
+          "windowMisses": 3,
+          "httpAttempts": 86137,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71997,
+          "committedEffects": 71997,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 0,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 3,
+          "resourceSamples": 1711,
+          "deadlocks": 0,
+          "internalRetries": 0,
+          "keyBusy": 0,
+          "replays": 14140,
+          "retryExhausted": 0,
+          "hotDebits": 57549,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71997,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14140,
+          "eligible": 14140,
+          "triggered": 14140,
+          "repeated": 14140,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 14140,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            120,
+            120,
+            119.98333333333333,
+            120,
+            120
+          ],
+          "p50Ms": [
+            11.732199999998556,
+            11.792600000000675,
+            11.771899999999732,
+            11.680899999999383,
+            11.905500000000757,
+            11.871399999996356,
+            12.372900000002119,
+            11.832600000000639,
+            12.373500000001513,
+            12.587299999999232
+          ],
+          "p95Ms": [
+            18.798000000002503,
+            19.086699999999837,
+            18.98830000000453,
+            18.563300000001618,
+            19.193999999999505,
+            19.17579999999998,
+            20.17479999999705,
+            19.040899999999965,
+            19.94430000000284,
+            20.214200000002165
+          ],
+          "p99Ms": [
+            24.932200000002922,
+            25.367100000000164,
+            26.05340000000433,
+            25.317399999999907,
+            28.64810000000216,
+            27.085699999995995,
+            30.75039999999717,
+            25.549700000003213,
+            26.28740000000107,
+            27.456300000001647
+          ],
+          "p95DispatchLagMs": [
+            14.362933333337423,
+            14.37993333333361,
+            14.518800000001647,
+            14.41400000000067,
+            14.478766666665251,
+            14.549633333333077,
+            14.433966666663764,
+            14.448100000001432,
+            14.461233333333439,
+            14.397566666666535
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.83333333333334,
+            143.23333333333332,
+            143.85,
+            143.71666666666667,
+            143.86666666666667,
+            142.61666666666667,
+            143.03333333333333,
+            143.85,
+            143.81666666666666
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0
+          ],
+          "peakDbSessions": [
+            10,
+            7,
+            9,
+            9,
+            8,
+            11,
+            9,
+            9,
+            9,
+            30
+          ],
+          "peakWorkingSetBytes": [
+            124203008,
+            138641408,
+            150544384,
+            140599296,
+            145707008,
+            140763136,
+            139759616,
+            147996672,
+            150695936,
+            148934656
+          ],
+          "sampledProcessCpuSeconds": [
+            26.15625,
+            26.375,
+            25.890625,
+            26.71875,
+            27.15625,
+            26.609375,
+            29.21875,
+            26.703125,
+            29.828125,
+            29.375
+          ]
+        }
+      },
+      "D": {
+        "distributions": {
+          "correctlyConfirmedTps": {
+            "n": 10,
+            "mean": 119.99333333333334,
+            "median": 120.0,
+            "sd": 0.008606629658238215,
+            "halfWidth": 0.0061568115200720565,
+            "lower": 119.98717652181327,
+            "upper": 119.99949014485341,
+            "standardisedPairedEffect": 13941.965449678253
+          },
+          "p50Ms": {
+            "n": 10,
+            "mean": 12.927470000000948,
+            "median": 12.750600000001441,
+            "sd": 0.3921241386500481,
+            "halfWidth": 0.28050869039404497,
+            "lower": 12.646961309606903,
+            "upper": 13.207978690394993,
+            "standardisedPairedEffect": 32.96779954558751
+          },
+          "p95Ms": {
+            "n": 10,
+            "mean": 24.73127999999997,
+            "median": 24.846800000000258,
+            "sd": 1.8024968021550696,
+            "halfWidth": 1.2894284426167666,
+            "lower": 23.441851557383202,
+            "upper": 26.020708442616737,
+            "standardisedPairedEffect": 13.720568031206042
+          },
+          "p99Ms": {
+            "n": 10,
+            "mean": 46.9149500000005,
+            "median": 47.04009999999835,
+            "sd": 1.0265327166404268,
+            "halfWidth": 0.7343372152063051,
+            "lower": 46.1806127847942,
+            "upper": 47.649287215206805,
+            "standardisedPairedEffect": 45.70234269156162
+          },
+          "p95DispatchLagMs": {
+            "n": 10,
+            "mean": 14.42877666666667,
+            "median": 14.43460000000232,
+            "sd": 0.0525650051408637,
+            "halfWidth": 0.03760273673378488,
+            "lower": 14.391173929932885,
+            "upper": 14.466379403400454,
+            "standardisedPairedEffect": 274.493964720453
+          },
+          "httpAttemptTps": {
+            "n": 10,
+            "mean": 143.56,
+            "median": 143.80833333333334,
+            "sd": 0.4414622168304881,
+            "halfWidth": 0.31580302280775424,
+            "lower": 143.24419697719225,
+            "upper": 143.87580302280776,
+            "standardisedPairedEffect": 325.1920425505495
+          },
+          "peakLockWaiters": {
+            "n": 10,
+            "mean": 0.4,
+            "median": 0.0,
+            "sd": 0.699205898780101,
+            "halfWidth": 0.5001817323917334,
+            "lower": -0.10018173239173334,
+            "upper": 0.9001817323917334,
+            "standardisedPairedEffect": 0.5720775535473555
+          },
+          "peakDbSessions": {
+            "n": 10,
+            "mean": 11.1,
+            "median": 11.5,
+            "sd": 2.64365067451978,
+            "halfWidth": 1.8911536308931238,
+            "lower": 9.208846369106876,
+            "upper": 12.991153630893123,
+            "standardisedPairedEffect": 4.198739306590239
+          },
+          "peakWorkingSetBytes": {
+            "n": 10,
+            "mean": 143232204.8,
+            "median": 143187968.0,
+            "sd": 4627591.360593082,
+            "halfWidth": 3310379.199575968,
+            "lower": 139921825.60042405,
+            "upper": 146542583.99957597,
+            "standardisedPairedEffect": 30.951783258071227
+          },
+          "sampledProcessCpuSeconds": {
+            "n": 10,
+            "mean": 29.0921875,
+            "median": 28.8359375,
+            "sd": 1.4821794801186265,
+            "halfWidth": 1.060287250686324,
+            "lower": 28.03190024931368,
+            "upper": 30.152474750686324,
+            "standardisedPairedEffect": 19.627978858317213
+          }
+        },
+        "counts": {
+          "offered": 72000,
+          "dispatched": 71996,
+          "capacityMisses": 0,
+          "windowMisses": 4,
+          "httpAttempts": 86136,
+          "duplicateLogical": 0,
+          "extraFinancialEffects": 0,
+          "zeroEffectLogical": 0,
+          "oneEffectLogical": 71996,
+          "committedEffects": 71996,
+          "clientLedgerMismatch": 0,
+          "lateConfirmations": 0,
+          "versionConflicts": 2905,
+          "lockTimeouts": 0,
+          "lockWaiterSamples": 4,
+          "resourceSamples": 1713,
+          "deadlocks": 0,
+          "internalRetries": 2905,
+          "keyBusy": 0,
+          "replays": 14140,
+          "retryExhausted": 0,
+          "hotDebits": 57549,
+          "clientActiveAtCutoff": 0
+        },
+        "outcomes": {
+          "correctlyConfirmed": 71996,
+          "duplicate": 0,
+          "clientMismatch": 0,
+          "unreconciled": 0,
+          "late": 0,
+          "unknown": 0,
+          "businessRejected": 0,
+          "operationalFailure": 0
+        },
+        "failureRate": 0.0,
+        "unknownRate": 0.0,
+        "exposure": {
+          "assigned": 14141,
+          "assignedDispatched": 14140,
+          "eligible": 14140,
+          "triggered": 14140,
+          "repeated": 14140,
+          "serverOverlap": 0,
+          "injectedTransportLosses": 14140,
+          "otherTransportFailures": 0
+        },
+        "auditViolationRuns": 0,
+        "keyContractViolationRuns": 0,
+        "points": {
+          "correctlyConfirmedTps": [
+            120,
+            120,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            119.98333333333333,
+            120,
+            119.98333333333333,
+            120,
+            120
+          ],
+          "p50Ms": [
+            12.685300000004645,
+            12.590499999998428,
+            12.701500000002852,
+            12.695999999996275,
+            12.718199999999797,
+            12.859499999998661,
+            13.00829999999769,
+            12.783000000003085,
+            13.81930000000284,
+            13.413100000005215
+          ],
+          "p95Ms": [
+            25.121800000000803,
+            22.91820000000007,
+            22.97389999999723,
+            22.27520000000004,
+            25.137500000004366,
+            27.647899999999936,
+            23.63799999999901,
+            26.050499999997555,
+            26.978000000000975,
+            24.571799999999712
+          ],
+          "p99Ms": [
+            47.955199999996694,
+            45.72409999999945,
+            47.138099999996484,
+            45.12810000000172,
+            46.05689999999959,
+            48.11729999999989,
+            46.66110000000481,
+            48.044400000006135,
+            47.38220000000001,
+            46.94210000000021
+          ],
+          "p95DispatchLagMs": [
+            14.363899999996647,
+            14.43500000000131,
+            14.43420000000333,
+            14.40690000000177,
+            14.452133333334132,
+            14.41939999999886,
+            14.477200000001176,
+            14.524066666665021,
+            14.435666666664474,
+            14.33929999999998
+          ],
+          "httpAttemptTps": [
+            143.8,
+            143.83333333333334,
+            143.23333333333332,
+            143.86666666666667,
+            143.7,
+            143.85,
+            142.61666666666667,
+            143.03333333333333,
+            143.85,
+            143.81666666666666
+          ],
+          "peakLockWaiters": [
+            0,
+            0,
+            0,
+            0,
+            2,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "peakDbSessions": [
+            14,
+            12,
+            8,
+            14,
+            14,
+            11,
+            8,
+            9,
+            8,
+            13
+          ],
+          "peakWorkingSetBytes": [
+            139845632,
+            137355264,
+            142422016,
+            146157568,
+            144617472,
+            136654848,
+            141537280,
+            150282240,
+            143953920,
+            149495808
+          ],
+          "sampledProcessCpuSeconds": [
+            28.09375,
+            27.3125,
+            27.234375,
+            28.5,
+            29.046875,
+            29.171875,
+            28.625,
+            31.078125,
+            31.59375,
+            30.265625
+          ]
+        }
+      }
+    }
+  },
+  "factorial": {
+    "W1-low": {
+      "correctlyConfirmedTps": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 2,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 3,
+              "value": 0.0
+            },
+            {
+              "block": 4,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 5,
+              "value": 0.0
+            },
+            {
+              "block": 6,
+              "value": 0.0
+            },
+            {
+              "block": 7,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 8,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 9,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 10,
+              "value": -0.00833333333333286
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -0.00416666666666643,
+            "median": -0.00833333333333286,
+            "sd": 0.005892556509887561,
+            "halfWidth": 0.0042152806898139205,
+            "lower": -0.00838194735648035,
+            "upper": 4.8614023147490644e-05,
+            "standardisedPairedEffect": -0.7071067811865475
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 2,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 3,
+              "value": 0.0
+            },
+            {
+              "block": 4,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 5,
+              "value": 0.0
+            },
+            {
+              "block": 6,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 7,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 8,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 9,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 10,
+              "value": 0.00833333333333286
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -0.002499999999999858,
+            "median": -0.00416666666666643,
+            "sd": 0.008827915878927667,
+            "halfWidth": 0.0063151101348463,
+            "lower": -0.008815110134846158,
+            "upper": 0.0038151101348464418,
+            "standardisedPairedEffect": -0.28319254898739865
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 2,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 3,
+              "value": -0.03333333333333144
+            },
+            {
+              "block": 4,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 5,
+              "value": 0
+            },
+            {
+              "block": 6,
+              "value": 0.0
+            },
+            {
+              "block": 7,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 8,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 9,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 10,
+              "value": -0.01666666666666572
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 0.001666666666666572,
+            "median": 0.00833333333333286,
+            "sd": 0.018341748910242487,
+            "halfWidth": 0.013120895806264566,
+            "lower": -0.011454229139597994,
+            "upper": 0.014787562472931138,
+            "standardisedPairedEffect": 0.09086737992230741
+          }
+        }
+      },
+      "p95Ms": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 1.0967000000027838
+            },
+            {
+              "block": 2,
+              "value": 1.137599999999054
+            },
+            {
+              "block": 3,
+              "value": 1.138249999999971
+            },
+            {
+              "block": 4,
+              "value": 1.110500000002503
+            },
+            {
+              "block": 5,
+              "value": 1.082300000001851
+            },
+            {
+              "block": 6,
+              "value": 1.2711999999974068
+            },
+            {
+              "block": 7,
+              "value": 1.0012500000029831
+            },
+            {
+              "block": 8,
+              "value": 2.064800000001469
+            },
+            {
+              "block": 9,
+              "value": 1.640749999999798
+            },
+            {
+              "block": 10,
+              "value": -0.14875000000074579
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 1.1394600000007074,
+            "median": 1.1240500000007785,
+            "sd": 0.558711563828614,
+            "halfWidth": 0.39967814686726416,
+            "lower": 0.7397818531334432,
+            "upper": 1.5391381468679715,
+            "standardisedPairedEffect": 2.039442305780231
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": 2.534900000001471
+            },
+            {
+              "block": 2,
+              "value": 2.420099999998513
+            },
+            {
+              "block": 3,
+              "value": 2.4831500000000233
+            },
+            {
+              "block": 4,
+              "value": 2.146999999997206
+            },
+            {
+              "block": 5,
+              "value": 2.493900000001304
+            },
+            {
+              "block": 6,
+              "value": 2.5604000000039377
+            },
+            {
+              "block": 7,
+              "value": 2.2866500000000087
+            },
+            {
+              "block": 8,
+              "value": 3.113799999997809
+            },
+            {
+              "block": 9,
+              "value": 2.999549999999317
+            },
+            {
+              "block": 10,
+              "value": 2.011849999999413
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 2.5051299999999004,
+            "median": 2.4885250000006636,
+            "sd": 0.34091811186852156,
+            "halfWidth": 0.24387810814471464,
+            "lower": 2.261251891855186,
+            "upper": 2.749008108144615,
+            "standardisedPairedEffect": 7.348186889425308
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": 0.23659999999472348
+            },
+            {
+              "block": 2,
+              "value": -0.26640000000213604
+            },
+            {
+              "block": 3,
+              "value": 0.05069999999977881
+            },
+            {
+              "block": 4,
+              "value": 0.2937999999994645
+            },
+            {
+              "block": 5,
+              "value": -0.15860000000247965
+            },
+            {
+              "block": 6,
+              "value": 0.4727999999995518
+            },
+            {
+              "block": 7,
+              "value": -0.3783000000003085
+            },
+            {
+              "block": 8,
+              "value": 2.3828000000039538
+            },
+            {
+              "block": 9,
+              "value": 0.5822999999923013
+            },
+            {
+              "block": 10,
+              "value": 2.2350999999989654
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 0.5450799999983815,
+            "median": 0.265199999997094,
+            "sd": 0.9803061435661479,
+            "halfWidth": 0.7012687192980668,
+            "lower": -0.15618871929968525,
+            "upper": 1.2463487192964484,
+            "standardisedPairedEffect": 0.5560303825246825
+          }
+        }
+      }
+    },
+    "W1-high": {
+      "correctlyConfirmedTps": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 2,
+              "value": 0.0
+            },
+            {
+              "block": 3,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 4,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 5,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 6,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 7,
+              "value": 0.0
+            },
+            {
+              "block": 8,
+              "value": 0.0
+            },
+            {
+              "block": 9,
+              "value": -0.02499999999999858
+            },
+            {
+              "block": 10,
+              "value": -0.00833333333333286
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -0.00416666666666643,
+            "median": -0.00416666666666643,
+            "sd": 0.00982092751647927,
+            "halfWidth": 0.007025467816356534,
+            "lower": -0.011192134483022965,
+            "upper": 0.0028588011496901043,
+            "standardisedPairedEffect": -0.4242640687119285
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 2,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 3,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 4,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 5,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 6,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 7,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 8,
+              "value": 0.0
+            },
+            {
+              "block": 9,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 10,
+              "value": -0.00833333333333286
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 0.000833333333333286,
+            "median": 0.00416666666666643,
+            "sd": 0.01072236614756538,
+            "halfWidth": 0.007670318120005483,
+            "lower": -0.006836984786672197,
+            "upper": 0.008503651453338769,
+            "standardisedPairedEffect": 0.07771916402262598
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 2,
+              "value": 0.0
+            },
+            {
+              "block": 3,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 4,
+              "value": 0.04999999999999716
+            },
+            {
+              "block": 5,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 6,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 7,
+              "value": 0.0
+            },
+            {
+              "block": 8,
+              "value": 0.0
+            },
+            {
+              "block": 9,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 10,
+              "value": -0.01666666666666572
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 0.00833333333333286,
+            "median": 0.00833333333333286,
+            "sd": 0.01964185503295854,
+            "halfWidth": 0.014050935632713068,
+            "lower": -0.005717602299380209,
+            "upper": 0.02238426896604593,
+            "standardisedPairedEffect": 0.4242640687119285
+          }
+        }
+      },
+      "p95Ms": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 3.867050000000745
+            },
+            {
+              "block": 2,
+              "value": 3.782550000003539
+            },
+            {
+              "block": 3,
+              "value": 3.7632500000008804
+            },
+            {
+              "block": 4,
+              "value": 3.1882500000047003
+            },
+            {
+              "block": 5,
+              "value": 8.017350000001898
+            },
+            {
+              "block": 6,
+              "value": 3.829149999999103
+            },
+            {
+              "block": 7,
+              "value": 3.5161499999958323
+            },
+            {
+              "block": 8,
+              "value": 3.51825000000008
+            },
+            {
+              "block": 9,
+              "value": 4.0622999999995955
+            },
+            {
+              "block": 10,
+              "value": 3.9418999999988955
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 4.148620000000527,
+            "median": 3.805850000001321,
+            "sd": 1.3824620274474986,
+            "halfWidth": 0.9889536874058149,
+            "lower": 3.159666312594712,
+            "upper": 5.137573687406341,
+            "standardisedPairedEffect": 3.000892550850246
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": 3.6168499999985215
+            },
+            {
+              "block": 2,
+              "value": 2.347249999998894
+            },
+            {
+              "block": 3,
+              "value": 0.4585500000002867
+            },
+            {
+              "block": 4,
+              "value": 2.4051499999968655
+            },
+            {
+              "block": 5,
+              "value": 0.5679500000042026
+            },
+            {
+              "block": 6,
+              "value": 2.979549999995939
+            },
+            {
+              "block": 7,
+              "value": 3.6726500000004307
+            },
+            {
+              "block": 8,
+              "value": 1.68684999999914
+            },
+            {
+              "block": 9,
+              "value": 2.9082999999973254
+            },
+            {
+              "block": 10,
+              "value": 3.209199999996599
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 2.3852299999988205,
+            "median": 2.6567249999970954,
+            "sd": 1.153942972833629,
+            "halfWidth": 0.8254810153063566,
+            "lower": 1.559748984692464,
+            "upper": 3.210711015305177,
+            "standardisedPairedEffect": 2.067025889625755
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": 2.4781000000002678
+            },
+            {
+              "block": 2,
+              "value": -0.7063000000052853
+            },
+            {
+              "block": 3,
+              "value": -3.7221000000045024
+            },
+            {
+              "block": 4,
+              "value": -0.7866999999932887
+            },
+            {
+              "block": 5,
+              "value": -4.627099999997881
+            },
+            {
+              "block": 6,
+              "value": 0.6142999999983942
+            },
+            {
+              "block": 7,
+              "value": 1.08009999999922
+            },
+            {
+              "block": 8,
+              "value": -1.9366999999929249
+            },
+            {
+              "block": 9,
+              "value": -1.1439999999965949
+            },
+            {
+              "block": 10,
+              "value": 0.1900000000041473
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -0.8560399999988448,
+            "median": -0.746499999999287,
+            "sd": 2.1559838585252966,
+            "halfWidth": 1.5422978313644724,
+            "lower": -2.3983378313633175,
+            "upper": 0.6862578313656276,
+            "standardisedPairedEffect": -0.39705306540856034
+          }
+        }
+      }
+    },
+    "W2": {
+      "correctlyConfirmedTps": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 0.04999999999999716
+            },
+            {
+              "block": 2,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 3,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 4,
+              "value": -0.008333333333339965
+            },
+            {
+              "block": 5,
+              "value": 0.02499999999999858
+            },
+            {
+              "block": 6,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 7,
+              "value": 0.025000000000005684
+            },
+            {
+              "block": 8,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 9,
+              "value": 0.03333333333333144
+            },
+            {
+              "block": 10,
+              "value": 0.00833333333333286
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 0.018333333333332293,
+            "median": 0.01666666666666572,
+            "sd": 0.016101529717988984,
+            "halfWidth": 0.011518339651527423,
+            "lower": 0.00681499368180487,
+            "upper": 0.029851672984859717,
+            "standardisedPairedEffect": 1.138608172914769
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": 23.75
+            },
+            {
+              "block": 2,
+              "value": 23.816666666666663
+            },
+            {
+              "block": 3,
+              "value": 23.241666666666667
+            },
+            {
+              "block": 4,
+              "value": 23.858333333333334
+            },
+            {
+              "block": 5,
+              "value": 23.675000000000004
+            },
+            {
+              "block": 6,
+              "value": 23.83333333333333
+            },
+            {
+              "block": 7,
+              "value": 22.608333333333334
+            },
+            {
+              "block": 8,
+              "value": 23.05833333333333
+            },
+            {
+              "block": 9,
+              "value": 23.83333333333333
+            },
+            {
+              "block": 10,
+              "value": 23.791666666666664
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 23.546666666666667,
+            "median": 23.770833333333332,
+            "sd": 0.4300122019514793,
+            "halfWidth": 0.30761217618005027,
+            "lower": 23.239054490486616,
+            "upper": 23.854278842846718,
+            "standardisedPairedEffect": 54.75813607104007
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": -0.09999999999999432
+            },
+            {
+              "block": 2,
+              "value": -0.03333333333333144
+            },
+            {
+              "block": 3,
+              "value": -0.04999999999999716
+            },
+            {
+              "block": 4,
+              "value": 0.01666666666667993
+            },
+            {
+              "block": 5,
+              "value": -0.04999999999999716
+            },
+            {
+              "block": 6,
+              "value": -0.06666666666666288
+            },
+            {
+              "block": 7,
+              "value": -0.05000000000001137
+            },
+            {
+              "block": 8,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 9,
+              "value": -0.06666666666666288
+            },
+            {
+              "block": 10,
+              "value": -0.04999999999999716
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -0.04666666666666401,
+            "median": -0.04999999999999716,
+            "sd": 0.03122993182790203,
+            "halfWidth": 0.022340545798324896,
+            "lower": -0.0690072124649889,
+            "upper": -0.024326120868339116,
+            "standardisedPairedEffect": -1.4942929406259609
+          }
+        }
+      },
+      "p95Ms": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 9.416449999998804
+            },
+            {
+              "block": 2,
+              "value": 9.032550000000128
+            },
+            {
+              "block": 3,
+              "value": 6.682700000001205
+            },
+            {
+              "block": 4,
+              "value": 8.310999999996056
+            },
+            {
+              "block": 5,
+              "value": 9.462350000002516
+            },
+            {
+              "block": 6,
+              "value": 9.792599999998401
+            },
+            {
+              "block": 7,
+              "value": 5.279100000000426
+            },
+            {
+              "block": 8,
+              "value": 11.620249999999487
+            },
+            {
+              "block": 9,
+              "value": 7.483750000001237
+            },
+            {
+              "block": 10,
+              "value": 7.891100000000733
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 8.497184999999899,
+            "median": 8.671774999998092,
+            "sd": 1.7817695193335943,
+            "halfWidth": 1.2746010387754847,
+            "lower": 7.222583961224414,
+            "upper": 9.771786038775383,
+            "standardisedPairedEffect": 4.768958559341592
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": -2.459850000001097
+            },
+            {
+              "block": 2,
+              "value": -2.123149999999214
+            },
+            {
+              "block": 3,
+              "value": -1.1568999999981315
+            },
+            {
+              "block": 4,
+              "value": -0.7990000000008877
+            },
+            {
+              "block": 5,
+              "value": -2.6148499999990236
+            },
+            {
+              "block": 6,
+              "value": -1.306900000000951
+            },
+            {
+              "block": 7,
+              "value": 1.2701999999997042
+            },
+            {
+              "block": 8,
+              "value": -4.295149999997648
+            },
+            {
+              "block": 9,
+              "value": -3.8075499999958993
+            },
+            {
+              "block": 10,
+              "value": -2.976299999998446
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -2.0269449999991593,
+            "median": -2.2915000000001555,
+            "sd": 1.6129109161946633,
+            "halfWidth": 1.1538068795805532,
+            "lower": -3.1807518795797125,
+            "upper": -0.8731381204186062,
+            "standardisedPairedEffect": -1.2566999080031807
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": -11.088300000006711
+            },
+            {
+              "block": 2,
+              "value": -10.081500000000688
+            },
+            {
+              "block": 3,
+              "value": -7.650599999997212
+            },
+            {
+              "block": 4,
+              "value": -7.939799999989191
+            },
+            {
+              "block": 5,
+              "value": -11.026500000005399
+            },
+            {
+              "block": 6,
+              "value": -8.002599999997074
+            },
+            {
+              "block": 7,
+              "value": -4.551200000000335
+            },
+            {
+              "block": 8,
+              "value": -14.351699999998345
+            },
+            {
+              "block": 9,
+              "value": -13.194900000005873
+            },
+            {
+              "block": 10,
+              "value": -12.68800000000192
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -10.057510000000274,
+            "median": -10.554000000003043,
+            "sd": 3.0189185497298094,
+            "halfWidth": 2.159604077694273,
+            "lower": -12.217114077694546,
+            "upper": -7.897905922306001,
+            "standardisedPairedEffect": -3.3314943196796127
+          }
+        }
+      }
+    },
+    "W4": {
+      "correctlyConfirmedTps": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 0.0
+            },
+            {
+              "block": 2,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 3,
+              "value": 0.0
+            },
+            {
+              "block": 4,
+              "value": 0.00833333333333286
+            },
+            {
+              "block": 5,
+              "value": 0.0
+            },
+            {
+              "block": 6,
+              "value": -0.00833333333333286
+            },
+            {
+              "block": 7,
+              "value": 0.0
+            },
+            {
+              "block": 8,
+              "value": 0.0
+            },
+            {
+              "block": 9,
+              "value": 0.0
+            },
+            {
+              "block": 10,
+              "value": 0.0
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 0.000833333333333286,
+            "median": 0.0,
+            "sd": 0.004730385101645954,
+            "halfWidth": 0.0033839134068367437,
+            "lower": -0.002550580073503458,
+            "upper": 0.0042172467401700294,
+            "standardisedPairedEffect": 0.17616606585441105
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": 23.799999999999997
+            },
+            {
+              "block": 2,
+              "value": 23.84166666666666
+            },
+            {
+              "block": 3,
+              "value": 23.25
+            },
+            {
+              "block": 4,
+              "value": 23.858333333333327
+            },
+            {
+              "block": 5,
+              "value": 23.71666666666667
+            },
+            {
+              "block": 6,
+              "value": 23.875000000000007
+            },
+            {
+              "block": 7,
+              "value": 22.61666666666666
+            },
+            {
+              "block": 8,
+              "value": 23.03333333333333
+            },
+            {
+              "block": 9,
+              "value": 23.86666666666666
+            },
+            {
+              "block": 10,
+              "value": 23.816666666666663
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 23.5675,
+            "median": 23.80833333333333,
+            "sd": 0.44377466893697765,
+            "halfWidth": 0.31745725127280994,
+            "lower": 23.25004274872719,
+            "upper": 23.88495725127281,
+            "standardisedPairedEffect": 53.10690683732316
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": 0.0
+            },
+            {
+              "block": 2,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 3,
+              "value": 0.0
+            },
+            {
+              "block": 4,
+              "value": 0.01666666666666572
+            },
+            {
+              "block": 5,
+              "value": -0.03333333333333144
+            },
+            {
+              "block": 6,
+              "value": -0.01666666666666572
+            },
+            {
+              "block": 7,
+              "value": 0.0
+            },
+            {
+              "block": 8,
+              "value": 0.0
+            },
+            {
+              "block": 9,
+              "value": 0.0
+            },
+            {
+              "block": 10,
+              "value": 0.0
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -0.004999999999999716,
+            "median": 0.0,
+            "sd": 0.013721210039141963,
+            "halfWidth": 0.009815561653388314,
+            "lower": -0.014815561653388029,
+            "upper": 0.004815561653388599,
+            "standardisedPairedEffect": -0.3643993485805122
+          }
+        }
+      },
+      "p95Ms": {
+        "occ": {
+          "points": [
+            {
+              "block": 1,
+              "value": 9.824699999999211
+            },
+            {
+              "block": 2,
+              "value": 8.38964999999962
+            },
+            {
+              "block": 3,
+              "value": 8.123299999996107
+            },
+            {
+              "block": 4,
+              "value": 6.896099999999933
+            },
+            {
+              "block": 5,
+              "value": 9.59585000000152
+            },
+            {
+              "block": 6,
+              "value": 10.147300000002815
+            },
+            {
+              "block": 7,
+              "value": 7.070699999998737
+            },
+            {
+              "block": 8,
+              "value": 10.24489999999787
+            },
+            {
+              "block": 9,
+              "value": 9.791899999999714
+            },
+            {
+              "block": 10,
+              "value": 8.192949999997836
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 8.827734999999336,
+            "median": 8.99275000000057,
+            "sd": 1.254885888360853,
+            "halfWidth": 0.8976912218408959,
+            "lower": 7.93004377815844,
+            "upper": 9.725426221840232,
+            "standardisedPairedEffect": 7.0346914264294025
+          }
+        },
+        "idempotency": {
+          "points": [
+            {
+              "block": 1,
+              "value": 1.9908000000014
+            },
+            {
+              "block": 2,
+              "value": 1.3020500000006905
+            },
+            {
+              "block": 3,
+              "value": 1.7832000000012158
+            },
+            {
+              "block": 4,
+              "value": 1.722300000003088
+            },
+            {
+              "block": 5,
+              "value": 2.371850000003178
+            },
+            {
+              "block": 6,
+              "value": 4.036700000001929
+            },
+            {
+              "block": 7,
+              "value": 3.3914999999957445
+            },
+            {
+              "block": 8,
+              "value": 2.5517999999974563
+            },
+            {
+              "block": 9,
+              "value": 3.0162000000013904
+            },
+            {
+              "block": 10,
+              "value": 2.246750000002976
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": 2.4413150000009067,
+            "median": 2.309300000003077,
+            "sd": 0.835628298895749,
+            "halfWidth": 0.5977724314203511,
+            "lower": 1.8435425685805558,
+            "upper": 3.0390874314212577,
+            "standardisedPairedEffect": 2.921532220997077
+          }
+        },
+        "interaction": {
+          "points": [
+            {
+              "block": 1,
+              "value": -7.001800000001822
+            },
+            {
+              "block": 2,
+              "value": -9.116299999998773
+            },
+            {
+              "block": 3,
+              "value": -8.275400000006812
+            },
+            {
+              "block": 4,
+              "value": -6.368400000003021
+            },
+            {
+              "block": 5,
+              "value": -7.304699999993318
+            },
+            {
+              "block": 6,
+              "value": -3.3504000000057204
+            },
+            {
+              "block": 7,
+              "value": -7.214999999993552
+            },
+            {
+              "block": 8,
+              "value": -6.470600000000559
+            },
+            {
+              "block": 9,
+              "value": -5.516400000003159
+            },
+            {
+              "block": 10,
+              "value": -7.670700000000579
+            }
+          ],
+          "interval": {
+            "n": 10,
+            "mean": -6.828970000000732,
+            "median": -7.108399999997687,
+            "sd": 1.5847046377779008,
+            "halfWidth": 1.1336293249754872,
+            "lower": -7.962599324976219,
+            "upper": -5.695340675025244,
+            "standardisedPairedEffect": -4.309301454166517
+          }
+        }
+      }
+    }
+  },
+  "rq3": {
+    "points": [
+      {
+        "block": 1,
+        "value": 0.09999999999999432
+      },
+      {
+        "block": 2,
+        "value": 0.01666666666666572
+      },
+      {
+        "block": 3,
+        "value": 0.04999999999999716
+      },
+      {
+        "block": 4,
+        "value": -1.4210854715202004e-14
+      },
+      {
+        "block": 5,
+        "value": 0.01666666666666572
+      },
+      {
+        "block": 6,
+        "value": 0.04999999999999716
+      },
+      {
+        "block": 7,
+        "value": 0.05000000000001137
+      },
+      {
+        "block": 8,
+        "value": 0.01666666666666572
+      },
+      {
+        "block": 9,
+        "value": 0.06666666666666288
+      },
+      {
+        "block": 10,
+        "value": 0.04999999999999716
+      }
+    ],
+    "interval": {
+      "n": 10,
+      "mean": 0.0416666666666643,
+      "median": 0.04999999999999716,
+      "sd": 0.02965855070008795,
+      "halfWidth": 0.021216447537527886,
+      "lower": 0.020450219129136412,
+      "upper": 0.06288311420419218,
+      "standardisedPairedEffect": 1.4048787173724149
+    },
+    "classification": "confirmatory",
+    "targetHalfWidth": 11.999333333333334
+  }
+}

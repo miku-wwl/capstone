@@ -84,7 +84,8 @@ def costs(data, output):
         ax.set_xticks(range(4), SCENARIOS, rotation=18)
         ax.set_title(title, loc="left", fontweight="bold", fontsize=9.5)
         ax.grid(axis="y", alpha=.18)
-    axes[-1].legend(ncols=4, frameon=False, loc="upper right", fontsize=8)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, ncols=4, frameon=False, loc="outside lower center", fontsize=8)
     fig.suptitle(f"Transaction costs  |  {data['phase'].capitalize()}", fontweight="bold")
     finish(fig, output)
 
