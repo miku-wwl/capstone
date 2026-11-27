@@ -1,0 +1,66 @@
+{
+  "firstBlock": 1,
+  "lastBlock": 5,
+  "checkpointSha256": "0b260fc462fc3c967f1c484cb4a42e95fe87285fa6745eeddb1348c3910bea19",
+  "completedBlocks": 5,
+  "invalidBlocks": 0,
+  "reruns": 0,
+  "machineSeconds": 9640.171646300001,
+  "archives": [
+    {
+      "file": "Capstone_Formal_Block_01_Raw.zip",
+      "block": 1,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62904208,
+      "archiveSha256": "b700ed0b7e2a1bfc12e0047f1ca2ff2cddd0daba3936447cd9e69b8c85b8624d",
+      "manifestSha256": "0b260fc462fc3c967f1c484cb4a42e95fe87285fa6745eeddb1348c3910bea19"
+    },
+    {
+      "file": "Capstone_Formal_Block_02_Raw.zip",
+      "block": 2,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62906704,
+      "archiveSha256": "5c007eb1aaacf5a914c6fea5ffd1fbbff8416bda597128d6fd747ec008200a67",
+      "manifestSha256": "0b260fc462fc3c967f1c484cb4a42e95fe87285fa6745eeddb1348c3910bea19"
+    },
+    {
+      "file": "Capstone_Formal_Block_03_Raw.zip",
+      "block": 3,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62855966,
+      "archiveSha256": "a71946055aaf3bf924d4c8990c68e01a1e9416eaf7ba830b90ecd0a78295b897",
+      "manifestSha256": "0b260fc462fc3c967f1c484cb4a42e95fe87285fa6745eeddb1348c3910bea19"
+    },
+    {
+      "file": "Capstone_Formal_Block_04_Raw.zip",
+      "block": 4,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62912511,
+      "archiveSha256": "7cac256eca90c982bfef99aa9a7032ab830e9d8fe2a59a59f354f8ac305714e3",
+      "manifestSha256": "0b260fc462fc3c967f1c484cb4a42e95fe87285fa6745eeddb1348c3910bea19"
+    },
+    {
+      "file": "Capstone_Formal_Block_05_Raw.zip",
+      "block": 5,
+      "attempt": 1,
+      "state": "complete",
+      "members": 17,
+      "bytes": 62887111,
+      "archiveSha256": "aaf2815a8271a2e6879819f3fea68a3f64572543ae2403c402964fa9d7f51688",
+      "manifestSha256": "0b260fc462fc3c967f1c484cb4a42e95fe87285fa6745eeddb1348c3910bea19"
+    }
+  ],
+  "packagingSeconds": 176.65700000000652,
+  "datasetDriveFolder": "https://drive.google.com/drive/folders/1w1XuIQO0DRtU8Ynp45Spmx2jFi0_a_d7",
+  "freezeSha256": "df55512e20bc4911a7cc1e65bfe3f2d676f8f870e57350aef180359291ea12ef",
+  "codeCommit": "a00e7b3cdf241d4f9df271f4142d1d0800b8db95",
+  "evidenceComplete": false
+}
